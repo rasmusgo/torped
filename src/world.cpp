@@ -1,5 +1,5 @@
 #include <sstream>
-#include <gl/glew.h>
+#include <GL/glew.h>
 //#include "SDL_opengl.h"
 
 #ifdef MEMORY_MANAGER

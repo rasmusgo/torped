@@ -1,6 +1,6 @@
 #include <SDL/SDL_thread.h>
 #include <string>
-#include <python.h>
+#include <Python.h>
 #include "structmember.h"
 
 #ifdef MEMORY_MANAGER

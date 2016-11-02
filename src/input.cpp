@@ -1,4 +1,4 @@
-#include "SDL.h"
+#include <SDL.h>
 #include "manymouse/manymouse.h"
 
 #ifdef MEMORY_MANAGER

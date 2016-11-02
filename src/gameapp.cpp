@@ -1,14 +1,14 @@
-#include <gl/glew.h>
-#include "SDL.h"
+#include <GL/glew.h>
+#include <SDL.h>
 #include "SDL_thread.h"
 #include "SDL_mutex.h"
 #include "SDL_net.h"
 //#include "SDL_opengl.h"
 #include "SDL_getenv.h"
-#include <gl/glut.h>
+#include <GL/glut.h>
 #include "physfs.h"
 #include <deque>
-#include <python.h>
+#include <Python.h>
 #include <angelscript.h>
 
 extern "C"

@@ -5,7 +5,7 @@
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
 
-#include "SDL.h"
+#include <SDL.h>
 #include <physfs.h>
 
 #ifdef MEMORY_MANAGER

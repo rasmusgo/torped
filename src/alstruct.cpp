@@ -1,4 +1,4 @@
-#include "SDL.h"
+#include <SDL.h>
 //#include "SDL_sound.h"
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>

@@ -1,4 +1,4 @@
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"

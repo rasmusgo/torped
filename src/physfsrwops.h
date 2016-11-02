@@ -24,7 +24,7 @@
 #define _INCLUDE_PHYSFSRWOPS_H_
 
 #include "physfs.h"
-#include "SDL.h"
+#include <SDL.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -5,8 +5,8 @@
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
 
-#include <al/al.h>
-#include <al/alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 //#include <alut/alut.h>
 #include <vector>
 #include <string>

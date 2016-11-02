@@ -1,8 +1,8 @@
-#include <al/al.h>
-#include <al/alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 //#include <alut/alut.h>
 
-#include "SDL.h"
+#include <SDL.h>
 #include "SDL_thread.h"
 #include "SDL_mutex.h"
 #include <vector>

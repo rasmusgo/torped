@@ -5,7 +5,7 @@
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include <sstream>
 #include <memory>
 //#include <new>
