@@ -160,8 +160,8 @@ private:
     inline void DoFrame2(PhyRigid &rigid);
     inline void DoFrame3(PhyRigid &rigid);
 
-    inline void Physics::UpdateBounds(const Vec3r &a);
-    inline void Physics::UpdateBounds(const PhyPoint &point);
+    inline void UpdateBounds(const Vec3r &a);
+    inline void UpdateBounds(const PhyPoint &point);
 };
 
 #endif // PHYSICS_H
