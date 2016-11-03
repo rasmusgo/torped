@@ -17,7 +17,7 @@
 #include <SDL/SDL_thread.h>
 #include <SDL/SDL_mutex.h>
 //#include <SDL/SDL_opengl.h>
-#include "tinyxml/tinyxml.h"
+#include <tinyxml.h>
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
