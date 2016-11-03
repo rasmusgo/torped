@@ -5,29 +5,27 @@
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
 
+#include <chrono>
 #include <vector>
 #include <string>
-#include <windows.h>
-//FIXME: where is LARGE_INTEGER and QueryPerformanceFrequency declared?
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
+
 
 class Profiler
 {
 public:
     Profiler()
     {
-        ::QueryPerformanceFrequency(&freq);
-        ::QueryPerformanceCounter(&last_time);
+        last_time = std::chrono::high_resolution_clock::now();
     }
 
     Profiler(const Profiler &p)
     {
         times     = p.times;
         names     = p.names;
-        freq      = p.freq;
         last_time = p.last_time;
     }
 
@@ -35,7 +33,6 @@ public:
     {
         times     = p.times;
         names     = p.names;
-        freq      = p.freq;
         last_time = p.last_time;
     }
 
@@ -49,23 +46,20 @@ public:
     {
         names.clear();
         times.clear();
-
-        ::QueryPerformanceCounter(&last_time);
+        last_time = std::chrono::high_resolution_clock::now();
     }
 
     void SkipTime()
     {
-        ::QueryPerformanceCounter(&last_time);
+        last_time = std::chrono::high_resolution_clock::now();
     }
 
     void RememberTime(std::string name)
     {
         names.push_back(name);
-
-        LARGE_INTEGER t;
-        ::QueryPerformanceCounter(&t);
-        times.push_back(t.QuadPart - last_time.QuadPart);
-        last_time.QuadPart = t.QuadPart;
+        auto t = std::chrono::high_resolution_clock::now();
+        times.push_back(std::chrono::duration_cast<std::chrono::nanoseconds>(t - last_time).count());
+        last_time = t;
     }
 
     void AddTime(std::string name)
@@ -79,10 +73,9 @@ public:
             --it2;
             if (*it == name)
             {
-                LARGE_INTEGER t;
-                ::QueryPerformanceCounter(&t);
-                *it2 += t.QuadPart - last_time.QuadPart;
-                last_time.QuadPart = t.QuadPart;
+                auto t = std::chrono::high_resolution_clock::now();
+                *it2 += std::chrono::duration_cast<std::chrono::nanoseconds>(t - last_time).count();
+                last_time = t;
                 return;
             }
         }
@@ -145,7 +138,7 @@ public:
             ++j;
         }
 
-        if ( static_cast<signed long long>(last_time.QuadPart - p.last_time.QuadPart) > 0)
+        if (last_time > p.last_time)
             ret.last_time = last_time;
         else
             ret.last_time = p.last_time;
@@ -203,10 +196,9 @@ public:
         }
     }
 
-    std::vector<long long int> times;
+    std::vector<size_t> times;
     std::vector<std::string> names;
-    LARGE_INTEGER freq;
-    LARGE_INTEGER last_time;
+    decltype(std::chrono::high_resolution_clock::now()) last_time;
 };
 
 #endif // PROFILER_H

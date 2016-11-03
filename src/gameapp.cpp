@@ -891,7 +891,7 @@ namespace App
 #define freq (profiler.freq)
         if ( times.size() > 0 )
         {
-            double inv_freq = 1.0 / static_cast<double>(freq.QuadPart)*1000.0;
+            double inv_freq = 1.0e-9;
             typeof(times.back()) total = 0;
 
             for ( typeof(times.begin()) it = times.begin(); it != times.end(); ++it )
@@ -936,7 +936,7 @@ namespace App
 #define freq (it->phys->profiler.freq)
             if ( times.size() > 0 )
             {
-                double inv_freq = 1.0 / static_cast<double>(freq.QuadPart)*1000.0;
+                double inv_freq = 1.0e-9;
                 typeof(times.back()) total = 0;
 
                 for ( typeof(times.begin()) it2 = times.begin(); it2 != times.end(); ++it2 )
