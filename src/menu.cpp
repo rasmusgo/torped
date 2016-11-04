@@ -29,6 +29,7 @@ extern "C"
 #include "pythonstruct.h"
 #include "shader.h"
 #include "luawrap.h"
+#include "menu.h"
 
 namespace App
 {
