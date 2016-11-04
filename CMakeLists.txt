@@ -25,6 +25,7 @@ endif ()
 add_subdirectory(thirdparty)
 
 include_directories(
+    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/angelscript/sdk/angelscript/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/manymouse"
 )
 
