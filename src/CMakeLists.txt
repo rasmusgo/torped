@@ -10,6 +10,7 @@ target_link_libraries(torped LINK_PRIVATE
     ${LUA_LIBRARIES}
     ${OPENAL_LIBRARY}
     ${OPENGL_LIBRARIES}
+    ${PHYSFS_LIBRARY}
     ${PYTHON_LIBRARIES}
     ${SDL_LIBRARY}
     tinyxml

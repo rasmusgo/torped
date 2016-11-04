@@ -9,6 +9,8 @@ find_package(OpenAL REQUIRED)
 
 find_package(OpenGL REQUIRED)
 
+find_package(PhysFS REQUIRED)
+
 find_package(SDL REQUIRED)
 include_directories(${SDL_INCLUDE_DIR})
 
