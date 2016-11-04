@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 2.8.11)
 project(TORPED_PROJECT)
 
+find_package(GLEW REQUIRED)
+
+find_package(GLUT REQUIRED)
+
 find_package(OpenAL REQUIRED)
+
+find_package(OpenGL REQUIRED)
 
 find_package(SDL REQUIRED)
 include_directories(${SDL_INCLUDE_DIR})
