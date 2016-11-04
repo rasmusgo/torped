@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include "manymouse/manymouse.h"
+#include <manymouse.h>
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"

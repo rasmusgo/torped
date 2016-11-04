@@ -10,7 +10,7 @@
 #include <sstream>
 #include <map>
 #include <math.h>
-#include "manymouse/manymouse.h"
+#include <manymouse.h>
 #include <angelscript.h>
 
 #ifdef MEMORY_MANAGER
