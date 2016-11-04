@@ -3,8 +3,7 @@
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 #include <errno.h>
-#include "physfs.h"
-#include "physfsrwops.h"
+#include <physfs.h>
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
@@ -12,6 +11,7 @@
 
 #include "alstruct.h"
 #include "console.h"
+#include "physfsrwops.h"
 
 using namespace std;
 

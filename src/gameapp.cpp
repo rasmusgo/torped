@@ -5,7 +5,7 @@
 //#include "SDL_opengl.h"
 #include "SDL_getenv.h"
 #include <GL/glut.h>
-#include "physfs.h"
+#include <physfs.h>
 #include <deque>
 #include <Python.h>
 #include <angelscript.h>
