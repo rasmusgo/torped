@@ -1,4 +1,4 @@
-file(GLOB sources *.cpp *.hpp)
+file(GLOB sources *.cpp *.hpp *.c *.h)
 
 add_executable(torped ${sources})
 
