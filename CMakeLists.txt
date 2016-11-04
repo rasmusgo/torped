@@ -22,4 +22,10 @@ if (PYTHONLIBS_FOUND)
     include_directories(${PYTHON_INCLUDE_DIRS})
 endif ()
 
+add_subdirectory(thirdparty)
+
+include_directories(
+    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/manymouse"
+)
+
 add_subdirectory(src)

@@ -14,5 +14,6 @@ target_link_libraries(torped LINK_PRIVATE
     ${PYTHON_LIBRARIES}
     ${SDL_IMAGE_LIBRARIES}
     ${SDL_LIBRARY}
+    manymouse
     tinyxml
 )
