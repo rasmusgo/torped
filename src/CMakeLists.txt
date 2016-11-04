@@ -16,5 +16,8 @@ target_link_libraries(torped LINK_PRIVATE
     ${SDL_LIBRARY}
     angelscript
     manymouse
+    ogg
     tinyxml
+    vorbis
+    vorbisfile
 )
