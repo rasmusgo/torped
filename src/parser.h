@@ -1,5 +1,4 @@
-#ifndef PARSER_H
-#define PARSER_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -36,5 +35,3 @@ public:
 	std::map<std::string, int> typeCount;
 	int Load(const char *filename);
 };
-
-#endif //PARSER_H

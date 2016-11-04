@@ -1,5 +1,4 @@
-#ifndef COLLIDE_H
-#define COLLIDE_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
@@ -17,6 +16,3 @@ struct TraceResult
 };
 
 void TraceLine(const Vec3r &pos, const Vec3r &dir, const REAL max_dist, Physics *phys, TraceResult *res);
-
-
-#endif // COLLIDE_H

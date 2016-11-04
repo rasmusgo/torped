@@ -1,5 +1,4 @@
-#ifndef ASWRAP_H
-#define ASWRAP_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -14,5 +13,3 @@
 void AsMessageCallback(const asSMessageInfo *msg, void *param);
 void AsWrapConsoleCmds(asIScriptEngine *as);
 void AsRunFile(asIScriptEngine *as, const char *filename);
-
-#endif // ASWRAP_H

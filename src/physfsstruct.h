@@ -1,5 +1,4 @@
-#ifndef PHYSFSSTRUCT_H
-#define PHYSFSSTRUCT_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -30,5 +29,3 @@ public:
 };
 
 unsigned int PhysFSLoadFile(const char *file, char *&buffer);
-
-#endif // PHYSFSSTRUCT_H

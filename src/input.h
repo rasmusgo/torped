@@ -1,5 +1,4 @@
-#ifndef INPUT_H
-#define INPUT_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -51,4 +50,3 @@ namespace App
     extern Profiler profiler;
 
 } // namespace App
-#endif // INPUT_H

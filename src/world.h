@@ -1,5 +1,4 @@
-#ifndef WORLD_H
-#define WORLD_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -132,5 +131,3 @@ namespace App
 {
 	extern World *world;
 } // namespace App
-
-#endif // WORLD_H

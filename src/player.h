@@ -1,5 +1,4 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
@@ -29,5 +28,3 @@ namespace App
 {
 	extern Player player;
 }
-
-#endif // PLAYER_H

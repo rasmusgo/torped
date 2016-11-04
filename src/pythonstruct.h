@@ -1,5 +1,4 @@
-#ifndef PYTHONSTRUCT_H
-#define PYTHONSTRUCT_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
@@ -20,5 +19,3 @@ private:
 
 bool InitPython();
 void QuitPython();
-
-#endif //PYTHONSTRUCT_H

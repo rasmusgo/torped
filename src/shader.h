@@ -1,5 +1,4 @@
-#ifndef SHADER_H
-#define SHADER_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -58,5 +57,3 @@ private:
     static std::map<std::string, IdRef> fragment_shaders;
     static std::map<ProgramName, IdRef> programs;
 };
-
-#endif // SHADER_H

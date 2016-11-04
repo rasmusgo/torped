@@ -1,5 +1,4 @@
-#ifndef PHYSSTRUCT_H
-#define PHYSSTRUCT_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -117,5 +116,3 @@ bool InitPhys();
 void QuitPhys();
 
 void ParsePhysBlend(PhyInstance *inst, std::vector<std::string> *lines, float blend);
-
-#endif //PHYSSTRUCT_H

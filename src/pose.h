@@ -1,5 +1,4 @@
-#ifndef POSE_H
-#define POSE_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -28,5 +27,3 @@ public:
     void Apply(PhyInstance *inst);
     void Blend(PhyInstance *inst, float a, float b);
 };
-
-#endif // POSE_H

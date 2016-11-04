@@ -1,5 +1,4 @@
-#ifndef PHYSICS_H
-#define PHYSICS_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -163,5 +162,3 @@ private:
     inline void UpdateBounds(const Vec3r &a);
     inline void UpdateBounds(const PhyPoint &point);
 };
-
-#endif // PHYSICS_H

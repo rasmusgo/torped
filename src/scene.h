@@ -1,4 +1,5 @@
 #pragma once
+
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
@@ -54,4 +55,3 @@ private:
     SDL_mutex *actors_mutex;
     friend int StartScene(void *data);
 };
-

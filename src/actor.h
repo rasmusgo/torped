@@ -1,5 +1,4 @@
-#ifndef ACTOR_H
-#define ACTOR_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -18,5 +17,3 @@ public:
     virtual void Draw();
 private:
 };
-
-#endif // ACTOR_H

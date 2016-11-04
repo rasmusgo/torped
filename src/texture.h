@@ -1,5 +1,4 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -57,5 +56,3 @@ private:
     static std::map<std::string, IdRef> textures;
     static std::set<Texture*> unique_textures;
 };
-
-#endif //TEXTURE_H

@@ -1,5 +1,4 @@
-#ifndef MENU_H
-#define MENU_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -29,4 +28,3 @@ namespace App
 	void DrawMenu();
 	int MenuFrame();
 } // namespace App
-#endif // MENU_H

@@ -1,5 +1,4 @@
-#ifndef GAMEAPP_H
-#define GAMEAPP_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -74,4 +73,3 @@ namespace App
 
     extern asIScriptEngine *as_engine;
 } // namespace App
-#endif // GAMEAPP_H

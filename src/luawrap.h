@@ -1,6 +1,3 @@
-#ifndef LUAWRAP_H
-#define LUAWRAP_H
-
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
@@ -73,4 +70,3 @@ BEGIN_FUNC_FLOAT("Arm2Down",  EmbPlayerArm2Down,  "", {App::player.MoveArm2(0, -
     {"bind",           EmbBind,            METH_VARARGS, "Binds an event to an action (function or string). bind(\"mouse1_button1\", left_punch)"},
 
 */
-#endif // LUAWRAP_H
