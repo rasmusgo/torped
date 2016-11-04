@@ -2,7 +2,6 @@
 #include <SDL.h>
 #include "SDL_thread.h"
 #include "SDL_mutex.h"
-#include "SDL_net.h"
 //#include "SDL_opengl.h"
 #include "SDL_getenv.h"
 #include <GL/glut.h>
@@ -217,13 +216,6 @@ namespace App
         App::console << "Initializing network..." << std::endl;
         App::FlushConsole();
 
-        if (SDLNet_Init() != 0)
-        {
-            App::console << "Fatal error: SDLNet_Init failed: " << SDLNet_GetError() << std::endl;
-            App::FlushConsole();
-            return;
-        }
-
         App::console << "Initializing audio..." << std::endl;
         App::FlushConsole();
 
@@ -363,7 +355,6 @@ namespace App
         // shut down openal
         al.QuitAl();
 
-        SDLNet_Quit();
         for( unsigned int i=0; i < joysticks.size(); i++ )
         {
             if (joysticks[i] != NULL)

@@ -2,7 +2,6 @@
 #include <SDL.h>
 #include "SDL_thread.h"
 #include "SDL_mutex.h"
-#include "SDL_net.h"
 //#include "SDL_opengl.h"
 #include "SDL_getenv.h"
 #include <GL/glut.h>
