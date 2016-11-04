@@ -349,7 +349,7 @@ convars_set_int(convars_object *self, PyObject *value, void *closure)
         return -1;
     }
 
-    *reinterpret_cast<int*>( (char*)(self) + reinterpret_cast<int>(closure) ) = PyInt_AsLong(value);
+    *reinterpret_cast<int*>( (char*)(self) + reinterpret_cast<ptrdiff_t>(closure) ) = PyInt_AsLong(value);
 
     return 0;
 }
@@ -358,7 +358,7 @@ static PyObject *
 convars_get_int(convars_object *self, void *closure)
 {
     return  Py_BuildValue("i",
-        *reinterpret_cast<int*>( (char*)(self) + reinterpret_cast<int>(closure) )
+        *reinterpret_cast<int*>( (char*)(self) + reinterpret_cast<ptrdiff_t>(closure) )
         );
 }
 
