@@ -204,13 +204,13 @@ public:
 		*this /= length;
 	};
 
-    friend Vec3<T>& Normalize(Vec3<T> a)
+    friend Vec3<T> Normalize(Vec3<T> a)
     {
         a.Normalize();
         return a;
     };
 
-    friend Vec3<T>& FastNormalize(Vec3<T> a)
+    friend Vec3<T> FastNormalize(Vec3<T> a)
     {
         a.FastNormalize();
         return a;
