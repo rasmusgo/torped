@@ -14,6 +14,8 @@ find_package(PhysFS REQUIRED)
 find_package(SDL REQUIRED)
 include_directories(${SDL_INCLUDE_DIR})
 
+find_package(SDL_image REQUIRED)
+
 find_package(Lua51 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
 
