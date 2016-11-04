@@ -11,4 +11,5 @@ target_link_libraries(torped LINK_PRIVATE
     ${OPENGL_LIBRARIES}
     ${PYTHON_LIBRARIES}
     ${SDL_LIBRARY}
+    tinyxml
 )
