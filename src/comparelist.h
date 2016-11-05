@@ -1,5 +1,4 @@
-#ifndef COMPARELIST_H
-#define COMPARELIST_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
@@ -44,5 +43,3 @@ private:
     T *data;
     unsigned int size;
 };
-
-#endif // COMPARELIST_H

@@ -1,5 +1,4 @@
-#ifndef VECTORMATH_H
-#define VECTORMATH_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -415,5 +414,3 @@ public:
 typedef Vec3<REAL> Vec3r;
 typedef Quat4<REAL> Quat4r;
 typedef Mat3x3<REAL> Mat3x3r;
-
-#endif //VECTORMATH_H

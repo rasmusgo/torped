@@ -1,5 +1,4 @@
-#ifndef PROFILER_H
-#define PROFILER_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -200,5 +199,3 @@ public:
     std::vector<std::string> names;
     decltype(std::chrono::high_resolution_clock::now()) last_time;
 };
-
-#endif // PROFILER_H

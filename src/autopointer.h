@@ -1,5 +1,4 @@
-#ifndef AUTOPOINTER_H
-#define AUTOPOINTER_H
+#pragma once
 
 template <class F, class P>
 class AutoPointer
@@ -27,5 +26,3 @@ private:
     P pointer;
     F function;
 };
-
-#endif // AUTOPOINTER_H

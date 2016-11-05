@@ -1,5 +1,4 @@
-#ifndef ACTION_H
-#define ACTION_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -12,5 +11,3 @@ public:
     virtual ~Action() { };
     virtual void Run(float value) = 0;
 };
-
-#endif //ACTION_H

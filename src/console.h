@@ -1,5 +1,4 @@
-#ifndef CONSOLE_H
-#define CONSOLE_H
+#pragma once
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
@@ -93,5 +92,3 @@ namespace App
     App::console << msg << std::endl; \
     App::FlushConsole(); \
 }
-
-#endif // CONSOLE_H
