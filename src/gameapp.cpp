@@ -213,9 +213,6 @@ namespace App
 
         InitInput();
 
-        App::console << "Initializing network..." << std::endl;
-        App::FlushConsole();
-
         App::console << "Initializing audio..." << std::endl;
         App::FlushConsole();
 
