@@ -147,6 +147,11 @@ namespace App
             App::FlushConsole();
         }
 
+        App::console << "Initializing GLUT..." << std::endl;
+        App::FlushConsole();
+
+        glutInit(&argc, argv);
+
         App::console << "Initializing SDL..." << std::endl;
         App::FlushConsole();
 
