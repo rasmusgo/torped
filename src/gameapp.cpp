@@ -323,7 +323,10 @@ namespace App
 
     void QuitAll()
     {
-        scene->AddFlags(SCENE_QUIT);
+        if (scene)
+        {
+            scene->AddFlags(SCENE_QUIT);
+        }
 
         // wait for all open threads
         for (unsigned int i=0; i<threads.size(); ++i )
