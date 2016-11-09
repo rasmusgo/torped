@@ -17,6 +17,7 @@ target_link_libraries(torped LINK_PRIVATE
     angelscript
     manymouse
     ogg
+    pthread
     tinyxml
     vorbis
     vorbisfile
