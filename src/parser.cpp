@@ -5,8 +5,8 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
+#include "logging.h"
 #include "parser.h"
-#include "console.h"
 #include "physfsstruct.h"
 
 using namespace std;
@@ -17,8 +17,7 @@ int Parser::Load(const char *filename)
     //       of what's supposed to happen when the file is loaded. This should
     //       be used for all major file access including loading of textures.
 
-    if ( App::developermode )
-        App::console << "Beginning of Parser::Load()" << std::endl;
+    VLOG_S(3) << "Beginning of Parser::Load()";
 
     lines.clear();
     namesIndex.clear();
@@ -72,15 +71,14 @@ int Parser::Load(const char *filename)
             continue;
         if(!(translator >> typeName.name))
         {
-            App::console << "Parser::Load(): " << filename << ": " << i << ": invalid line" << endl;
+            LOG_S(WARNING) << "Parser::Load(): " << filename << ": " << i << ": invalid line";
             continue;
         }
         namesIndex[typeName] = typeCount[typeName.type];
         typeCount[typeName.type]++;
     }
 
-    if ( App::developermode )
-        App::console << "End of Parser::Load()" << std::endl;
+    VLOG_S(3) << "End of Parser::Load()";
 
     return 1; // success
 }

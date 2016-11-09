@@ -10,7 +10,7 @@
 #endif
 
 #include "alstruct.h"
-#include "console.h"
+#include "logging.h"
 #include "physfsrwops.h"
 
 using namespace std;
@@ -118,7 +118,7 @@ bool AlStruct::InitAl()
     device = alcOpenDevice(NULL);
     if ((err = alGetError()) != AL_NO_ERROR)
     {
-        App::console << "alcOpenDevice() failed: " << alGetString(err) << std::endl;
+        LOG_S(ERROR) << "alcOpenDevice() failed: " << alGetString(err);
         return false;
     }
 
@@ -126,7 +126,7 @@ bool AlStruct::InitAl()
     context = alcCreateContext(device, NULL);
     if ((err = alGetError()) != AL_NO_ERROR)
     {
-        App::console << "alcCreateContext() failed: " << alGetString(err) << std::endl;
+        LOG_S(ERROR) << "alcCreateContext() failed: " << alGetString(err);
         return false;
     }
 
@@ -134,7 +134,7 @@ bool AlStruct::InitAl()
     alcMakeContextCurrent(context);
     if ((err = alGetError()) != AL_NO_ERROR)
     {
-        App::console << "alcMakeContextCurrent() failed: " << alGetString(err) << std::endl;
+        LOG_S(ERROR) << "alcMakeContextCurrent() failed: " << alGetString(err);
         return false;
     }
 
@@ -180,7 +180,7 @@ bool AlStruct::LoadOGG(const char filename[], vector < char > &buffer, ALenum &f
 
     if (f == NULL)
     {
-        App::console << "fopen() failed for: " << filename << ": " << PHYSFS_getLastError() << std::endl;
+        LOG_S(ERROR) << "fopen() failed for: " << filename << ": " << PHYSFS_getLastError();
         return false;
     }
 
@@ -189,7 +189,7 @@ bool AlStruct::LoadOGG(const char filename[], vector < char > &buffer, ALenum &f
 
     if (ov_open_callbacks((void*)f, &oggFile, NULL, 0, callbacks) )
     {
-        App::console << "ov_open() failed for: " << filename << std::endl;
+        LOG_S(ERROR) << "ov_open() failed for: " << filename;
         return false;
     }
 
@@ -218,7 +218,7 @@ bool AlStruct::LoadOGG(const char filename[], vector < char > &buffer, ALenum &f
         if (bytes < 0)
         {
             ov_clear(&oggFile);
-            App::console << "ov_read() failed for: " << filename << std::endl;
+            LOG_S(ERROR) << "ov_read() failed for: " << filename;
             return false;
         }
         // end if
@@ -245,7 +245,7 @@ bool AlStruct::LoadSound(const char filename[])
     vector<char> buffer_data;
     if ( !LoadOGG(filename, buffer_data, format, freq) )
     {
-        App::console << "LoadOGG failed for: " << filename << std::endl;
+        LOG_S(ERROR) << "LoadOGG failed for: " << filename;
         return false;
     }
 
@@ -254,7 +254,7 @@ bool AlStruct::LoadSound(const char filename[])
     if (buffer == 0)
     {
         err = alGetError();
-        App::console << "alGenBuffers() failed: " << alGetString(err) << std::endl;
+        LOG_S(ERROR) << "alGenBuffers() failed: " << alGetString(err);
         return false;
     }
 
@@ -262,7 +262,7 @@ bool AlStruct::LoadSound(const char filename[])
     if (err = alGetError())
     {
         alDeleteBuffers(1, &buffer);
-        App::console << "alBufferData() failed: " << alGetString(err) << std::endl;
+        LOG_S(ERROR) << "alBufferData() failed: " << alGetString(err);
         return false;
     }
 
@@ -283,7 +283,7 @@ ALuint AlStruct::AddSound(const char filename[], const Vec3r &pos, const Vec3r &
     alGenSources(1, &source);
     if (err = alGetError())
     {
-        App::console << "alGenSources() failed: " << alGetString(err) << std::endl;
+        LOG_S(ERROR) << "alGenSources() failed: " << alGetString(err);
         return 0;
     }
     sources.push_back(source);
@@ -291,7 +291,7 @@ ALuint AlStruct::AddSound(const char filename[], const Vec3r &pos, const Vec3r &
     alSourcei(source, AL_BUFFER, buffers[filename]);
     if (err = alGetError())
     {
-        App::console << "alSourcei() failed: " << alGetString(err) << std::endl;
+        LOG_S(ERROR) << "alSourcei() failed: " << alGetString(err);
         return 0;
     }
 
@@ -299,14 +299,14 @@ ALuint AlStruct::AddSound(const char filename[], const Vec3r &pos, const Vec3r &
     alSource3f(source, AL_VELOCITY, vel.x, vel.y, vel.z);
     if (err = alGetError())
     {
-        App::console << "alSourcefv() failed: " << alGetString(err) << std::endl;
+        LOG_S(ERROR) << "alSourcefv() failed: " << alGetString(err);
         return 0;
     }
 
     alSourcef(source, AL_GAIN, gain);
     if (err = alGetError())
     {
-        App::console << "alSourcef() failed: " << alGetString(err) << std::endl;
+        LOG_S(ERROR) << "alSourcef() failed: " << alGetString(err);
         return 0;
     }
 

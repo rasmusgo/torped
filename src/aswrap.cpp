@@ -5,19 +5,18 @@
 #endif
 
 #include "aswrap.h"
-#include "console.h"
+#include "logging.h"
 
 void AsMessageCallback(const asSMessageInfo *msg, void *param)
 {
-    const char *type = "ERR ";
+    loguru::Verbosity verbosity = loguru::NamedVerbosity::Verbosity_ERROR;
     if( msg->type == asMSGTYPE_WARNING )
-        type = "WARN";
+        verbosity = loguru::NamedVerbosity::Verbosity_WARNING;
     else if( msg->type == asMSGTYPE_INFORMATION )
-        type = "INFO";
+        verbosity = loguru::NamedVerbosity::Verbosity_INFO;
 
     //printf("%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
-    App::console << msg->section << " (" << msg->row << ", " << msg->col << ") : " << type << " : " << msg->message << std::endl;
-    App::FlushConsole();
+    loguru::StreamLogger(verbosity, msg->section, msg->row) << msg->message;
 }
 
 void AsWrapConsoleCmds(asIScriptEngine *as)

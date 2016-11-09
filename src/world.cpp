@@ -6,25 +6,14 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "physfsrwops.h"
-#include "world.h"
-#include "physstruct.h"
-#include "physics.h"
-#include "console.h"
-#include "parser.h"
 //#include "cgstruct.h"
+#include "logging.h"
+#include "parser.h"
+#include "physfsrwops.h"
+#include "physics.h"
+#include "physstruct.h"
 #include "player.h"
-
-#define LOG_IF_ERROR(msg) \
-{ \
-    GLenum err; \
-    while ( (err = glGetError()) != GL_NO_ERROR ) \
-    { \
-        App::console << "GL ERROR " << msg << ": " \
-            << gluErrorString(err) << std::endl; \
-        App::FlushConsole(); \
-    } \
-}
+#include "world.h"
 
 using namespace std;
 
@@ -51,7 +40,7 @@ World::World(const char filename[])
 
     if ( 0==parser.Load(filename) )
     {
-        App::console << "World::World(): failed to open world \"" << filename << "\"" << std::endl;
+        LOG_S(ERROR) << "World::World(): failed to open world \"" << filename << "\"";
         return;
     }
 
@@ -132,7 +121,7 @@ World::World(const char filename[])
             PhyInstance *inst = PhyInstance::InsertPhysXML(typeName.name.c_str());
             if (inst == NULL)
             {
-                App::console << "World::World(): failed to load \"" << typeName.name << "\"" << std::endl;
+                LOG_S(ERROR) << "World::World(): failed to load \"" << typeName.name << "\"";
                 continue;
             }
 
@@ -156,9 +145,9 @@ World::World(const char filename[])
                             Quat4r( deg.x*(M_PI/180.0), Vec3r(1,0,0) ) *
                             Quat4r( deg.y*(M_PI/180.0), Vec3r(0,1,0) ) *
                             Quat4r( deg.z*(M_PI/180.0), Vec3r(0,0,1) );
-                        App::console << "Rotation: " << rot;
+                        VLOG_S(1) << "Rotation: " << rot;
                         rot.Normalize();
-                        App::console << " normalized: " << rot << std::endl;
+                        VLOG_S(1)  << "Normalized: " << rot;
                         inst->phys->Rotate(rot);
                     }
                 }
@@ -494,7 +483,7 @@ void World::BuildHeightMap(const char *filename)
 
     if (rw == NULL)
     {
-        App::console << "IMG_Load failed: " << PHYSFS_getLastError() << std::endl;
+        LOG_S(ERROR) << "IMG_Load failed: " << PHYSFS_getLastError();
         return;
     }
 
@@ -502,7 +491,7 @@ void World::BuildHeightMap(const char *filename)
 
     if (!image)
     {
-        App::console << "IMG_Load failed: " << SDL_GetError() << std::endl;
+        LOG_S(ERROR) << "IMG_Load failed: " << SDL_GetError();
         return;
     }
 

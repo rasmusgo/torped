@@ -125,8 +125,6 @@ namespace App
 
         pythonIcon.Disable();
 
-        console.pump();
-
         glColor3f(0.8, 0.8, 0.8);
         glRasterPos2f( 18, 5 );
         DrawString( GLUT_BITMAP_9_BY_15, ( commands.back()).c_str() );
@@ -137,7 +135,7 @@ namespace App
         for ( int i=console.lines.size()-1,y=20; y < yRes && i >= 0; y += height, --i )
         {
             glRasterPos2f( 0, y );
-            DrawString( GLUT_BITMAP_9_BY_15, console.lines[i].c_str() );
+            DrawString( GLUT_BITMAP_9_BY_15, console.lines[i].message );
         }
         //DrawString(GLUT_BITMAP_HELVETICA_18, "Torped");
         //glRasterPos2f( -0.5, 0.5);
@@ -213,8 +211,7 @@ namespace App
 
                 if ( event.key.keysym.sym == SDLK_RETURN )
                 {
-                    App::console << "> " << commands.back() << std::endl;
-                    App::FlushConsole();
+                    LOG_S(INFO) << "> " << commands.back();
                     redraw = true;
 
                     PyObject *m, *d, *v;
@@ -235,7 +232,9 @@ namespace App
                     }
 
                     if (v != Py_None)
-                        App::console << PyString_AsString(PyObject_Str(v)) << std::endl;
+                    {
+                        LOG_S(INFO) << PyString_AsString(PyObject_Str(v));
+                    }
 
                     Py_DECREF(v);
 
@@ -303,7 +302,7 @@ namespace App
             }
         }
 
-        if ( App::console.peek() != EOF )
+        if ( !App::console.empty() )
         {
             redraw = true;
         }

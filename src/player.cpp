@@ -2,10 +2,10 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "player.h"
 #include "alstruct.h"
-#include "console.h"
+#include "logging.h"
 #include "physstruct.h"
+#include "player.h"
 
 namespace App
 {
@@ -123,8 +123,7 @@ void Player::Do(const char cmd[])
 
         if (phyInstances.empty())
         {
-            if (App::developermode)
-                App::console << "ERROR: No physics instance" << std::endl;
+            LOG_S(ERROR) << "No physics instance";
 
             SDL_UnlockMutex(phyInstances_lock);
             return;
@@ -157,8 +156,7 @@ void Player::Do(const char cmd[])
 
         if (phyInstances.empty())
         {
-            if (App::developermode)
-                App::console << "ERROR: No physics instance" << std::endl;
+            LOG_S(ERROR) << "No physics instance";
 
             SDL_UnlockMutex(phyInstances_lock);
             return;

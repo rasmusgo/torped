@@ -6,7 +6,7 @@
 #endif
 
 #include "input.h"
-#include "console.h"
+#include "logging.h"
 
 namespace App
 {
@@ -19,21 +19,18 @@ namespace App
     void InitInput()
     {
         num_mice = ManyMouse_Init();
-        App::console << "Found " << num_mice << (num_mice == 1? " mouse:": " mice:") << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Found " << num_mice << (num_mice == 1? " mouse:": " mice:");
 
         mouse_sens.clear();
         for (int i = 0; i < num_mice; i++)
         {
             mouse_sens.push_back(1);
-        	App::console << " Mouse #" << i << ":" << std::endl;
-        	App::console << "  Name: " << ManyMouse_DeviceName(i) << std::endl;
-        	FlushConsole();
+        	LOG_S(INFO) << " Mouse #" << i << ":";
+        	LOG_S(INFO) << "  Name: " << ManyMouse_DeviceName(i);
         }
 
         SDL_JoystickEventState(SDL_ENABLE);
-        App::console << "Found " << SDL_NumJoysticks() << " joystick" << (SDL_NumJoysticks() == 1? ":": "s:") << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Found " << SDL_NumJoysticks() << " joystick" << (SDL_NumJoysticks() == 1? ":": "s:");
 
         joysticks.clear();
         for( int i=0; i < SDL_NumJoysticks(); i++ )
@@ -41,18 +38,16 @@ namespace App
         	joysticks.push_back(SDL_JoystickOpen(i));
         	if (joysticks.back() != NULL)
         	{
-                App::console << " Joystick #" << i << ":" << std::endl;
-                App::console << "  Name: " << SDL_JoystickName(i) << std::endl;
-                App::console << "  Number of Axes: " << SDL_JoystickNumAxes(joysticks.back()) << std::endl;
-                App::console << "  Number of Buttons: " << SDL_JoystickNumButtons(joysticks.back()) << std::endl;
-                App::console << "  Number of Balls: " << SDL_JoystickNumBalls(joysticks.back()) << std::endl;
-                App::console << "  Number of Hats: " << SDL_JoystickNumHats(joysticks.back()) << std::endl;
-                App::FlushConsole();
+                LOG_S(INFO) << " Joystick #" << i << ":";
+                LOG_S(INFO) << "  Name: " << SDL_JoystickName(i);
+                LOG_S(INFO) << "  Number of Axes: " << SDL_JoystickNumAxes(joysticks.back());
+                LOG_S(INFO) << "  Number of Buttons: " << SDL_JoystickNumButtons(joysticks.back());
+                LOG_S(INFO) << "  Number of Balls: " << SDL_JoystickNumBalls(joysticks.back());
+                LOG_S(INFO) << "  Number of Hats: " << SDL_JoystickNumHats(joysticks.back());
         	}
         	else
         	{
-        		App::console << " Failed to open joystick #" << i << std::endl;
-        		FlushConsole();
+        		LOG_S(ERROR) << " Failed to open joystick #" << i;
         	}
         }
     }
@@ -255,8 +250,10 @@ namespace App
         {
             actions_table[event]->Run(value);
         }
-        else if (!silent || developermode > 1)
-            App::console << event << " is not bound" << std::endl;
+        else if (!silent)
+        {
+            LOG_S(WARNING) << event << " is not bound";
+        }
     }
 
     void Bind(std::string event, Action *action)

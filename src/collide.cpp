@@ -5,11 +5,11 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "physics.h"
+#include "collide.h"
 #include "comparelist.h"
 //#include "gameapp.h"
-#include "console.h"
-#include "collide.h"
+#include "logging.h"
+#include "physics.h"
 //#include "world.h"
 
 //#define min(a,b) ((a)<?(b))

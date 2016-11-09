@@ -14,81 +14,42 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
+#include "logging.h"
+
 namespace App
 {
     //extern std::stringstream console;
     extern int developermode;
     void FlushConsole();
 
-    class Console: public std::stringstream
+    class Console
     {
     public:
-    /*
-        Console()
+        static void LogHandler(void* user_data, const loguru::Message& message)
         {
-            std::ostream::rdbuf(std::cout.rdbuf());
-        }
-    */
-        template<class T> friend Console& operator << (Console &con, const T &a)
-        {
-            std::cout << a;
-
-            std::ostream buffer(con.rdbuf());
-            buffer << a;
-
-            return con;
+            CHECK_NOTNULL_F(user_data);
+            Console* console = reinterpret_cast<Console*>(user_data);
+            console->lines.push_back(message);
+            while (console->lines.size() > 64)
+            {
+                console->lines.pop_front();
+            }
         }
 
-        template<typename _CharT, typename _Traits>
-        friend Console&
-        //basic_ostream<_CharT, _Traits>::
-        operator<<(Console &con, std::basic_ios<_CharT, _Traits>& (*__pf)(std::basic_ios<_CharT, _Traits>&))
-        {
-            con << "FITTA!!";
-            __pf(std::cout);
-            __pf(con);
-            return con;
-            //__pf(*this);
-            //return *this;
-        }
-
-    /*
-        template<class T> Console& put(T __c)
-        {
-            std::cout.put(__c);
-            std::ostream buffer(rdbuf());
-            buffer.put(__c);
-            return *this;
-        }
-    */
-        void Clear()
+        void clear()
         {
             lines.clear();
         }
 
-        void pump()
+        bool empty()
         {
-            std::istream buffer(rdbuf());
-            std::string line;
-            while ( std::getline(buffer, line,'\n') )
-            {
-                lines.push_back(line);
-                while (lines.size() > 64)
-                    lines.pop_front();
-            }
-            //buffer.clear();
+            return lines.empty();
         }
 
     private:
-        std::deque<std::string> lines;
+        std::deque<loguru::Message> lines;
         friend void DrawMenu();
     };
 
     extern Console console;
-}
-
-#define LOG(msg) \
-{ \
-    App::console << msg << std::endl; \
-    App::FlushConsole(); \
 }

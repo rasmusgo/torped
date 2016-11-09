@@ -6,42 +6,8 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
+#include "logging.h"
 #include "texture.h"
-#include "console.h"
-
-const char* mygluErrorString(GLenum err)
-{
-    switch (err)
-    {
-    case GL_NO_ERROR:
-        return "GL_NO_ERROR: No error has been recorded.";
-    case GL_INVALID_ENUM:
-        return "GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument. The offending command is ignored, and has no other side effect than to set the error flag.";
-    case GL_INVALID_VALUE:
-        return "A numeric argument is out of range. The offending command is ignored, and has no other side effect than to set the error flag.";
-    case GL_INVALID_OPERATION:
-        return "GL_INVALID_OPERATION: The specified operation is not allowed in the current state. The offending command is ignored, and has no other side effect than to set the error flag.";
-    case GL_STACK_OVERFLOW:
-        return "GL_STACK_OVERFLOW:This command would cause a stack overflow. The offending command is ignored, and has no other side effect than to set the error flag.";
-    case GL_STACK_UNDERFLOW:
-        return "GL_STACK_UNDERFLOW:This command would cause a stack underflow. The offending command is ignored, and has no other side effect than to set the error flag.";
-    case GL_OUT_OF_MEMORY:
-        return "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded.";
-    }
-    return "UNKNOWN ERROR";
-}
-#define gluErrorString mygluErrorString
-
-#define LOG_IF_ERROR(msg) \
-{ \
-    GLenum err; \
-    while ( (err = glGetError()) != GL_NO_ERROR ) \
-    { \
-        App::console << "GL ERROR " << msg << ": " \
-            << gluErrorString(err) << std::endl; \
-        App::FlushConsole(); \
-    } \
-}
 
 static SDL_PixelFormat RGBA8Format =
 {
@@ -132,17 +98,17 @@ void Texture::New(const char p_filename[])
 
     if (!image)
     {
-        App::console << "IMG_Load failed: " << SDL_GetError() << std::endl;
+        LOG_S(ERROR) << "IMG_Load failed: " << SDL_GetError();
         return;
     }
-    App::console << "Loading \"" << p_filename << "\": "
+    LOG_S(INFO) << "Loading \"" << p_filename << "\": "
         << image->w << "x" << image->h << " "
-        << int(image->format->BitsPerPixel) << " bpp" << std::endl;
+        << int(image->format->BitsPerPixel) << " bpp";
 
     if ( image->w < 1 || image->w & (image->w - 1) ||
         image->h < 1 || image->h & (image->h - 1) )
     {
-        App::console << "Couldn't load texture: Image size is not valid, must be power of 2" << std::endl;
+        LOG_S(ERROR) << "Couldn't load texture: Image size is not valid, must be power of 2";
         SDL_FreeSurface(image);
         image = NULL;
         return;
@@ -172,14 +138,14 @@ void Texture::New(const int width, const int height)
     id = 0;
     image = NULL;
 
-    App::console << "Creating a new texture: "
+    LOG_S(INFO) << "Creating a new texture: "
         << width << "x" << height << " "
-        << 32 << " bpp" << std::endl;
+        << 32 << " bpp";
 
     if ( width < 1 || width & (width - 1) ||
         height < 1 || height & (height - 1) )
     {
-        App::console << "Couldn't create texture: Image size is not valid, must be power of 2" << std::endl;
+        LOG_S(ERROR) << "Couldn't create texture: Image size is not valid, must be power of 2";
         return;
     }
 
@@ -189,7 +155,7 @@ void Texture::New(const int width, const int height)
 
     if (!image)
     {
-        App::console << "Couldn't create texture: " << SDL_GetError() << std::endl;
+        LOG_S(ERROR) << "Couldn't create texture: " << SDL_GetError();
         return;
     }
 
@@ -201,19 +167,19 @@ void Texture::Update()
 {
     if (unique == false)
     {
-        App::console << "WARNING: Texture::Update() was called on a non-unique texture";
+        LOG_S(WARNING) << "Texture::Update() was called on a non-unique texture";
         return;
     }
 
     if (image == NULL)
     {
-        App::console << "WARNING: Texture::Update() image == NULL";
+        LOG_S(WARNING) << "Texture::Update() image == NULL";
         return;
     }
 
     if (id == 0)
     {
-        App::console << "WARNING: Texture::Update() id == 0";
+        LOG_S(WARNING) << "Texture::Update() id == 0";
         return;
     }
 
@@ -249,12 +215,12 @@ void Texture::Aquire(const char p_filename[])
 
     if (textures.find(filename) == textures.end())
     {
-    	App::console << "Texture::Aquire failed for \"" << filename << "\"." << std::endl;
+    	LOG_S(ERROR) << "Texture::Aquire failed for \"" << filename << "\".";
     	return;
     }
     //m_texture = textures[filename].id;
     textures[filename].ref++;
-    //App::console << "Texture::Aquire succeded" << std::endl;
+    VLOG_S(3) << "Texture::Aquire succeded";
 }
 
 void Texture::Release()
@@ -292,12 +258,12 @@ void Texture::LoadTexture(const char *p_filename)
     SDL_Surface *image = LoadImage(p_filename);
     if (!image)
     {
-        App::console << "IMG_Load failed: " << SDL_GetError() << std::endl;
+        LOG_S(ERROR) << "IMG_Load failed: " << SDL_GetError();
         return;
     }
-    App::console << "Loading \"" << p_filename << "\": "
+    LOG_S(INFO) << "Loading \"" << p_filename << "\": "
         << image->w << "x" << image->h << " "
-        << int(image->format->BitsPerPixel) << " bpp" << std::endl;
+        << int(image->format->BitsPerPixel) << " bpp";
 
     if ( image->w < 1 || image->w & (image->w - 1) ||
         image->h < 1 || image->h & (image->h - 1) )
@@ -335,7 +301,7 @@ void Texture::LoadTexture(const char *p_filename)
         break;
     }
     default:
-        App::console << image->format->BitsPerPixel << " bpp unhandled" << std::endl;
+        LOG_S(ERROR) << image->format->BitsPerPixel << " bpp unhandled";
     }
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -350,7 +316,7 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
 {
     if (!image)
     {
-        App::console << "LoadCubeMap failed: image == NULL" << std::endl;
+        LOG_S(ERROR) << "LoadCubeMap failed: image == NULL";
         return;
     }
 
@@ -360,7 +326,7 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
          width < 1 || width & (width - 1) ||
          height != width )
     {
-        App::console << "Couldn't load texture: Image size is not valid, must be power of 2" << std::endl;
+        LOG_S(ERROR) << "Couldn't load texture: Image size is not valid, must be power of 2";
         return;
     }
 
@@ -378,8 +344,7 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
                                              RGBA8Format.Bmask, RGBA8Format.Amask );
     if (tmp == NULL)
     {
-        App::console << "SDL_CreateRGBSurface failed: " << SDL_GetError() << std::endl;
-        App::FlushConsole();
+        LOG_S(ERROR) << "SDL_CreateRGBSurface failed: " << SDL_GetError();
         return;
     }
 
@@ -469,7 +434,7 @@ void Texture::ReloadAll()
 
     for (it = textures.begin(); it != textures.end(); ++it)
     {
-        App::console << "name: \"" << it->first.c_str() << "\" id: " << it->second.id << std::endl;
+        LOG_S(INFO) << "name: \"" << it->first.c_str() << "\" id: " << it->second.id;
     }
 }
 

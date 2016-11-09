@@ -6,7 +6,7 @@
 #endif
 
 #include "physics.h"
-//#include "console.h"
+//#include "logging.h"
 
 
 Physics::Physics(): gravity(0,0,0), time(0.001), break_limit(0.05), insane(0)

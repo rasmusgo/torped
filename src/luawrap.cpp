@@ -11,17 +11,17 @@ extern "C"
 
 #include "gameapp.h"
 #include "input.h"
-#include "player.h"
-#include "physstruct.h"
-#include "console.h"
+#include "logging.h"
 #include "luawrap.h"
 #include "physfsstruct.h"
+#include "physstruct.h"
+#include "player.h"
 
 void LuaReportErrors(lua_State *L, int status)
 {
     if ( status != 0 )
     {
-        App::console << "Lua error: " << lua_tostring(L, -1) << std::endl;
+        LOG_S(ERROR) << "Lua error: " << lua_tostring(L, -1);
         lua_pop(L, 1); // remove error message
     }
 }
@@ -32,7 +32,7 @@ void LuaRunFile(lua_State *L, const char *filename)
     PhysFSLoadFile(filename, buffer);
     if (buffer == NULL)
     {
-        App::console << "Failed to open \"" << filename << "\".";
+        LOG_S(ERROR) << "Failed to open \"" << filename << "\".";
         return;
     }
 
@@ -155,10 +155,14 @@ int LuaCmdPlayer(lua_State* L)
 
 int LuaCmdPrint(lua_State* L)
 {
+    std::stringstream ss;
     int n = lua_gettop(L); // number of arguments
     for (int i=0; i<n; ++i)
-        App::console << lua_tostring(L, -n + i);
-    App::console << std::endl;
+    {
+        ss << lua_tostring(L, -n + i);
+    }
+    std::string s = ss.str();
+    LOG_S(INFO) << s.c_str();
     return 0; // number of return values
 }
 

@@ -8,8 +8,8 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
+#include "logging.h"
 #include "physfsstruct.h"
-#include "console.h"
 
 using namespace std;
 
@@ -34,11 +34,7 @@ unsigned int PhysFSLoadFile(const char *file, char *&buffer)
     if (buffer == NULL)
     {
         PHYSFS_close(f);
-        if (App::developermode)
-        {
-            App::console << "PhysFSLoadFile failed to create a buffer of " << len+1 << " bytes" << std::endl;
-            App::FlushConsole();
-        }
+        LOG_S(ERROR) << "PhysFSLoadFile failed to create a buffer of " << len+1 << " bytes";
         return 0;
     }
 

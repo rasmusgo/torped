@@ -4,11 +4,11 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "physstruct.h"
 #include "alstruct.h"
-#include "texture.h"
 #include "gameapp.h"
-#include "console.h"
+#include "logging.h"
+#include "physstruct.h"
+#include "texture.h"
 
 using namespace std;
 
@@ -18,8 +18,9 @@ vector<PhyInstance> phyInstances;
 
 void PrintPhys(PhyInstance *inst, ostream *ostr = NULL)
 {
+    stringstream buffer;
     if (ostr == NULL)
-        ostr = &App::console;
+        ostr = &buffer;
     /*
     App::console << inst->phys->points_count << " points" << std::endl;
     {
@@ -79,6 +80,10 @@ void PrintPhys(PhyInstance *inst, ostream *ostr = NULL)
             *ostr << " k " << it->k << " d " << it->d << " s " << it->s << std::endl;
             ++it;
         }
+    }
+    if (ostr == &buffer)
+    {
+        LOG_S(INFO) << "Physics:\n" << buffer.str();
     }
 }
 
@@ -183,11 +188,7 @@ PhyInstance* PhyInstance::InsertPhysXML(const char *filename)
     PhyInstance inst = PhyInstance::LoadPhysXML(filename);
     if (inst.phys == NULL)
     {
-        if ( App::developermode )
-        {
-            App::console << "LoadPhysXML failed" << std::endl;
-            App::FlushConsole();
-        }
+        LOG_S(ERROR) << "LoadPhysXML failed";
         return NULL;
     }
     // keep track of the physics instance
@@ -199,11 +200,7 @@ PhyInstance* PhyInstance::InsertPhysXML(const char *filename)
 
     //delete [] filename;
     //filename = NULL;
-    if ( App::developermode )
-    {
-        App::console << "End of InsertPhysXML" << std::endl;
-        App::FlushConsole();
-    }
+    VLOG_S(3) << "End of InsertPhysXML";
 
     return &phyInstances.back();
 }
@@ -244,11 +241,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
         ret.push_back(phys->time);
     else if(!(translator >> typeName.name))
     {
-        if ( App::developermode )
-        {
-            App::console << "warning: invalid nameless poll" << endl;
-            App::FlushConsole();
-        }
+        LOG_S(WARNING) << "warning: invalid nameless poll";
         return ret;
     }
 
@@ -256,11 +249,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
     {
         if ( namesIndex.find(typeName) == namesIndex.end() )
         {
-            if ( App::developermode )
-            {
-                App::console << "warning: could not find node \"" << typeName.name << "\"" << endl;
-                App::FlushConsole();
-            }
+            LOG_S(WARNING) << "warning: could not find node \"" << typeName.name << "\"";
             return ret;
         }
         string what;
@@ -271,10 +260,9 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
             ret.push_back(phys->nodes[namesIndex[typeName]].pos.y);
             ret.push_back(phys->nodes[namesIndex[typeName]].pos.z);
         }
-        else if ( App::developermode )
+        else
         {
-            App::console << "warning: nodes has no matching keyvalue for \"" << what << "\"" << endl;
-            App::FlushConsole();
+            LOG_S(WARNING) << "nodes has no matching keyvalue for \"" << what << "\"";
             return ret;
         }
     }
@@ -282,11 +270,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
     {
         if ( namesIndex.find(typeName) == namesIndex.end() )
         {
-            if ( App::developermode )
-            {
-                App::console << "warning: could not find point \"" << typeName.name << "\"" << endl;
-                App::FlushConsole();
-            }
+            LOG_S(WARNING) << "could not find point \"" << typeName.name << "\"";
             return ret;
         }
         string what;
@@ -304,11 +288,12 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
             ret.push_back(phys->points[namesIndex[typeName]].vel.z);
         }
         else if (what=="mass")
-            ret.push_back(1.0 / phys->points[namesIndex[typeName]].inv_mass);
-        else if ( App::developermode )
         {
-            App::console << "warning: points has no matching keyvalue for \"" << what << "\"" << endl;
-            App::FlushConsole();
+            ret.push_back(1.0 / phys->points[namesIndex[typeName]].inv_mass);
+        }
+        else
+        {
+            LOG_S(WARNING) << "points has no matching keyvalue for \"" << what << "\"";
             return ret;
         }
     }
@@ -316,11 +301,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
     {
         if ( namesIndex.find(typeName) == namesIndex.end() )
         {
-            if ( App::developermode )
-            {
-                App::console << "warning: could not find spring \"" << typeName.name << "\"" << endl;
-                App::FlushConsole();
-            }
+            LOG_S(WARNING) << "could not find spring \"" << typeName.name << "\"";
             return ret;
         }
         string what;
@@ -335,10 +316,9 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
             ret.push_back(phys->springs[namesIndex[typeName]].d);
         else if (what=="s")
             ret.push_back(phys->springs[namesIndex[typeName]].s);
-        else if ( App::developermode )
+        else
         {
-            App::console << "warning: springs has no matching keyvalue for \"" << what << "\"" << endl;
-            App::FlushConsole();
+            LOG_S(WARNING) << "springs has no matching keyvalue for \"" << what << "\"";
             return ret;
         }
     }
@@ -346,11 +326,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
     {
         if ( namesIndex.find(typeName) == namesIndex.end() )
         {
-            if ( App::developermode )
-            {
-                App::console << "warning: could not find joint \"" << typeName.name << "\"" << endl;
-                App::FlushConsole();
-            }
+            LOG_S(WARNING) << "could not find joint \"" << typeName.name << "\"";
             return ret;
         }
         string what;
@@ -361,10 +337,9 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
             ret.push_back(phys->joints[namesIndex[typeName]].d);
         else if (what=="s")
             ret.push_back(phys->joints[namesIndex[typeName]].s);
-        else if ( App::developermode )
+        else
         {
-            App::console << "warning: joints has no matching keyvalue for \"" << what << "\"" << endl;
-            App::FlushConsole();
+            LOG_S(WARNING) << "joints has no matching keyvalue for \"" << what << "\"";
             return ret;
         }
     }
@@ -372,11 +347,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
     {
         if ( namesIndex.find(typeName) == namesIndex.end() )
         {
-            if ( App::developermode )
-            {
-                App::console << "warning: could not find rigid \"" << typeName.name << "\"" << endl;
-                App::FlushConsole();
-            }
+            LOG_S(WARNING) << "warning: could not find rigid \"" << typeName.name << "\"" << endl;
             return ret;
         }
         string what;
@@ -415,10 +386,9 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
             ret.push_back(phys->rigids[namesIndex[typeName]].spin.y);
             ret.push_back(phys->rigids[namesIndex[typeName]].spin.z);
         }
-        else if ( App::developermode )
+        else
         {
-            App::console << "warning: rigids has no matching keyvalue for \"" << what << "\"" << endl;
-            App::FlushConsole();
+            LOG_S(WARNING) << "rigids has no matching keyvalue for \"" << what << "\"";
             return ret;
         }
     }
@@ -441,8 +411,7 @@ PhyPoint* PhyInstance::FindPoint(string name)
     if (it != namesIndex.end())
         return phys->points + phys->points_count + it->second;
 
-    App::console << "Warning: could not find point/node \"" << name << "\"" << std::endl;
-    App::FlushConsole();
+    LOG_S(WARNING) << "could not find point/node \"" << name << "\"";
     return NULL;
 }
 
@@ -462,8 +431,7 @@ int PhyInstance::FindPointIndex(string name)
     if (it != namesIndex.end())
         return typeCount["point"] + it->second;
 
-    App::console << "Warning: could not find point/node \"" << name << "\"" << std::endl;
-    App::FlushConsole();
+    LOG_S(WARNING) << "could not find point/node \"" << name << "\"";
     return 0;
 }
 
@@ -480,8 +448,7 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
     TiXmlDocument doc(filename);
 	if ( !doc.LoadFile() )
 	{
-        App::console << "Error: " << filename << ":" << doc.ErrorRow() << "," << doc.ErrorCol() << ": " << doc.ErrorDesc() << std::endl;
-        App::FlushConsole();
+        LOG_S(ERROR) << filename << ":" << doc.ErrorRow() << "," << doc.ErrorCol() << ": " << doc.ErrorDesc();
         return inst;
 	}
 
@@ -493,8 +460,7 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
     // should always have a valid root but handle gracefully if it does
     if (!pElem)
     {
-        App::console << "Error: " << filename << ": Missing valid root" << std::endl;
-        App::FlushConsole();
+        LOG_S(WARNING) << filename << ": Missing valid root";
         return inst;
     }
 
@@ -722,8 +688,7 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
 
     if (inst.memPool == NULL)
     {
-        App::console << "InsertPhys: Unable to allocate memory: " << size << " bytes" << std::endl;
-        App::FlushConsole();
+        LOG_S(ERROR) << "Unable to allocate memory: " << size << " bytes";
         return inst;
     }
 
@@ -775,12 +740,7 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
 
     //PrintPhys(&inst, &ofstream("loadphysxml.txt"));
 
-    if ( App::developermode )
-    {
-        App::console << "End of LoadPhysXML" << std::endl;
-        App::FlushConsole();
-    }
-
+    VLOG_S(3) << "End of LoadPhysXML";
     return inst; // success
 }
 
@@ -1295,12 +1255,10 @@ void PhyInstance::RecalculateNormals()
 
 void PhyInstance::CrashHandling()
 {
-    //LOG( "CrashHandling start");
-
     if (phys->insane)
     {
         // Load
-        LOG("CrashHandling load: insane: " << phys->insane << "...");
+        LOG_S(WARNING) << "CrashHandling load: insane: " << phys->insane << "...";
         char * profiler_buffer = new char[sizeof(Profiler)];
         memcpy(profiler_buffer, &phys->profiler, sizeof(Profiler));
         phys->insane = memPool_size;

@@ -2,11 +2,11 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
+#include "logging.h"
+#include "parser.h"
+#include "physics.h"
 #include "physstruct.h"
 #include "pose.h"
-#include "physics.h"
-#include "parser.h"
-#include "console.h"
 
 using namespace std;
 

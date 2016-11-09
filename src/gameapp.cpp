@@ -21,21 +21,22 @@ extern "C"
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "physfsstruct.h"
-#include "gameapp.h"
-#include "console.h"
-#include "input.h"
-#include "comparelist.h"
-#include "collide.h"
-#include "world.h"
-#include "pythonstruct.h"
 #include "alstruct.h"
-#include "player.h"
-#include "shader.h"
-#include "luawrap.h"
 #include "aswrap.h"
+#include "collide.h"
+#include "comparelist.h"
+#include "console.h"
+#include "gameapp.h"
+#include "input.h"
+#include "logging.h"
+#include "luawrap.h"
 #include "menu.h"
+#include "physfsstruct.h"
+#include "player.h"
+#include "pythonstruct.h"
 #include "scene.h"
+#include "shader.h"
+#include "world.h"
 
 #ifdef REAL_DOUBLE
 #define glVertex3rv glVertex3dv
@@ -49,17 +50,6 @@ extern "C"
 void FlipImageY(SDL_Surface *image);
 //PFNGLACTIVETEXTUREARBPROC glActiveTextureARB = NULL;
 //PFNGLMULTITEXCOORD2FPROC glMultiTexCoord2fARB = NULL;
-
-#define LOG_IF_ERROR(msg) \
-{ \
-    GLenum err; \
-    while ( (err = glGetError()) != GL_NO_ERROR ) \
-    { \
-        App::console << "GL ERROR " << msg << ": " \
-            << gluErrorString(err) << std::endl; \
-        App::FlushConsole(); \
-    } \
-}
 
 struct aPair
 {
@@ -131,8 +121,7 @@ namespace App
 
         if ( !PHYSFS_addToSearchPath(data_path.str().c_str(), 0) )
         {
-            App::console << "PHYSFS_addToSearchPath(\"" << data_path.str() << "\") Failed: " << PHYSFS_getLastError() << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "PHYSFS_addToSearchPath(\"" << data_path.str() << "\") Failed: " << PHYSFS_getLastError();
         }
         /*
         if ( !PHYSFS_addToSearchPath(data_archive.str().c_str(), 1) )
@@ -143,17 +132,14 @@ namespace App
         */
         if ( !PHYSFS_setWriteDir(data_path.str().c_str()) )
         {
-            App::console << "PHYSFS_setWriteDir(\"" << data_path.str() << "\") Failed: " << PHYSFS_getLastError() << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "PHYSFS_setWriteDir(\"" << data_path.str() << "\") Failed: " << PHYSFS_getLastError();
         }
 
-        App::console << "Initializing GLUT..." << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Initializing GLUT...";
 
         glutInit(&argc, argv);
 
-        App::console << "Initializing SDL..." << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Initializing SDL...";
 
         putenv("SDL_VIDEO_CENTERED=1");
 #if 0
@@ -166,16 +152,16 @@ namespace App
 
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_TIMER) != 0)
         {
-            App::console << "Fatal error: SDL_Init failed: " << SDL_GetError() << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "Fatal error: SDL_Init failed: " << SDL_GetError();
             return;
         }
 
-        App::console << "Initializing video..." << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Initializing video...";
 
         if (SDL_GL_LoadLibrary(NULL) != 0)
-            App::console << "Error: SDL_GL_LoadLibrary failed: " << SDL_GetError() << std::endl;
+        {
+            LOG_S(ERROR) << "Error: SDL_GL_LoadLibrary failed: " << SDL_GetError();
+        }
 
         // icon is icon TEXT not icon filename
         SDL_WM_SetCaption("Torped", "Torped");
@@ -194,19 +180,18 @@ namespace App
         screen = SDL_SetVideoMode(xRes, yRes, 0, (fullscreen ? SDL_FULLSCREEN : 0) | SDL_OPENGL);
         if (screen == NULL)
         {
-            App::console << "Fatal error: SDL_SetVideoMode failed: " << SDL_GetError() << std::endl;
+            LOG_S(ERROR) << "Fatal error: SDL_SetVideoMode failed: " << SDL_GetError();
             return;
         }
 
         int value = -1;
         SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &value);
-        App::console << "SDL_GL_DEPTH_SIZE: " << value << std::endl;
-        App::FlushConsole();
+        VLOG_S(1) << "SDL_GL_DEPTH_SIZE: " << value;
 
         GLenum err = glewInit();
         if (GLEW_OK != err)
         {
-            App::console << "Fatal error: glewInit failed: " << glewGetErrorString(err) << std::endl;
+            LOG_S(ERROR) << "Fatal error: glewInit failed: " << glewGetErrorString(err);
             return;
         }
 
@@ -215,18 +200,15 @@ namespace App
         shader.Aquire("fisheye.vert", "");
         LOG_IF_ERROR("end of video init");
 
-        App::console << "Initializing input..." << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Initializing input...";
 
         InitInput();
 
-        App::console << "Initializing audio..." << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Initializing audio...";
 
         if (!al.InitAl())
         {
-            App::console << "Fatal error: InitAl() failed" << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "Fatal error: InitAl() failed";
             fatal_error = true;
             return ;
         }
@@ -235,35 +217,30 @@ namespace App
 
         if (!source)
         {
-            App::console << "AlStruct::AddSound failed" << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "AlStruct::AddSound failed";
             return ;
         }
         //alSourcei(source, AL_LOOPING, AL_TRUE);
         alSourcePlay(source);
 
-        App::console << "Initializing Python..." << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Initializing Python...";
 
         if (!InitPython())
         {
-            App::console << "Fatal error: InitPython() failed" << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "Fatal error: InitPython() failed";
             fatal_error = true;
             return;
         }
         PySys_SetArgv(argc, argv);
 
-        App::console << "Initializing AngelScript..." << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Initializing AngelScript...";
 
         // Create the script engine
         as_engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
 
         if( as_engine == NULL )
         {
-            App::console << "Fatal error: Failed to create AngelScript engine." << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "Fatal error: Failed to create AngelScript engine.";
             fatal_error = true;
             return;
         }
@@ -274,14 +251,12 @@ namespace App
         AsRunFile(as_engine, "autoexec.as");
 
         // Initialize Lua
-        App::console << "Initializing Lua..." << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Initializing Lua...";
 
         lua_console = luaL_newstate();
         if( lua_console == NULL )
         {
-            App::console << "Fatal error: Lua failed to open." << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "Fatal error: Lua failed to open.";
             fatal_error = true;
             return;
         }
@@ -290,32 +265,28 @@ namespace App
         LuaWrapConsoleCmds(lua_console);
         LuaRunFile(lua_console, "autoexec.lua");
 
-        App::console << "Initializing physics..." << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Initializing physics...";
 
         if (!InitPhys())
         {
-            App::console << "Fatal error: InitPhys() failed" << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "Fatal error: InitPhys() failed";
             fatal_error = true;
             return;
         }
 
-        App::console << "Initializing Threads..." << std::endl;
+        LOG_S(INFO) << "Initializing Threads...";
         scene = new Scene();
         scene_thread = SDL_CreateThread(StartScene, (void*)scene);
 
         if ( scene_thread == NULL )
         {
-            App::console << "Fatal error: Failed to create physics thread" << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "Fatal error: Failed to create physics thread";
             fatal_error = true;
             return;
         }
         threads.push_back(scene_thread);
 
-        App::console << "Initialization finished!" << std::endl;
-        App::FlushConsole();
+        LOG_S(ERROR) << "Initialization finished!";
 
         SwitchMode(appMode);
         LOG_IF_ERROR("End of InitAll(...)")
@@ -371,8 +342,7 @@ namespace App
 
         SDL_Quit();
         ManyMouse_Quit();
-        App::console << "shutdown" << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "shutdown";
 
         // this should be last if something needs to be saved
         PHYSFS_deinit();
@@ -1072,15 +1042,13 @@ namespace App
         PhyInstance::DeleteAll();
         delete world;
         world = new World(filename);
-        App::console << "Loaded world from \"" << filename << "\"" << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Loaded world from \"" << filename << "\"";
     }
 
     void SaveWorld(const char filename[])
     {
         world->SaveTo(filename);
-        App::console << "Saved world to \"" << filename << "\"" << std::endl;
-        App::FlushConsole();
+        LOG_S(INFO) << "Saved world to \"" << filename << "\"";
     }
 
     void ClearWorld()
@@ -1102,8 +1070,7 @@ namespace App
         );
         if (temp == NULL)
         {
-            App::console << "Failed to save screenshot: Could not create temporary surface\"" << std::endl;
-            App::FlushConsole();
+            LOG_S(ERROR) << "Failed to save screenshot: Could not create temporary surface\"";
             return;
         }
 
@@ -1112,10 +1079,13 @@ namespace App
 
         // TODO: Save as png instead and use physfs
         if ( 0 == SDL_SaveBMP(temp, filename) )
-            App::console << "Saved screenshot to \"" << filename << "\"" << std::endl;
+        {
+            LOG_S(INFO) << "Saved screenshot to \"" << filename << "\"";
+        }
         else
-            App::console << "Failed to save screenshot: " << SDL_GetError() << std::endl;
-        App::FlushConsole();
+        {
+            LOG_S(ERROR) << "Failed to save screenshot: " << SDL_GetError();
+        }
 
         SDL_FreeSurface(temp);
     }

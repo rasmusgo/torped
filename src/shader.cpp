@@ -4,20 +4,9 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "shader.h"
-#include "console.h"
+#include "logging.h"
 #include "physfsstruct.h"
-
-#define LOG_IF_ERROR(msg) \
-{ \
-    GLenum err; \
-    while ( (err = glGetError()) != GL_NO_ERROR ) \
-    { \
-        App::console <<  __FILE__ << ":" << __LINE__ << " in " << __FUNCTION__ << ": " << msg << ": GL ERROR: " \
-            << gluErrorString(err) << std::endl; \
-        App::FlushConsole(); \
-    } \
-}
+#include "shader.h"
 
 // Definition of Shader static variables
 typeof(Shader::vertex_shaders) Shader::vertex_shaders;
@@ -155,14 +144,14 @@ void Shader::LoadShader(const GLuint type, const std::string &filename)
     if (filename == "" || !(type == GL_VERTEX_SHADER || type == GL_FRAGMENT_SHADER))
         return;
 
-    LOG("Loading shader \"" << filename << "\"...");
+    LOG_S(INFO) << "Loading shader \"" << filename << "\"...";
 
     GLchar *buffer = NULL;
     GLint length = PhysFSLoadFile(filename.c_str(), buffer);
 
     if (length == 0)
     {
-        LOG("Failed to open \"" << filename << "\".");
+        LOG_S(ERROR) << "Failed to open \"" << filename << "\".";
         return;
     }
 
@@ -187,14 +176,15 @@ void Shader::LoadShader(const GLuint type, const std::string &filename)
             buffer = new char[length];
 
             glGetInfoLogARB(id_ref.id, length, NULL, buffer);
-            LOG("Failed to compile shader \"" << filename << "\":\n" << buffer);
+            LOG_S(ERROR) << "Failed to compile shader \"" << filename << "\":\n" << buffer;
 
             delete [] buffer;
             buffer = NULL;
         }
         else
-            LOG("Failed to compile shader \"" << filename << "\": Unknown error.");
-
+        {
+            LOG_S(ERROR) << "Failed to compile shader \"" << filename << "\": Unknown error.";
+        }
         glDeleteShader(id_ref.id);
         return;
     }
@@ -262,13 +252,15 @@ void Shader::LoadProgram(const ProgramName &prog)
             buffer = new char[length];
 
             glGetInfoLogARB(id_ref.id, length, NULL, buffer);
-            LOG("Failed to link program:\n" << buffer);
+            LOG_S(ERROR) << "Failed to link program:\n" << buffer;
 
             delete [] buffer;
             buffer = NULL;
         }
         else
-            LOG("Failed to link program: Unknown error.");
+        {
+            LOG_S(ERROR) << "Failed to link program: Unknown error.";
+        }
 
         glDeleteProgram(id_ref.id);
         return;

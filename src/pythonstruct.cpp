@@ -7,12 +7,12 @@
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "pythonstruct.h"
 #include "gameapp.h"
 #include "input.h"
-#include "player.h"
-#include "console.h"
+#include "logging.h"
 #include "menu.h"
+#include "player.h"
+#include "pythonstruct.h"
 
 PyAction::PyAction(PyObject *a)
 {
@@ -137,7 +137,7 @@ BEGIN_FUNC_NOPARAM("ReloadVideo", EmbReloadVideo, "Recreate window, reload shade
 BEGIN_FUNC_STRING("Screenshot",   EmbScreenshot, "Save a screenshot to a .bmp image", {App::SaveScreenshot(value); Py_RETURN_NONE;}) \
 \
 BEGIN_FUNC_NOPARAM("Clear", EmbClearConsole, "Remove all text in the console", {App::ClearConsole(); Py_RETURN_NONE;}) \
-BEGIN_FUNC_STRING("write",  EmbWrite, "write function to override sys.stdout or sys.stderr", {App::console << value << std::flush; Py_RETURN_NONE;}) \
+BEGIN_FUNC_STRING("write",  EmbWrite, "write function to override sys.stdout or sys.stderr", {LOG_S(INFO) << value; Py_RETURN_NONE;}) \
 BEGIN_FUNC_STRING("unbind", EmbUnBind, "Unbinds an event bound with \"bind\"", {App::UnBind(value); Py_RETURN_NONE;}) \
 BEGIN_FUNC_NOPARAM("quit",  EmbQuit, "Quit the whole game", {App::Quit(); Py_RETURN_NONE;}) \
 \
@@ -185,8 +185,7 @@ BEGIN_FUNC_CUSTOM("Pose", EmbPose, "")
 
     if (phyInstances.empty())
     {
-        if (App::developermode)
-            App::console << "ERROR: No physics instance" << std::endl;
+        LOG_S(ERROR) << "No physics instance";
         Py_RETURN_NONE;
     }
 
@@ -219,8 +218,7 @@ BEGIN_FUNC_CUSTOM("PollPhy", EmbPollPhy, "")
 
     if (phyInstances.empty())
     {
-        if (App::developermode)
-            App::console << "ERROR: No physics instance" << std::endl;
+        LOG_S(ERROR) << "No physics instance";
         Py_RETURN_NONE;
     }
     SDL_LockMutex(phyInstances_lock);
@@ -257,8 +255,7 @@ BEGIN_FUNC_CUSTOM("Motor", EmbMotor, "")
 
     if (phyInstances.empty())
     {
-        if (App::developermode)
-            App::console << "ERROR: No physics instance" << std::endl;
+        LOG_S(ERROR) << "No physics instance";
         Py_RETURN_NONE;
     }
 
