@@ -156,11 +156,13 @@ namespace App
         App::FlushConsole();
 
         putenv("SDL_VIDEO_CENTERED=1");
+#if 0
         if ( getenv("SDL_VIDEODRIVER") == NULL )
             //*
             putenv("SDL_VIDEODRIVER=directx"); /*/
             putenv("SDL_VIDEODRIVER=windib");
             //*/
+#endif
 
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_TIMER) != 0)
         {
