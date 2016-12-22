@@ -27,6 +27,10 @@ namespace App
     public:
         static void LogHandler(void* user_data, const loguru::Message& message)
         {
+            if (message.verbosity > loguru::g_stderr_verbosity)
+            {
+                return;
+            }
             CHECK_NOTNULL_F(user_data);
             Console* console = reinterpret_cast<Console*>(user_data);
             console->lines.push_back(message);

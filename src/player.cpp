@@ -141,7 +141,7 @@ void Player::Do(const char cmd[])
 
         if (phyInstances.empty())
         {
-            LOG_S(ERROR) << "No physics instance";
+            VLOG_S(2) << "No physics instance";
 
             SDL_UnlockMutex(phyInstances_lock);
             return;
@@ -174,7 +174,7 @@ void Player::Do(const char cmd[])
 
         if (phyInstances.empty())
         {
-            LOG_S(ERROR) << "No physics instance";
+            VLOG_S(2) << "No physics instance";
 
             SDL_UnlockMutex(phyInstances_lock);
             return;
