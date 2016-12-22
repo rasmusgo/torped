@@ -103,6 +103,12 @@ public:
     {
 		return x*a.x + y*a.y + z*a.z;
 	};
+
+	Vec3<T> ElemMult(const Vec3<T> &a) const // Element by element multiplication
+	{
+	    return Vec3<T>(x*a.x, y*a.y, z*a.z);
+	};
+
 	friend Vec3<T> operator * (const Vec3<T> &a, const T b)
 	{
 		return Vec3<T>(b*a.x, b*a.y, b*a.z);
@@ -344,6 +350,11 @@ public:
         return a;
     };
 
+    friend Quat4<T> Conjugate(const Quat4<T> &a)
+    {
+        return Quat4<T>(a.w, -a.vec);
+    }
+
 	friend std::ostream& operator << (std::ostream &os, const Quat4<T> &a)
 	{
 		return os << a.w << " " << a.vec;
@@ -373,6 +384,7 @@ public:
 	Mat3x3<T>() { };
 	Mat3x3<T>(const Mat3x3<T> &a) : vec1(a.vec1), vec2(a.vec2), vec3(a.vec3) { };
 	Mat3x3<T>(const T vec1, const T vec2, const T vec3) : vec1(vec1), vec2(vec2), vec3(vec3) { };
+	Mat3x3<T>(T a1, T a2, T a3, T b1, T b2, T b3, T c1, T c2, T c3) : vec1(a1, a2, a3), vec2(b1, b2, b3), vec3(c1, c2, c3) { };
 	// from quaternion
 	explicit Mat3x3<T>(const Quat4<T> &quat)
 	{
@@ -391,18 +403,34 @@ public:
 		vec3 = Vec3<T>(fTx.z-fTw.y, fTy.z+fTw.x, 1.0f-(fTx.x+fTy.y));
 //*/
 	};
+
 	Vec3<T> operator * (const Vec3<T> &vec) const
 	{
 		return Vec3<T>(vec1.x*vec.x + vec2.x*vec.y + vec3.x*vec.z,
 					   vec1.y*vec.x + vec2.y*vec.y + vec3.y*vec.z,
 					   vec1.z*vec.x + vec2.z*vec.y + vec3.z*vec.z);
 	};
-	/*
-	friend Mat3x3<T> operator * (const Mat3x3<T> &p_mat1, const Mat3x3<T> &p_mat2) const
+
+	friend Vec3<T> operator * (const Vec3<T> &vec, const Mat3x3<T> &mat)
 	{
-		return Mat3x3<T>(p_mat.vec1*p_vec, p_mat.vec1*p_vec, p_mat.vec1*p_vec);
+		return Vec3<T>(vec * mat.vec1, vec * mat.vec2, vec * mat.vec3);
+	};
+
+	friend Mat3x3<T> operator * (const Mat3x3<T> &mat1, const Mat3x3<T> &mat2)
+	{
+		return Mat3x3<T>(
+            mat1.vec1 * Vec3<T>(mat2.vec1.x, mat2.vec2.x, mat2.vec3.x),
+            mat1.vec1 * Vec3<T>(mat2.vec1.y, mat2.vec2.y, mat2.vec3.y),
+            mat1.vec1 * Vec3<T>(mat2.vec1.z, mat2.vec2.z, mat2.vec3.z),
+            mat1.vec2 * Vec3<T>(mat2.vec1.x, mat2.vec2.x, mat2.vec3.x),
+            mat1.vec2 * Vec3<T>(mat2.vec1.y, mat2.vec2.y, mat2.vec3.y),
+            mat1.vec2 * Vec3<T>(mat2.vec1.z, mat2.vec2.z, mat2.vec3.z),
+            mat1.vec3 * Vec3<T>(mat2.vec1.x, mat2.vec2.x, mat2.vec3.x),
+            mat1.vec3 * Vec3<T>(mat2.vec1.y, mat2.vec2.y, mat2.vec3.y),
+            mat1.vec3 * Vec3<T>(mat2.vec1.z, mat2.vec2.z, mat2.vec3.z)
+            );
 	}
-	*/
+
 	void operator = (const Mat3x3<T> mat)
 	{
 		vec1 = mat.vec1;

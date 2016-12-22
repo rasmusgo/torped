@@ -29,6 +29,7 @@ namespace App
 
     extern bool discard_mouse_event;
     extern int num_mice;
+    extern int last_active_device;
     extern std::vector<float> mouse_sens;
     extern std::vector<SDL_Joystick *> joysticks;
     extern std::map<std::string, Action*> actions_table;

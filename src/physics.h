@@ -66,8 +66,8 @@ struct PhyRigid
     // force, dimension L NOT L/T^2
     Vec3r force; // delta delta pos
     Quat4r orient;
-    Vec3r spin;
-    Vec3r torque;
+    Vec3r spin; // angular velocity, accumulated torque / inertia, world space
+    Vec3r torque; // world space
 };
 
 struct PhyBalloon

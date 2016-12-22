@@ -834,6 +834,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         pElem2 = TiXmlHandle(pElem).FirstChild("node").Element();
         for (; pElem2; pElem2 = pElem2->NextSiblingElement("node"))
         {
+            point->inv_mass = rigid->inv_mass;
             ss.clear();
             ss << pElem2->Attribute("pos");
             ss >> node->pos;

@@ -13,6 +13,8 @@ extern "C"
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
+#include "actor.h"
+
 void LuaReportErrors(lua_State *L, int status);
 void LuaRunFile(lua_State *L, const char *filename);
 void LuaWrapConsoleCmds(lua_State* L);
@@ -28,6 +30,17 @@ int LuaCmdQuit(lua_State* L);
 int LuaCmdPlayer(lua_State* L);
 int LuaCmdPrint(lua_State* L);
 int LuaCmdExec(lua_State* L);
+
+class LuaActor: public Actor
+{
+public:
+    LuaActor(const char *filename);
+    virtual ~LuaActor();
+    virtual void Update(unsigned int ticks);
+
+private:
+    lua_State *L;
+};
 
 /*
 {"developer",      EmbDeveloper,       METH_VARARGS, "developer mode: non-zero gives verbose output"},

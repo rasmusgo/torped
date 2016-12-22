@@ -16,6 +16,7 @@ extern "C"
 #include "physfsstruct.h"
 #include "physstruct.h"
 #include "player.h"
+#include "scene.h"
 
 void LuaReportErrors(lua_State *L, int status)
 {
@@ -49,9 +50,11 @@ public:
         this->L = L;
         this->s = s;
     }
+
     virtual ~LuaAction()
     {
     }
+
     virtual void Run(float value)
     {
         std::stringstream ss;
@@ -66,6 +69,25 @@ private:
     lua_State *L;
     std::string s;
 };
+
+LuaActor::LuaActor(const char *filename)
+{
+    L = luaL_newstate();
+    LuaRunFile(L, filename);
+}
+
+LuaActor::~LuaActor()
+{
+    if (L)
+        lua_close(L);
+}
+
+void LuaActor::Update(unsigned int ticks)
+{
+    lua_getglobal(L, "update");
+    lua_pushnumber(L, ticks);
+    LuaReportErrors( L, lua_pcall(L, 1, 0, 0) );
+}
 
 void LuaWrapConsoleCmds(lua_State* L)
 {
@@ -107,9 +129,11 @@ int LuaCmdSave(lua_State* L)
 int LuaCmdSpawn(lua_State* L)
 {
     int n = lua_gettop(L); // number of arguments
-    lua_Number ret = int(PhyInstance::InsertPhysXML(lua_tostring(L, -n)) != NULL);
-    lua_pushnumber(L, ret);
-    return 1; // number of return values
+    App::scene->Spawn(lua_tostring(L, -n));
+    return 0;
+    //lua_Number ret = int(PhyInstance::InsertPhysXML(lua_tostring(L, -n)) != NULL);
+    //lua_pushnumber(L, ret);
+    //return 1; // number of return values
 }
 
 int LuaCmdReloadVideo(lua_State* L)

@@ -15,21 +15,39 @@ namespace App
 Player::Player():
 	pos(0,0,0), vel(0,0,0),
 	//zrot(0), zrot2(0), xrot(0), xrot2(0)
-	rot(1,0,0,0), arm1(0,1,0), arm2(0,1,0)
+	rot(1,0,0,0), arm1(0,0,0), arm2(0,0,0)
 {
 
 }
 
 void Player::MoveArm1(float x, float y)
 {
-    Mat3x3r mat(rot);
-    arm1 += mat*Vec3r(x,0,y);
+    arm1.x += x;
+    arm1.y += y;
+
+    Vec3r mean = (arm1 + arm2) * 0.5;
+    arm1 -= mean;
+    arm2 -= mean;
+
+    MoveMouse(mean.x, mean.y);
+
+    //Mat3x3r mat(rot);
+    //arm1 += mat*Vec3r(x,0,y);
 }
 
 void Player::MoveArm2(float x, float y)
 {
-    Mat3x3r mat(rot);
-    arm2 += mat*Vec3r(x,0,y);
+    arm2.x += x;
+    arm2.y += y;
+
+    Vec3r mean = (arm1 + arm2) * 0.5;
+    arm1 -= mean;
+    arm2 -= mean;
+
+    MoveMouse(mean.x, mean.y);
+
+    //Mat3x3r mat(rot);
+    //arm2 += mat*Vec3r(x,0,y);
 }
 
 void Player::MoveMouse(float x, float y)

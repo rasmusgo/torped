@@ -84,7 +84,7 @@ void Collide(const std::vector<PhyPoint*> &listA, const std::vector<PhyPoint*> &
 
     // Enkel typ av kollision mellan punkter
     REAL distance, k;
-	Vec3r delta;
+    Vec3r delta;
     typeof(listA.begin()) itA, itB;
 
     for (itA = listA.begin(); itA != listA.end(); ++itA)
@@ -303,26 +303,26 @@ void Physics::TestBounds(Physics &a, const REAL r)
 
 void CollideTriangles(PhyPoint *a1, PhyPoint *a2, PhyPoint *a3, PhyPoint *b1, PhyPoint *b2, PhyPoint *b3)
 {
-	Vec3r AB(a2->pos - a1->pos);
-	Vec3r AC(b1->pos - a1->pos);
-	Vec3r AD(b2->pos - a1->pos);
+    Vec3r AB(a2->pos - a1->pos);
+    Vec3r AC(b1->pos - a1->pos);
+    Vec3r AD(b2->pos - a1->pos);
 
-	Vec3r A2B2(a2->pos + a2->vel - a1->pos - a1->vel);
-	Vec3r A2C2(b1->pos + b1->vel - a1->pos - a1->vel);
-	Vec3r A2D2(b2->pos + b2->vel - a1->pos - a1->vel);
+    Vec3r A2B2(a2->pos + a2->vel - a1->pos - a1->vel);
+    Vec3r A2C2(b1->pos + b1->vel - a1->pos - a1->vel);
+    Vec3r A2D2(b2->pos + b2->vel - a1->pos - a1->vel);
 
-	(AB%AC*AD) * (A2B2%A2C2*A2D2);
+    (AB%AC*AD) * (A2B2%A2C2*A2D2);
 }
 
 void Physics::DoCollideTriangles()
 {
     /*
-	for (unsigned int i = 0; i < gltriangle_indices_count/3; i++)
-	{
+    for (unsigned int i = 0; i < gltriangle_indices_count/3; i++)
+    {
         for (unsigned int j = i; j < gltriangle_indices_count/3; j++)
         {
-        	unsigned int a = 3*i;
-        	unsigned int b = 3*j;
+            unsigned int a = 3*i;
+            unsigned int b = 3*j;
             CollideTriangles(&points[gltriangle_indices[a]],
                              &points[gltriangle_indices[a+1]],
                              &points[gltriangle_indices[a+2]],
@@ -330,21 +330,21 @@ void Physics::DoCollideTriangles()
                              &points[gltriangle_indices[b+1]],
                              &points[gltriangle_indices[b+2]]);
         }
-	}
+    }
     */
     /*
-	CompareList<aPair> side(10);
-	for (unsigned int i = 0; i < 10; ++i)
-	{
-		for (unsigned int j = 0; j < 10; ++j)
-		{
-			if (i!=j)
-			{
+    CompareList<aPair> side(10);
+    for (unsigned int i = 0; i < 10; ++i)
+    {
+        for (unsigned int j = 0; j < 10; ++j)
+        {
+            if (i!=j)
+            {
                 side.Pair(i,j).a  = i;
                 side.Pair(i,j).b  = j;
-			}
-		}
-	}
+            }
+        }
+    }
     */
 }
 
@@ -396,14 +396,18 @@ void Physics::CollideFloor()
     }
 
     end = points + (points_count + nodes_count);
+    PhyRigid *rigid = rigids;
     while (it != end)
     {
+        while (it > rigid->points + rigid->nodes_count)
+            ++rigid;
+
         //REAL z2 = point.pos.z + point.vel.z*time;
         REAL z2 = it->pos.z + it->vel.z;
         if ( z2 < 0 )
         {
             Vec3r force(0,0,0);
-            force.z -= z2*1000*time*time; // spring k
+            force.z -= z2*100*time*time; // spring k
 /*
             if (it->vel.z < 0)
                 force.z -= it->vel.z*10*time; // spring d
@@ -413,13 +417,17 @@ void Physics::CollideFloor()
             vec.z=0;
 #if 0
             if (vec.SqrLength() < 1)
-                force -= vec*1200;//*z2;
+                force -= vec*120;//*z2;
             else
-                force -= vec*80;//*z2;
+                force -= vec*8;//*z2;
 #else
-            it->force -= vec*0.3*force.z;
+            force -= vec*0.3*force.z;
 #endif
 
+            Vec3r spin = (it->pos - rigid->pos).Cross(force).ElemMult(rigid->inv_inertia);
+            force /= it->inv_mass + spin.Length();
+
+            // * rigid->orient
             it->force += force;
         }
         ++it;
@@ -437,82 +445,82 @@ void Physics::CollideFloor()
 
 int Physics::CollideLineLine(PhyPoint &p1, PhyPoint &p2, PhyPoint &p3, PhyPoint &p4)
 {
-	Vec3r A2(A + Avel);
-	Vec3r B2(B + Bvel);
-	Vec3r AB(B - A);
+    Vec3r A2(A + Avel);
+    Vec3r B2(B + Bvel);
+    Vec3r AB(B - A);
 
-	Vec3r C2(C + Cvel);
-	Vec3r D2(D + Dvel);
+    Vec3r C2(C + Cvel);
+    Vec3r D2(D + Dvel);
 
-	Vec3r AC(C - A);
-	Vec3r CD(D - C);
+    Vec3r AC(C - A);
+    Vec3r CD(D - C);
 
-	Vec3r EF = AB.UnitCross(CD);
-	Vec3r E2F2 = (B2-A2).UnitCross(D2-C2);
-	REAL distance = EF.Dot(AC);       // Avstånd mellan linjerna
-	REAL distance2 = E2F2.Dot(C2-A2); // Avstånd mellan linjerna vid nästa tidssteg
-	REAL AB_kollide_dist;
-	REAL CD_kollide_dist;
-	if (distance*distance2 > 0)
-		return 0;
-	// Kollision detekteras preliminärt
+    Vec3r EF = AB.UnitCross(CD);
+    Vec3r E2F2 = (B2-A2).UnitCross(D2-C2);
+    REAL distance = EF.Dot(AC);       // Avstånd mellan linjerna
+    REAL distance2 = E2F2.Dot(C2-A2); // Avstånd mellan linjerna vid nästa tidssteg
+    REAL AB_kollide_dist;
+    REAL CD_kollide_dist;
+    if (distance*distance2 > 0)
+        return 0;
+    // Kollision detekteras preliminärt
 
-	AC -= EF * distance;
-	REAL inversedivisor = (AB.x * CD.y - CD.x * AB.y);
-	// Testa för div med noll... isf göra alternativ uträkning
-	if (inversedivisor != 0)
-	{
-		inversedivisor = 1/inversedivisor;
+    AC -= EF * distance;
+    REAL inversedivisor = (AB.x * CD.y - CD.x * AB.y);
+    // Testa för div med noll... isf göra alternativ uträkning
+    if (inversedivisor != 0)
+    {
+        inversedivisor = 1/inversedivisor;
 
-		AB_kollide_dist = (CD.y * AC.x - CD.x * AC.y) * inversedivisor;
-		CD_kollide_dist = (AB.y * AC.x - AB.x * AC.y) * inversedivisor;
-	}
-	else if (inversedivisor = (AB.x * CD.z - CD.x * AB.z) != 0)
-	{
-		inversedivisor = 1/inversedivisor;
+        AB_kollide_dist = (CD.y * AC.x - CD.x * AC.y) * inversedivisor;
+        CD_kollide_dist = (AB.y * AC.x - AB.x * AC.y) * inversedivisor;
+    }
+    else if (inversedivisor = (AB.x * CD.z - CD.x * AB.z) != 0)
+    {
+        inversedivisor = 1/inversedivisor;
 
-		AB_kollide_dist = (CD.z * AC.x - CD.x * AC.z) * inversedivisor;
-		CD_kollide_dist = (AB.z * AC.x - AB.x * AC.z) * inversedivisor;
-	}
-	else if (inversedivisor = (AB.z * CD.y - CD.z * AB.y) != 0)
-	{
-		inversedivisor = 1/inversedivisor;
+        AB_kollide_dist = (CD.z * AC.x - CD.x * AC.z) * inversedivisor;
+        CD_kollide_dist = (AB.z * AC.x - AB.x * AC.z) * inversedivisor;
+    }
+    else if (inversedivisor = (AB.z * CD.y - CD.z * AB.y) != 0)
+    {
+        inversedivisor = 1/inversedivisor;
 
-		AB_kollide_dist = (CD.y * AC.z - CD.z * AC.y) * inversedivisor;
-		CD_kollide_dist = (AB.y * AC.z - AB.z * AC.y) * inversedivisor;
-	}
-	else
-	    return 0;
+        AB_kollide_dist = (CD.y * AC.z - CD.z * AC.y) * inversedivisor;
+        CD_kollide_dist = (AB.y * AC.z - AB.z * AC.y) * inversedivisor;
+    }
+    else
+        return 0;
 
-	if (AB_kollide_dist < 0.0f)
-		return 0;
-	if (AB_kollide_dist > 1.0f)
-		return 0;
-	if (CD_kollide_dist < 0.0f)
-		return 0;
-	if (CD_kollide_dist > 1.0f)
-		return 0;
-	// Kollision konstaterad
+    if (AB_kollide_dist < 0.0f)
+        return 0;
+    if (AB_kollide_dist > 1.0f)
+        return 0;
+    if (CD_kollide_dist < 0.0f)
+        return 0;
+    if (CD_kollide_dist > 1.0f)
+        return 0;
+    // Kollision konstaterad
 
-	//kollisionsrespons
-	Vec3r rel_vel(
-		Cvel * (1.0f-CD_kollide_dist) +
-		Dvel * CD_kollide_dist -
-		Avel * (1.0f-AB_kollide_dist) -
-		Bvel * AB_kollide_dist
-		);
-	rel_vel = ( 2.0f*(0.5f+min(CD_kollide_dist,(1.0f-CD_kollide_dist)))
-		*rel_vel.Dot(EF) )*EF;
+    //kollisionsrespons
+    Vec3r rel_vel(
+        Cvel * (1.0f-CD_kollide_dist) +
+        Dvel * CD_kollide_dist -
+        Avel * (1.0f-AB_kollide_dist) -
+        Bvel * AB_kollide_dist
+        );
+    rel_vel = ( 2.0f*(0.5f+min(CD_kollide_dist,(1.0f-CD_kollide_dist)))
+        *rel_vel.Dot(EF) )*EF;
 
-	Avel += rel_vel * (1.0f-CD_kollide_dist);
-	Bvel += rel_vel * CD_kollide_dist;
-	Cvel -= rel_vel * (1.0f-CD_kollide_dist);
-	Dvel -= rel_vel * CD_kollide_dist;
+    Avel += rel_vel * (1.0f-CD_kollide_dist);
+    Bvel += rel_vel * CD_kollide_dist;
+    Cvel -= rel_vel * (1.0f-CD_kollide_dist);
+    Dvel -= rel_vel * CD_kollide_dist;
 
-//	char tmp[1024];
-//	sprintf(tmp, "rel_vel: %2.2f, %2.2f, %2.2f", rel_vel.x, rel_vel.y, rel_vel.z);
-//	text_debug->set_text(tmp);
-	return 1;
+//  char tmp[1024];
+//  sprintf(tmp, "rel_vel: %2.2f, %2.2f, %2.2f", rel_vel.x, rel_vel.y, rel_vel.z);
+//  text_debug->set_text(tmp);
+    return 1;
 }
 
 void TraceLine(const Vec3r &pos, const Vec3r &dir, const REAL max_dist, Physics *phys, TraceResult *res)
@@ -557,7 +565,7 @@ void TraceLine(const Vec3r &pos, const Vec3r &dir, const REAL max_dist, Physics 
     p1p2[1] = points[2].y-points[1].y;
     p1p2[2] = points[2].z-points[1].z;
 
-	// skapa normalen till vektorerna
+    // skapa normalen till vektorerna
     CrossProduct(p0p1, p0p2, normal);
     CrossProduct(p0p1, normal, p0p1normal);
     CrossProduct(p0p2, normal, p0p2normal); // pekar utåt
@@ -579,32 +587,32 @@ void TraceLine(const Vec3r &pos, const Vec3r &dir, const REAL max_dist, Physics 
     for(int i=3; i < numPoints; i++)
     {
         distance = points[i].x*normal[0] + points[i].y*normal[1] + points[i].z*normal[2] + d0;
-		// på fel sida om planet?
-		if ( 0.1 > distance && -0.1 < distance)
+        // på fel sida om planet?
+        if ( 0.1 > distance && -0.1 < distance)
         {
-			// utanför triangeln?
-			if (0 < points[i].x*p0p1normal[0] + points[i].y*p0p1normal[1] + points[i].z*p0p1normal[2] + d1)
-			    continue;
-			if (0 > points[i].x*p0p2normal[0] + points[i].y*p0p2normal[1] + points[i].z*p0p2normal[2] + d2)
-			    continue;
-			if (0 < points[i].x*p1p2normal[0] + points[i].y*p1p2normal[1] + points[i].z*p1p2normal[2] + d3)
-			    continue;
+            // utanför triangeln?
+            if (0 < points[i].x*p0p1normal[0] + points[i].y*p0p1normal[1] + points[i].z*p0p1normal[2] + d1)
+                continue;
+            if (0 > points[i].x*p0p2normal[0] + points[i].y*p0p2normal[1] + points[i].z*p0p2normal[2] + d2)
+                continue;
+            if (0 < points[i].x*p1p2normal[0] + points[i].y*p1p2normal[1] + points[i].z*p1p2normal[2] + d3)
+                continue;
 
-			if ( distance < 0 )
-				distance += 0.1;
-			else
-				distance -= 0.1;
+            if ( distance < 0 )
+                distance += 0.1;
+            else
+                distance -= 0.1;
 
             points[i].x -= distance*normal[0];
-   	        points[i].y -= distance*normal[1];
-       	    points[i].z -= distance*normal[2];
+            points[i].y -= distance*normal[1];
+            points[i].z -= distance*normal[2];
 
-           	distance = points[i].vx*normal[0] + points[i].vy*normal[1] + points[i].vz*normal[2];
+            distance = points[i].vx*normal[0] + points[i].vy*normal[1] + points[i].vz*normal[2];
             distance *= 1.5f;
 
             points[i].vx -= distance*normal[0];
-   	        points[i].vy -= distance*normal[1];
-       	    points[i].vz -= distance*normal[2];
+            points[i].vy -= distance*normal[1];
+            points[i].vz -= distance*normal[2];
 
             //points[i].vx=points[i].vy=points[i].vz=0;
         }
@@ -615,15 +623,15 @@ void TraceLine(const Vec3r &pos, const Vec3r &dir, const REAL max_dist, Physics 
     {
         for(int j=i+1; j < numLines; j++)
         {
-			if (lines[i].p1 == lines[j].p1)
-				continue;
-			if (lines[i].p1 == lines[j].p2)
-				continue;
-			if (lines[i].p2 == lines[j].p1)
-				continue;
-			if (lines[i].p2 == lines[j].p2)
-				continue;
-			CollideLineLine(i,j, _time);
+            if (lines[i].p1 == lines[j].p1)
+                continue;
+            if (lines[i].p1 == lines[j].p2)
+                continue;
+            if (lines[i].p2 == lines[j].p1)
+                continue;
+            if (lines[i].p2 == lines[j].p2)
+                continue;
+            CollideLineLine(i,j, _time);
         }
     }
 */

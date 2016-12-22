@@ -12,43 +12,46 @@ namespace App
 {
     bool discard_mouse_event = false;
     int num_mice;
+    int last_active_device;
     std::vector<float> mouse_sens;
     std::vector<SDL_Joystick *> joysticks;
     std::map<std::string, Action*> actions_table;
 
     void InitInput()
     {
-        num_mice = ManyMouse_Init();
-        LOG_S(INFO) << "Found " << num_mice << (num_mice == 1? " mouse:": " mice:");
-
-        mouse_sens.clear();
-        for (int i = 0; i < num_mice; i++)
-        {
-            mouse_sens.push_back(1);
-        	LOG_S(INFO) << " Mouse #" << i << ":";
-        	LOG_S(INFO) << "  Name: " << ManyMouse_DeviceName(i);
-        }
-
+        // NOTE: Joystick initialization disturbs manymouse initialization if done after ManyMouse_Init()
         SDL_JoystickEventState(SDL_ENABLE);
         LOG_S(INFO) << "Found " << SDL_NumJoysticks() << " joystick" << (SDL_NumJoysticks() == 1? ":": "s:");
 
         joysticks.clear();
         for( int i=0; i < SDL_NumJoysticks(); i++ )
         {
-        	joysticks.push_back(SDL_JoystickOpen(i));
-        	if (joysticks.back() != NULL)
-        	{
+            joysticks.push_back(SDL_JoystickOpen(i));
+            if (joysticks.back() != NULL)
+            {
                 LOG_S(INFO) << " Joystick #" << i << ":";
                 LOG_S(INFO) << "  Name: " << SDL_JoystickName(i);
                 LOG_S(INFO) << "  Number of Axes: " << SDL_JoystickNumAxes(joysticks.back());
                 LOG_S(INFO) << "  Number of Buttons: " << SDL_JoystickNumButtons(joysticks.back());
                 LOG_S(INFO) << "  Number of Balls: " << SDL_JoystickNumBalls(joysticks.back());
                 LOG_S(INFO) << "  Number of Hats: " << SDL_JoystickNumHats(joysticks.back());
-        	}
-        	else
-        	{
-        		LOG_S(ERROR) << " Failed to open joystick #" << i;
-        	}
+            }
+            else
+            {
+                LOG_S(INFO) << " Failed to open joystick #" << i;
+            }
+        }
+
+        num_mice = ManyMouse_Init();
+        last_active_device = -1;
+        LOG_S(INFO) << "Found " << num_mice << (num_mice == 1? " mouse:": " mice:");
+
+        mouse_sens.clear();
+        for (int i = 0; i < num_mice; i++)
+        {
+            mouse_sens.push_back(1);
+            LOG_S(INFO) << " Mouse #" << i << ":";
+            LOG_S(INFO) << "  Name: " << ManyMouse_DeviceName(i);
         }
     }
 
@@ -71,7 +74,7 @@ namespace App
         // format: mouse#_[rel/abs][x/y]
         // ex: "mouse0_relx"
         ManyMouseEvent event;
-        while (ManyMouse_PollEvent(&event))
+        while ( ManyMouse_PollEvent(&event) )
         {
             if (int(event.device) >= num_mice)
                 continue;
@@ -80,6 +83,8 @@ namespace App
             std::stringstream event_name;
 
             event_name << "mouse" << event.device;
+
+            last_active_device = event.device;
 
             switch (event.type)
             {
@@ -142,9 +147,9 @@ namespace App
                     name << "joy" << (int)event.jaxis.which;
                     name << "_axis" << (int)event.jaxis.axis;
                     if (event.jaxis.value < 0)
-                    	ParseEvent( name.str(), event.jaxis.value/32768.0, true);
+                        ParseEvent( name.str(), event.jaxis.value/32768.0, true);
                     else
-                    	ParseEvent( name.str(), event.jaxis.value/32767.0, true);
+                        ParseEvent( name.str(), event.jaxis.value/32767.0, true);
                 }
                 break;
             case SDL_JOYBALLMOTION:
@@ -163,9 +168,9 @@ namespace App
                     name << "joy" << (int)event.jbutton.which;
                     name << "_button" << (int)event.jbutton.button;
                     if (event.jbutton.state == SDL_PRESSED)
-                    	ParseEvent( name.str(), 1, false);
+                        ParseEvent( name.str(), 1, false);
                     else
-                    	ParseEvent( name.str(), 0, true);
+                        ParseEvent( name.str(), 0, true);
                 }
                 break;
             case SDL_JOYHATMOTION:

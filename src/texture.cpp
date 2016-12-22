@@ -320,7 +320,8 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
         return;
     }
 
-    int width = image->w / 3, height = image->h / 2;
+    int width = image->w / 3;
+    int height = image->h / 2;
 
     if ( image->w % 3 ||
          width < 1 || width & (width - 1) ||

@@ -420,12 +420,46 @@ namespace App
 
     inline void DrawPlayer(Player &player)
     {
-        glBegin(GL_LINES);
-        glVertex3rv(&player.arm1.x);
-        glVertex3rv(&player.arm2.x);
-        glVertex3rv(&player.arm1.x);
-        glVertex3rv(&player.arm2.x);
+        glPushMatrix();
+        glLoadIdentity();
+        //glTranslatef(0,0,-0.5);
+
+        glBegin(GL_LINE_STRIP);
+        glColor3f(1,1,1);
+        glVertex3d(0,0,0);
+
+
+
+        //Quat4r arm1x(player.arm1.x*0.001, Vec3r(0,-1,0));
+        //Quat4r arm1y(player.arm1.y*0.001, Vec3r(1,0,0));
+
+        glColor3f(1,0,0);
+        //glVertex3rv( &((arm1x*arm1y*arm1y*arm1x) * Vec3r(0,0,-1)).x );
+        //glVertex3rv(&(player.arm1*0.002).x);
+        {
+            Vec3r v = Quat4r(player.arm1.Length()*0.002, Normalize(player.arm1.Cross(Vec3r(0,0,1)))) * Vec3r(0,0,-1);
+            glVertex3rv( &v.x );
+        }
+
+
+        //Quat4r arm2x(player.arm2.x*0.001, Vec3r(0,-1,0));
+        //Quat4r arm2y(player.arm2.y*0.001, Vec3r(1,0,0));
+
+        glColor3f(0,0,1);
+        //glVertex3rv( &((arm2x*arm2y*arm2y*arm2x) * Vec3r(0,0,-1)).x );
+        //glVertex3rv(&(player.arm2*0.002).x);
+        {
+            Vec3r v = Quat4r(player.arm2.Length()*0.002, Normalize(player.arm2.Cross(Vec3r(0,0,1)))) * Vec3r(0,0,-1);
+            glVertex3rv( &v.x );
+        }
+
+        glColor3f(1,1,1);
+        glVertex3d(0,0,0);
+        //glVertex3d(0,0,1);
+        //glVertex3rv(&player.arm1.x);
+        //glVertex3rv(&player.arm2.x);
         glEnd();
+        glPopMatrix();
     }
 
     void DrawGame()
@@ -961,6 +995,12 @@ namespace App
             DrawString( GLUT_BITMAP_9_BY_15, ss.str().c_str() );
         }
 */
+        {
+            std::stringstream ss;
+            ss << "device: " << last_active_device;
+            glRasterPos2f( 0, y-=height );
+            DrawString( GLUT_BITMAP_9_BY_15, ss.str().c_str() );
+        }
         {
             std::stringstream ss;
             ss << "rot: " << std::fixed << std::showpos << Euler(player.rot) * (180.0/M_PI);

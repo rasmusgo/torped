@@ -18,6 +18,8 @@
 #include "physstruct.h"
 #include "scene.h"
 #include "world.h"
+#include "actor.h"
+#include "individual.h"
 
 template <class T>
 class ProtectedData
@@ -69,6 +71,7 @@ Scene::Scene()
     flags_mutex = SDL_CreateMutex();
     actors_mutex = SDL_CreateMutex();
     flags = 0;
+    realTicks = SDL_GetTicks();
     physicsTicks = 0;
 }
 
@@ -78,9 +81,11 @@ Scene::~Scene()
     SDL_DestroyMutex(actors_mutex);
 }
 
-void Scene::AddActor(Actor*)
+void Scene::Spawn(const char *filename)
 {
-
+    SDL_LockMutex(actors_mutex);
+    actors.push_back(new Individual(filename));
+    SDL_UnlockMutex(actors_mutex);
 }
 
 int Scene::GetFlags()
@@ -144,113 +149,8 @@ int Scene::Loop()
 
         while ((Sint32)(targetTicks - physicsTicks) > 0)
         {
-            SDL_LockMutex(phyInstances_lock);
-            typeof(phyInstances.begin()) it, it2;
-
-            for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
-            {
-                it->phys->DoFrame1();
-
-                if (App::world)
-                {
-                    App::world->CollideWorld(*it->phys);
-                }
-                else
-                {
-                    it->phys->CollideFloor();
-                }
-            }
-
-            // TODO: Fixa smartare test typ dela upp rymden i regioner och testa regionerna fÃ¶r sig
-            for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
-                for (it2 = it+1; it2 != phyInstances.end(); ++it2)
-                    it->phys->TestBounds(*(it2->phys), 0.1);
-
-            for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
-                it->phys->DoFrame2();
-
-            static unsigned int last_crashhandling = 0;
-            if (physicsTicks % 500 == last_crashhandling)
-            {
-                for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
-                    it->CrashHandling();
-            }
-
-            for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
-            {
-                if (it->phys->insane)
-                {
-                    it->CrashHandling();
-                    last_crashhandling = physicsTicks % 500;
-                }
-            }
-
-            // Sound emitters
-            for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
-            {
-                for (unsigned int j = 0; j < it->phys->sounds_count; ++j)
-                {
-                    PhySound *sound = it->phys->sounds + j;
-
-                    Vec3r mean(0,0,0);
-                    for (int i = 0; i < PHY_SOUND_SAMPLES; ++i) // *it = sound->buffer; it < sound->buffer+32; ++it)
-                    {
-                        mean += sound->buffer[i];
-                    }
-                    mean /= PHY_SOUND_SAMPLES;
-
-                    REAL buffer[PHY_SOUND_SAMPLES];
-                    REAL max = 0;
-                    for (int i = 0; i < PHY_SOUND_SAMPLES; ++i)
-                    {
-                        REAL vel = (sound->buffer[(sound->i + i) % PHY_SOUND_SAMPLES] - mean).SqrLength();
-
-                        if (vel > max)
-                            max = vel;
-
-                        buffer[i] = vel;
-                    }
-
-                    REAL d0 = buffer[1] - buffer[0];
-                    REAL d1 = 0;
-                    REAL freq = 0;
-                    for (int i = 2; i < PHY_SOUND_SAMPLES; ++i)
-                    {
-                        d1 = buffer[i] - buffer[i-1];
-                        if ( (d1 > 0) != (d0 > 0) )
-                            ++freq;
-                        d0 = d1;
-                    }
-
-                    //REAL gain = max * 1000000;
-                    //REAL pitch = freq * (10.0 / PHY_SOUND_SAMPLES);
-                    ALint state;
-                    alGetSourcei(sound->source, AL_SOURCE_STATE, &state);
-                    REAL gain = mean.Length()*100 -1;
-                    if (gain > 0)
-                    {
-                        if (state != AL_PLAYING)
-                            alSourcePlay(sound->source);
-
-                        REAL pitch = gain; //freq * (10.0 / PHY_SOUND_SAMPLES);
-                        alSourcef(sound->source, AL_PITCH, pitch);
-                        alSourcef(sound->source, AL_GAIN, gain);
-                        alSource3f(sound->source, AL_POSITION, sound->p1->pos.x, sound->p1->pos.y, sound->p1->pos.z);
-                        alSource3f(sound->source, AL_VELOCITY, mean.x, mean.y, mean.z);
-                        //App::console << "pitch: " << pitch << " gain: " << gain << std::endl;
-                    }
-                    else if (state == AL_PLAYING)
-                        alSourceStop(sound->source);
-                }
-            }
-
-            // FIXME: Player should be moved to Scene
-            App::player.Fly(App::player.vel.x*0.005, App::player.vel.y*0.005, App::player.vel.z*0.005);
-
-            alListener3f(AL_POSITION, App::player.pos.x, App::player.pos.y, App::player.pos.z);
-            alListener3f(AL_VELOCITY, App::player.vel.x, App::player.vel.y, App::player.vel.z);
-
-            SDL_UnlockMutex(phyInstances_lock);
+            UpdatePhysics();
+            UpdateActors();
 
             if (SDL_GetTicks()-realTicks > 100)
             {
@@ -265,4 +165,125 @@ int Scene::Loop()
     }
 
     return 1;
+}
+
+void Scene::UpdatePhysics()
+{
+    SDL_LockMutex(phyInstances_lock);
+
+    typeof(phyInstances.begin()) it, it2;
+    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+    {
+        it->phys->DoFrame1();
+
+        if (App::world)
+        {
+            App::world->CollideWorld(*it->phys);
+        }
+        else
+        {
+            it->phys->CollideFloor();
+        }
+    }
+
+    // TODO: Fixa smartare test typ dela upp rymden i regioner och testa regionerna för sig
+    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+        for (it2 = it+1; it2 != phyInstances.end(); ++it2)
+            it->phys->TestBounds(*(it2->phys), 0.1);
+
+    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+        it->phys->DoFrame2();
+
+    static unsigned int last_crashhandling = 0;
+    if (physicsTicks % 500 == last_crashhandling)
+    {
+        for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+            it->CrashHandling();
+    }
+
+    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+    {
+        if (it->phys->insane)
+        {
+            it->CrashHandling();
+            last_crashhandling = physicsTicks % 500;
+        }
+    }
+
+    // Sound emitters
+    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+    {
+        for (unsigned int j = 0; j < it->phys->sounds_count; ++j)
+        {
+            PhySound *sound = it->phys->sounds + j;
+
+            Vec3r mean(0,0,0);
+            for (int i = 0; i < PHY_SOUND_SAMPLES; ++i) // *it = sound->buffer; it < sound->buffer+32; ++it)
+            {
+                mean += sound->buffer[i];
+            }
+            mean /= PHY_SOUND_SAMPLES;
+
+            REAL buffer[PHY_SOUND_SAMPLES];
+            REAL max = 0;
+            for (int i = 0; i < PHY_SOUND_SAMPLES; ++i)
+            {
+                REAL vel = (sound->buffer[(sound->i + i) % PHY_SOUND_SAMPLES] - mean).SqrLength();
+
+                if (vel > max)
+                    max = vel;
+
+                buffer[i] = vel;
+            }
+
+            REAL d0 = buffer[1] - buffer[0];
+            REAL d1 = 0;
+            REAL freq = 0;
+            for (int i = 2; i < PHY_SOUND_SAMPLES; ++i)
+            {
+                d1 = buffer[i] - buffer[i-1];
+                if ( (d1 > 0) != (d0 > 0) )
+                    ++freq;
+                d0 = d1;
+            }
+
+            //REAL gain = max * 1000000;
+            //REAL pitch = freq * (10.0 / PHY_SOUND_SAMPLES);
+            ALint state;
+            alGetSourcei(sound->source, AL_SOURCE_STATE, &state);
+            REAL gain = mean.Length()*50 -0.5;
+            if (gain > 0)
+            {
+                if (state != AL_PLAYING)
+                    alSourcePlay(sound->source);
+
+                REAL pitch = gain; //freq * (10.0 / PHY_SOUND_SAMPLES);
+                alSourcef(sound->source, AL_PITCH, pitch);
+                alSourcef(sound->source, AL_GAIN, gain);
+                alSource3f(sound->source, AL_POSITION, sound->p1->pos.x, sound->p1->pos.y, sound->p1->pos.z);
+                alSource3f(sound->source, AL_VELOCITY, mean.x, mean.y, mean.z);
+                //App::console << "pitch: " << pitch << " gain: " << gain << std::endl;
+            }
+            else if (state == AL_PLAYING)
+                alSourceStop(sound->source);
+        }
+    }
+
+    // FIXME: Player should be moved to Scene
+    App::player.Fly(App::player.vel.x*0.005, App::player.vel.y*0.005, App::player.vel.z*0.005);
+
+    alListener3f(AL_POSITION, App::player.pos.x, App::player.pos.y, App::player.pos.z);
+    alListener3f(AL_VELOCITY, App::player.vel.x, App::player.vel.y, App::player.vel.z);
+
+    SDL_UnlockMutex(phyInstances_lock);
+}
+
+void Scene::UpdateActors()
+{
+    SDL_LockMutex(actors_mutex);
+
+    for (typeof(actors.begin()) it = actors.begin(); it != actors.end(); ++it)
+        (*it)->Update(physicsTicks);
+
+    SDL_UnlockMutex(actors_mutex);
 }

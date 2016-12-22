@@ -33,7 +33,7 @@ public:
     Scene();
     ~Scene();
 
-    void AddActor(Actor*);
+    void Spawn(const char *filename);
 
     int GetFlags();
     void AddFlags(SceneFlags);
@@ -55,3 +55,8 @@ private:
     SDL_mutex *actors_mutex;
     friend int StartScene(void *data);
 };
+
+namespace App
+{
+    extern Scene *scene;
+}

@@ -14,7 +14,7 @@ Actor::~Actor()
 
 }
 
-void Actor::Update()
+void Actor::Update(unsigned int ticks)
 {
 
 }
