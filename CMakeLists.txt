@@ -1,3 +1,17 @@
+# sudo apt install        \
+#     freeglut3-dev       \
+#     libglew-dev         \
+#     libglut-dev         \
+#     liblua5.1-dev       \
+#     libopenal-dev       \
+#     libphysfs-dev       \
+#     libsdl-image1.2-dev \
+#     libsdl-net1.2-dev   \
+#     libsdl-ttf2.0-dev   \
+#     libtinyxml-dev      \
+#     libvorbis-dev       \
+#     python2.7-dev
+
 cmake_minimum_required(VERSION 2.8.11)
 project(TORPED_PROJECT)
 
