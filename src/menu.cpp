@@ -132,10 +132,10 @@ namespace App
         //    DrawString( GLUT_BITMAP_9_BY_15, (char*)&i );
 
         int height = 15; //glutBitmapHeight(GLUT_BITMAP_HELVETICA_18);
-        for ( int i=console.lines.size()-1,y=20; y < yRes && i >= 0; y += height, --i )
+        for ( int i = console.lines.size() - 1, y = 20; y < yRes && i >= 0; y += height, --i )
         {
             glRasterPos2f( 0, y );
-            DrawString( GLUT_BITMAP_9_BY_15, console.lines[i].message );
+            DrawString( GLUT_BITMAP_9_BY_15, console.lines[i].message.c_str() );
         }
         //DrawString(GLUT_BITMAP_HELVETICA_18, "Torped");
         //glRasterPos2f( -0.5, 0.5);

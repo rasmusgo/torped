@@ -47,7 +47,27 @@ namespace App
         }
 
     private:
-        std::deque<loguru::Message> lines;
+        // This is like a deep clone of a loguru::Message.
+        struct Message
+        {
+            loguru::Verbosity verbosity;   // Already part of preamble
+            const std::string filename;    // Already part of preamble
+            unsigned          line;        // Already part of preamble
+            const std::string preamble;    // Date, time, uptime, thread, file:line, verbosity.
+            const std::string indentation; // Just a bunch of spacing.
+            const std::string prefix;      // Assertion failure info goes here (or "").
+            const std::string message;     // User message goes here.
+            Message(const loguru::Message& m)
+                : verbosity(m.verbosity)
+                , filename(m.filename)
+                , line(m.line)
+                , preamble(m.preamble)
+                , indentation(m.indentation)
+                , prefix(m.prefix)
+                , message(m.message)
+            {}
+        };
+        std::deque<Message> lines;
         friend void DrawMenu();
     };
 
