@@ -111,30 +111,30 @@ static ov_callbacks callbacks = {read_func, seek_func, close_func, tell_func};
 
 bool AlStruct::InitAl()
 {
-    ALenum err;
+    ALCenum err;
 
     //Open device
     //device = alcOpenDevice((ALCubyte*)("DirectSound3D"));
     device = alcOpenDevice(NULL);
-    if ((err = alGetError()) != AL_NO_ERROR)
+    if ((err = alcGetError(device)) != ALC_NO_ERROR)
     {
-        LOG_S(ERROR) << "alcOpenDevice() failed: " << alGetString(err);
+        LOG_S(ERROR) << "alcOpenDevice() failed: " << alcGetString(device, err);
         return false;
     }
 
     //Create context(s)
     context = alcCreateContext(device, NULL);
-    if ((err = alGetError()) != AL_NO_ERROR)
+    if ((err = alcGetError(device)) != ALC_NO_ERROR)
     {
-        LOG_S(ERROR) << "alcCreateContext() failed: " << alGetString(err);
+        LOG_S(ERROR) << "alcCreateContext() failed: " << alcGetString(device, err);
         return false;
     }
 
     //Set active context
     alcMakeContextCurrent(context);
-    if ((err = alGetError()) != AL_NO_ERROR)
+    if ((err = alcGetError(device)) != ALC_NO_ERROR)
     {
-        LOG_S(ERROR) << "alcMakeContextCurrent() failed: " << alGetString(err);
+        LOG_S(ERROR) << "alcMakeContextCurrent() failed: " << alcGetString(device, err);
         return false;
     }
 
