@@ -4,22 +4,22 @@
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
 
+#include <angelscript.h>
 #include <iostream>
-#include <string>
-#include <sstream>
+#include <manymouse.h>
 #include <map>
 #include <math.h>
-#include <manymouse.h>
-#include <angelscript.h>
+#include <sstream>
+#include <string>
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "physstruct.h"
-#include "physics.h"
-#include "profiler.h"
 #include "gameapp.h"
+#include "physics.h"
+#include "physstruct.h"
+#include "profiler.h"
 
 namespace App
 {

@@ -1,13 +1,12 @@
-#include <GL/glew.h>
-#include <SDL.h>
-#include "SDL_thread.h"
-#include "SDL_mutex.h"
-//#include "SDL_opengl.h"
 #include "SDL_getenv.h"
-#include <GL/glut.h>
-#include <deque>
-#include <Python.h>
+#include "SDL_mutex.h"
+#include "SDL_thread.h"
 #include <angelscript.h>
+#include <deque>
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <Python.h>
+#include <SDL.h>
 
 extern "C"
 {
@@ -20,14 +19,14 @@ extern "C"
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "gameapp.h"
-#include "console.h"
-#include "input.h"
 #include "comparelist.h"
-#include "pythonstruct.h"
-#include "shader.h"
+#include "console.h"
+#include "gameapp.h"
+#include "input.h"
 #include "luawrap.h"
 #include "menu.h"
+#include "pythonstruct.h"
+#include "shader.h"
 
 namespace App
 {
