@@ -235,7 +235,7 @@ namespace App
             return ;
         }
 
-        ALuint source = al.AddSound("Bomb.ogg", Vec3r(3, 3, 2));
+        ALuint source = al.AddSound("bomb.ogg", Vec3r(3, 3, 2));
 
         if (!source)
         {
