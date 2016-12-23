@@ -449,17 +449,17 @@ int Physics::CollideLineLine(PhyPoint &p1, PhyPoint &p2, PhyPoint &p3, PhyPoint 
 
 	Vec3r EF = AB.UnitCross(CD);
 	Vec3r E2F2 = (B2-A2).UnitCross(D2-C2);
-	REAL distance = EF.Dot(AC);       // Avstånd mellan linjerna
-	REAL distance2 = E2F2.Dot(C2-A2); // Avstånd mellan linjerna vid nästa tidssteg
+	REAL distance = EF.Dot(AC);       // AvstÃ¥nd mellan linjerna
+	REAL distance2 = E2F2.Dot(C2-A2); // AvstÃ¥nd mellan linjerna vid nÃ¤sta tidssteg
 	REAL AB_kollide_dist;
 	REAL CD_kollide_dist;
 	if (distance*distance2 > 0)
 		return 0;
-	// Kollision detekteras preliminärt
+	// Kollision detekteras preliminÃ¤rt
 
 	AC -= EF * distance;
 	REAL inversedivisor = (AB.x * CD.y - CD.x * AB.y);
-	// Testa för div med noll... isf göra alternativ uträkning
+	// Testa fÃ¶r div med noll... isf gÃ¶ra alternativ utrÃ¤kning
 	if (inversedivisor != 0)
 	{
 		inversedivisor = 1/inversedivisor;
@@ -560,7 +560,7 @@ void TraceLine(const Vec3r &pos, const Vec3r &dir, const REAL max_dist, Physics 
 	// skapa normalen till vektorerna
     CrossProduct(p0p1, p0p2, normal);
     CrossProduct(p0p1, normal, p0p1normal);
-    CrossProduct(p0p2, normal, p0p2normal); // pekar utåt
+    CrossProduct(p0p2, normal, p0p2normal); // pekar utÃ¥t
     CrossProduct(p1p2, normal, p1p2normal);
     // normera
     d0 = FastSqrt(normal[0]*normal[0] + normal[1]*normal[1] + normal[2]*normal[2]);
@@ -570,7 +570,7 @@ void TraceLine(const Vec3r &pos, const Vec3r &dir, const REAL max_dist, Physics 
     normal[0] /= d0;
     normal[1] /= d0;
     normal[2] /= d0;
-    // hitta avståndet från planet till punkt p0
+    // hitta avstÃ¥ndet frÃ¥n planet till punkt p0
     d0 = -(normal[0]*points[0].x + normal[1]*points[0].y + normal[2]*points[0].z);
     d1 = -(p0p1normal[0]*points[0].x + p0p1normal[1]*points[0].y + p0p1normal[2]*points[0].z);
     d2 = -(p0p2normal[0]*points[0].x + p0p2normal[1]*points[0].y + p0p2normal[2]*points[0].z);
@@ -579,10 +579,10 @@ void TraceLine(const Vec3r &pos, const Vec3r &dir, const REAL max_dist, Physics 
     for(int i=3; i < numPoints; i++)
     {
         distance = points[i].x*normal[0] + points[i].y*normal[1] + points[i].z*normal[2] + d0;
-		// på fel sida om planet?
+		// pÃ¥ fel sida om planet?
 		if ( 0.1 > distance && -0.1 < distance)
         {
-			// utanför triangeln?
+			// utanfÃ¶r triangeln?
 			if (0 < points[i].x*p0p1normal[0] + points[i].y*p0p1normal[1] + points[i].z*p0p1normal[2] + d1)
 			    continue;
 			if (0 > points[i].x*p0p2normal[0] + points[i].y*p0p2normal[1] + points[i].z*p0p2normal[2] + d2)

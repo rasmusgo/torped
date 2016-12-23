@@ -161,7 +161,7 @@ int Scene::Loop()
                 }
             }
 
-            // TODO: Fixa smartare test typ dela upp rymden i regioner och testa regionerna för sig
+            // TODO: Fixa smartare test typ dela upp rymden i regioner och testa regionerna fÃ¶r sig
             for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
                 for (it2 = it+1; it2 != phyInstances.end(); ++it2)
                     it->phys->TestBounds(*(it2->phys), 0.1);

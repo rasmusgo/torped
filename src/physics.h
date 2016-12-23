@@ -28,11 +28,11 @@ struct PhyPoint
 
 struct PhySpring
 {
-    // vilka punkter som ‰r sammanl‰nkade
+    // vilka punkter som √§r sammanl√§nkade
     PhyPoint *p1,*p2;
-    // fj‰derkonstant,  d‰mpningskonstant och stelhet (statisk kraft)
+    // fj√§derkonstant,  d√§mpningskonstant och stelhet (statisk kraft)
     REAL k, d, s;
-    // avslappnad l‰ngd och aktuell l‰ngd
+    // avslappnad l√§ngd och aktuell l√§ngd
     REAL l, rl;
     //REAL maxforce, minforce;
     bool broken;
@@ -40,7 +40,7 @@ struct PhySpring
 
 struct PhyJoint
 {
-    // vilka punkter som ‰r sammanl‰nkade
+    // vilka punkter som √§r sammanl√§nkade
     PhyPoint *p1,*p2;
     REAL k, d, s;
     bool broken;
@@ -54,9 +54,9 @@ struct PhyNode
 
 struct PhyRigid
 {
-    // vilka noder som ‰r sammanl‰nkade
+    // vilka noder som √§r sammanl√§nkade
     PhyNode *nodes;
-    // vilka punkter som ‰r sammanl‰nkade (som noderna kontrollerar)
+    // vilka punkter som √§r sammanl√§nkade (som noderna kontrollerar)
     PhyPoint *points;
     int nodes_count;
     REAL inv_mass;
@@ -73,7 +73,7 @@ struct PhyRigid
 
 struct PhyBalloon
 {
-    // vilka punkter som ‰r sammanl‰nkade
+    // vilka punkter som √§r sammanl√§nkade
     PhyPoint **points;
     int points_count;
     REAL pressure; // actually, pressure / 2
@@ -81,9 +81,9 @@ struct PhyBalloon
 
 struct PhyMotor
 {
-    // vilka rigids som ‰r sammanl‰nkade
+    // vilka rigids som √§r sammanl√§nkade
     PhyRigid *r1, *r2;
-    // Vridmoment relativt r1 som ges pÂ r2
+    // Vridmoment relativt r1 som ges p√• r2
     Vec3r torque;
     // Bromskraft
     Vec3r brake;

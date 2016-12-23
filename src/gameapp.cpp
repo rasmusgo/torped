@@ -366,8 +366,8 @@ namespace App
         SDLNet_Quit();
         for( unsigned int i=0; i < joysticks.size(); i++ )
         {
-        	if (joysticks[i] != NULL)
-        	    SDL_JoystickClose(joysticks[i]);
+            if (joysticks[i] != NULL)
+                SDL_JoystickClose(joysticks[i]);
         }
         joysticks.clear();
 

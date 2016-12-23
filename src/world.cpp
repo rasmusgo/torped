@@ -173,7 +173,7 @@ World::~World()
 {
 	/*
     if ( glIsTexture(texture) )
-        glDeleteTextures(1, &texture); // ignorerar om texture är 0
+        glDeleteTextures(1, &texture); // ignorerar om texture Ã¤r 0
     */
     //delete [] tiles;
     //tiles = NULL;

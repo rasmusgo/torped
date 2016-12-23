@@ -86,17 +86,17 @@ void Physics::DoFrame1()
     // uppdatera noderna
     //DO(DoFrame0, rigids, 0, rigids_count)
 
-    // r‰kna ut linjernas krafter pÂ deras punkter
+    // r√§kna ut linjernas krafter p√• deras punkter
     //assert(springs != 0 || springs_count == 0);
     DO(DoFrame1, springs, 0, springs_count)
 
-	// R‰kna ut ballongernas kraft pÂ deras punkter
+	// R√§kna ut ballongernas kraft p√• deras punkter
     DO(DoFrame1, balloons, 0, balloons_count)
 
-    // LÂt motorerna arbeta
+    // L√•t motorerna arbeta
     DO(DoFrame1, motors, 0, motors_count)
 
-    // hÂll ihop saker
+    // h√•ll ihop saker
     DO(DoFrame1, joints, 0, joints_count)
     DO(DoFrame2, joints, 0, joints_count)
 
@@ -112,22 +112,22 @@ void Physics::DoFrame2()
     if (insane)
         return;
 
-    // r‰kna ut acceleration och hastighet (och gravitation)
+    // r√§kna ut acceleration och hastighet (och gravitation)
     DO(DoFrame1, points, 0, points_count)
     DO(DoFrame1, rigids, 0, rigids_count)
 
-    // hÂll ihop saker
+    // h√•ll ihop saker
     DO(DoFrame1, joints, 0, joints_count)
     //DO(DoFrame2, joints, 0, joints_count)
     //DO(DoFrame3, joints, 0, joints_count)
 
     //DO(DoFrame1, springs, 0, springs_count)
 
-    // r‰kna ut acceleration och hastighet (ej gravitation)
+    // r√§kna ut acceleration och hastighet (ej gravitation)
     DO(DoFrame2, points, 0, points_count)
     DO(DoFrame2, rigids, 0, rigids_count)
 
-    // r‰kna ut position
+    // r√§kna ut position
     DO(DoFrame3, points, 0, points_count)
     DO(DoFrame3, rigids, 0, rigids_count)
     DO(DoFrame0, rigids, 0, rigids_count)
@@ -160,7 +160,7 @@ inline void Physics::DoFrame1(PhyPoint &point)
     point.acc = point.force * point.inv_mass + gravity;
     point.vel += point.acc;
 
-    // nollst‰ll krafter
+    // nollst√§ll krafter
     point.force.SetToZero();
 }
 
@@ -183,7 +183,7 @@ inline void Physics::DoFrame2(PhyPoint &point)
     point.acc = point.force * point.inv_mass;
     point.vel += point.acc;
 
-    // nollst‰ll krafter
+    // nollst√§ll krafter
     point.force.SetToZero();
 }
 
@@ -231,10 +231,10 @@ inline void Physics::DoFrame1(PhySpring &spring)
         return;
 
 	Vec3r velAB(spring.p2->vel - spring.p1->vel);
-	// NOTE: vel har inte dimensionen L/T utan bara L sÂ time ska inte vara med
+	// NOTE: vel har inte dimensionen L/T utan bara L s√• time ska inte vara med
     Vec3r AB2(spring.p2->pos - spring.p1->pos);// + velAB);
 
-    // avstÂndet mellan punkterna
+    // avst√•ndet mellan punkterna
     spring.rl = AB2.FastLength();
 
     REAL deviation = spring.rl - spring.l;
@@ -251,7 +251,7 @@ inline void Physics::DoFrame1(PhySpring &spring)
         force -= spring.s;
     }
 
-    // l‰gg till kraften efter normaliserad riktning
+    // l√§gg till kraften efter normaliserad riktning
     // undvik division med 0
     if ( 0 == spring.rl )
     {
@@ -368,9 +368,9 @@ inline void Physics::DoFrame0(PhyRigid &rigid)
 
 	while (point != end)
 	{
-		point->pos = orientationMatrix * node->pos; // glˆm inte  att addera pos
+		point->pos = orientationMatrix * node->pos; // gl√∂m inte  att addera pos
 		point->vel = rigid.vel + (rigid.spin).Cross(point->pos);
-		point->pos += rigid.pos; // glˆm inte  att addera pos
+		point->pos += rigid.pos; // gl√∂m inte  att addera pos
 		point++;
 		node++;
     }

@@ -469,12 +469,12 @@ bool InitPython()
 
     if ( NULL == ret )
     {
-        App::console << "jävla satans kukerror" << std::endl;
+        App::console << "jÃ¤vla satans kukerror" << std::endl;
         //PyErr_Print();
     }
     else
     {
-        App::console << "fungerar inte likt förbannat" << std::endl;
+        App::console << "fungerar inte likt fÃ¶rbannat" << std::endl;
         Py_DECREF(ret);
     }
 */
