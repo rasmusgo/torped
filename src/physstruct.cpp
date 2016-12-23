@@ -1,4 +1,5 @@
 #include <fstream>
+#include <memory>
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
@@ -7,6 +8,7 @@
 #include "alstruct.h"
 #include "gameapp.h"
 #include "logging.h"
+#include "physfsstruct.h"
 #include "physstruct.h"
 #include "texture.h"
 
@@ -445,8 +447,13 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
     inst.memPool_size = 0;
     inst.phys = NULL;
 
+    char* buffer = NULL;
+    PhysFSLoadFile(filename, buffer);
+    CHECK_NOTNULL_F(buffer, "Failed to open '%s'", filename);
+    std::unique_ptr<char> file_buffer_pointer{buffer};
+
     TiXmlDocument doc(filename);
-	if ( !doc.LoadFile() )
+	if ( !doc.Parse(buffer) )
 	{
         LOG_S(ERROR) << filename << ":" << doc.ErrorRow() << "," << doc.ErrorCol() << ": " << doc.ErrorDesc();
         return inst;
