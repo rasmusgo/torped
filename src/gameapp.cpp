@@ -286,7 +286,7 @@ namespace App
         }
         threads.push_back(scene_thread);
 
-        LOG_S(ERROR) << "Initialization finished!";
+        LOG_S(INFO) << "Initialization finished!";
 
         SwitchMode(appMode);
         LOG_IF_ERROR("End of InitAll(...)")
