@@ -4,11 +4,12 @@
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
 
-#include "SDL_thread.h"
-#include "SDL_mutex.h"
-#include <vector>
 #include <list>
+#include <mutex>
 #include <string>
+#include <vector>
+
+#include "SDL_thread.h"
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
@@ -51,8 +52,8 @@ private:
     Uint32 realTicks;
     Uint32 physicsTicks;
 
-    SDL_mutex *flags_mutex;
-    SDL_mutex *actors_mutex;
+    std::mutex flags_mutex;
+    std::mutex actors_mutex;
     friend int StartScene(void *data);
 };
 

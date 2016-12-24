@@ -137,13 +137,11 @@ void Player::Do(const char cmd[])
         // if there is no pose name, the pose "pose" will be loaded
         ss >> str >> a >> b;
 
-        SDL_LockMutex(phyInstances_lock);
+        std::lock_guard<std::mutex> lock(phyInstances_lock);
 
         if (phyInstances.empty())
         {
             VLOG_S(2) << "No physics instance";
-
-            SDL_UnlockMutex(phyInstances_lock);
             return;
         }
 
@@ -154,8 +152,6 @@ void Player::Do(const char cmd[])
             fail = !phyInstances.back().UpdatePhysBlend(str.c_str(), 1.0f-a, a);
         else
             fail = !phyInstances.back().UpdatePhys(str.c_str());
-
-        SDL_UnlockMutex(phyInstances_lock);
 
         if (fail)
         {
@@ -170,13 +166,11 @@ void Player::Do(const char cmd[])
 
         ss >> str >> x >> y >> z;
 
-        SDL_LockMutex(phyInstances_lock);
+        std::lock_guard<std::mutex> lock(phyInstances_lock);
 
         if (phyInstances.empty())
         {
             VLOG_S(2) << "No physics instance";
-
-            SDL_UnlockMutex(phyInstances_lock);
             return;
         }
 
@@ -186,7 +180,5 @@ void Player::Do(const char cmd[])
         tn.name = str;
         if ( inst->namesIndex.find(tn) != inst->namesIndex.end() )
             inst->phys->motors[inst->namesIndex[tn]].torque = Vec3r(x,y,z) * (inst->phys->time * inst->phys->time);
-
-        SDL_UnlockMutex(phyInstances_lock);
     }
 }

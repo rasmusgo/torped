@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
@@ -14,7 +16,6 @@
 #include <map>
 #include <math.h>
 #include <SDL/SDL_thread.h>
-#include <SDL/SDL_mutex.h>
 //#include <SDL/SDL_opengl.h>
 #include <tinyxml.h>
 
@@ -28,8 +29,7 @@
 #include "texture.h"
 
 // lock mutex before access to phyInstances
-// what happens if lockmutex fails? what can make it fail?
-extern SDL_mutex *phyInstances_lock;
+extern std::mutex phyInstances_lock;
 
 struct RenderPass
 {

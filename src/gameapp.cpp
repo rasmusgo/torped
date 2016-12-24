@@ -1,7 +1,8 @@
+#include <mutex>
+
 #include <GL/glew.h>
 #include <SDL.h>
 #include "SDL_thread.h"
-#include "SDL_mutex.h"
 //#include "SDL_opengl.h"
 #include "SDL_getenv.h"
 #include <GL/glut.h>
@@ -91,7 +92,7 @@ namespace App
     SDL_Thread *scene_thread = NULL;
     Scene *scene = NULL;
 
-    SDL_mutex *game_physics_messages_lock;
+    std::mutex game_physics_messages_lock;
 
     void InitAll(int argc, char *argv[])
     {
@@ -465,195 +466,194 @@ namespace App
     void DrawGame()
     {
         LOG_IF_ERROR("Start of DrawGame()");
-        SDL_LockMutex(phyInstances_lock);
-
-        switch (wireframemode)
         {
-        case 1:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            glEnable(GL_CULL_FACE);
-            break;
-        case 2:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            glDisable(GL_CULL_FACE);
-            break;
-        default:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            glEnable(GL_CULL_FACE);
-        };
-
-        shader.Enable();
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glLoadIdentity();
-
-        glRotatef( 90, -1, 0, 0);
-        glRotatef( 90, 0, 0, 1);
-        {
-            Quat4r q = player.rot;
-            q.Normalize();
-            REAL a = acos( Clamp<REAL>(q.w, -1.0, 1.0) );
-            Vec3r vec = Normalize(q.vec);
-            glRotatef( a/M_PI*180.0*-2.0, vec.x, vec.y, vec.z );
-        }
-
-        GLfloat lightpos[4];
-        lightpos[0] = 0; //player.pos.x;
-        lightpos[1] = 0; //player.pos.y;
-        lightpos[2] = 0; //player.pos.z;
-        lightpos[3] = 1;
-        glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-
-        //SDL_LockMutex(phyInstances_lock);
-        if ( !phyInstances.empty() && !phyInstances.back().cameras.empty() )
-        {
-            Camera *cam = &phyInstances.back().cameras.begin()->second;
-
-            static Vec3r last_delta(0, 0, 0);
-            if (cam->rigid != NULL)
+            std::lock_guard<std::mutex> lock(phyInstances_lock);
+            switch (wireframemode)
             {
-                Vec3r campos = cam->rigid->pos + (cam->rigid->orient) * cam->pos;
-                Vec3r delta = player.pos - campos;
-                if (delta.Length() >= 5)
-                    player.pos = campos + Normalize(last_delta)*5;
-                else
-                    last_delta = delta;
+            case 1:
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                glEnable(GL_CULL_FACE);
+                break;
+            case 2:
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                glDisable(GL_CULL_FACE);
+                break;
+            default:
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                glEnable(GL_CULL_FACE);
+            };
 
-                //player.pos = cam->rigid->pos + (cam->rigid->orient) * cam->pos;
-            }
-            else
+            shader.Enable();
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glLoadIdentity();
+
+            glRotatef( 90, -1, 0, 0);
+            glRotatef( 90, 0, 0, 1);
             {
-                player.pos = cam->pos;
-                last_delta = player.pos;
+                Quat4r q = player.rot;
+                q.Normalize();
+                REAL a = acos( Clamp<REAL>(q.w, -1.0, 1.0) );
+                Vec3r vec = Normalize(q.vec);
+                glRotatef( a/M_PI*180.0*-2.0, vec.x, vec.y, vec.z );
             }
 
-/*
-            player.pos += cam->pos2;
+            GLfloat lightpos[4];
+            lightpos[0] = 0; //player.pos.x;
+            lightpos[1] = 0; //player.pos.y;
+            lightpos[2] = 0; //player.pos.z;
+            lightpos[3] = 1;
+            glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
-            Quat4r q = cam->rigid->orient * cam->orient;
-            q.Normalize();
-            REAL a = acos(Clamp<REAL>(q.w, -1.0, 1.0));
-            Vec3r vec = Normalize(q.vec);
-            glRotatef( a/M_PI*180.0*-2.0, vec.x, vec.y, vec.z );
-*/
-        }
-        //SDL_UnlockMutex(phyInstances_lock);
-
-        glTranslatef( -player.pos.x, -player.pos.y, -player.pos.z);
-
-        glColor3f(1, 1, 1);
-
-        if (stereo3dmode == 1) // cross-eyed
-        {
-            glViewport(0, 0, xRes/2, yRes);
-            for (float a=0; a<2; ++a)
-            {
-                if (world)
-                    world->Draw();
-
-                //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 2.0 / 3.0 );
-                DrawPlayer(player);
-                //SDL_LockMutex(phyInstances_lock);
-                typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
-                for (; it != end; ++it)
-                    DrawPhysics(*it);
-                //SDL_UnlockMutex(phyInstances_lock);
-
-                glViewport(xRes/2, 0, xRes/2, yRes);
-            }
-            glViewport(0, 0, xRes, yRes);
-        }
-        else if (stereo3dmode == 2) // horizontally interlaced
-        {
-#define X 0xff
-            GLubyte stripple[]={X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X};
-#undef X
-            glEnable(GL_POLYGON_STIPPLE);
-            glPolygonStipple( stripple );
-            for (float a=0; a<2; ++a)
-            {
-                if (world)
-                    world->Draw();
-
-                //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 4.0 / 3.0 );
-                DrawPlayer(player);
-                //SDL_LockMutex(phyInstances_lock);
-                typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
-                for (; it != end; ++it)
-                    DrawPhysics(*it);
-                //SDL_UnlockMutex(phyInstances_lock);
-
-                glPolygonStipple( stripple+4 );
-            }
-            glDisable(GL_POLYGON_STIPPLE);
-        }
-        else if (stereo3dmode == 3) // vertically interlaced
-        {
-#define X 0x55
-            GLubyte stripple[]={X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-#undef X
-#define X 0xaa
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X};
-#undef X
-            glEnable(GL_POLYGON_STIPPLE);
-            glPolygonStipple( stripple );
-            for (float a=0; a<2; ++a)
-            {
-                if (world)
-                    world->Draw();
-
-                //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 4.0 / 3.0 );
-                DrawPlayer(player);
-                //SDL_LockMutex(phyInstances_lock);
-                typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
-                for (; it != end; ++it)
-                    DrawPhysics(*it);
-                //SDL_UnlockMutex(phyInstances_lock);
-
-                glPolygonStipple( stripple+128 );
-            }
-            glDisable(GL_POLYGON_STIPPLE);
-        }
-        else // no stereo3d
-        {
-            if (world)
-                world->Draw();
-
-            DrawPlayer(player);
             //SDL_LockMutex(phyInstances_lock);
-            typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
-            for (; it != end; ++it)
-                DrawPhysics(*it);
+            if ( !phyInstances.empty() && !phyInstances.back().cameras.empty() )
+            {
+                Camera *cam = &phyInstances.back().cameras.begin()->second;
+
+                static Vec3r last_delta(0, 0, 0);
+                if (cam->rigid != NULL)
+                {
+                    Vec3r campos = cam->rigid->pos + (cam->rigid->orient) * cam->pos;
+                    Vec3r delta = player.pos - campos;
+                    if (delta.Length() >= 5)
+                        player.pos = campos + Normalize(last_delta)*5;
+                    else
+                        last_delta = delta;
+
+                    //player.pos = cam->rigid->pos + (cam->rigid->orient) * cam->pos;
+                }
+                else
+                {
+                    player.pos = cam->pos;
+                    last_delta = player.pos;
+                }
+
+    /*
+                player.pos += cam->pos2;
+
+                Quat4r q = cam->rigid->orient * cam->orient;
+                q.Normalize();
+                REAL a = acos(Clamp<REAL>(q.w, -1.0, 1.0));
+                Vec3r vec = Normalize(q.vec);
+                glRotatef( a/M_PI*180.0*-2.0, vec.x, vec.y, vec.z );
+    */
+            }
             //SDL_UnlockMutex(phyInstances_lock);
+
+            glTranslatef( -player.pos.x, -player.pos.y, -player.pos.z);
+
+            glColor3f(1, 1, 1);
+
+            if (stereo3dmode == 1) // cross-eyed
+            {
+                glViewport(0, 0, xRes/2, yRes);
+                for (float a=0; a<2; ++a)
+                {
+                    if (world)
+                        world->Draw();
+
+                    //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 2.0 / 3.0 );
+                    DrawPlayer(player);
+                    //SDL_LockMutex(phyInstances_lock);
+                    typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
+                    for (; it != end; ++it)
+                        DrawPhysics(*it);
+                    //SDL_UnlockMutex(phyInstances_lock);
+
+                    glViewport(xRes/2, 0, xRes/2, yRes);
+                }
+                glViewport(0, 0, xRes, yRes);
+            }
+            else if (stereo3dmode == 2) // horizontally interlaced
+            {
+    #define X 0xff
+                GLubyte stripple[]={X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                                    X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                                    X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                                    X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                                    X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                                    X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                                    X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                                    X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                                    X,X,X,X};
+    #undef X
+                glEnable(GL_POLYGON_STIPPLE);
+                glPolygonStipple( stripple );
+                for (float a=0; a<2; ++a)
+                {
+                    if (world)
+                        world->Draw();
+
+                    //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 4.0 / 3.0 );
+                    DrawPlayer(player);
+                    //SDL_LockMutex(phyInstances_lock);
+                    typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
+                    for (; it != end; ++it)
+                        DrawPhysics(*it);
+                    //SDL_UnlockMutex(phyInstances_lock);
+
+                    glPolygonStipple( stripple+4 );
+                }
+                glDisable(GL_POLYGON_STIPPLE);
+            }
+            else if (stereo3dmode == 3) // vertically interlaced
+            {
+    #define X 0x55
+                GLubyte stripple[]={X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+    #undef X
+    #define X 0xaa
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                                    X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X};
+    #undef X
+                glEnable(GL_POLYGON_STIPPLE);
+                glPolygonStipple( stripple );
+                for (float a=0; a<2; ++a)
+                {
+                    if (world)
+                        world->Draw();
+
+                    //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 4.0 / 3.0 );
+                    DrawPlayer(player);
+                    //SDL_LockMutex(phyInstances_lock);
+                    typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
+                    for (; it != end; ++it)
+                        DrawPhysics(*it);
+                    //SDL_UnlockMutex(phyInstances_lock);
+
+                    glPolygonStipple( stripple+128 );
+                }
+                glDisable(GL_POLYGON_STIPPLE);
+            }
+            else // no stereo3d
+            {
+                if (world)
+                    world->Draw();
+
+                DrawPlayer(player);
+                //SDL_LockMutex(phyInstances_lock);
+                typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
+                for (; it != end; ++it)
+                    DrawPhysics(*it);
+                //SDL_UnlockMutex(phyInstances_lock);
+            }
+
+            shader.Disable();
+            glDisable(GL_LIGHT0);
         }
-
-        shader.Disable();
-        glDisable(GL_LIGHT0);
-
-        SDL_UnlockMutex(phyInstances_lock);
 
         profiler.RememberTime("DrawGame()");
         DrawHUD();
@@ -929,45 +929,46 @@ namespace App
 #undef names
 #undef freq
 
-        SDL_LockMutex(phyInstances_lock);
-        typeof(phyInstances.begin()) it;
-        for (it = phyInstances.begin(); it != phyInstances.end() && y > 0; ++it)
         {
+            std::lock_guard<std::mutex> lock(phyInstances_lock);
+            typeof(phyInstances.begin()) it;
+            for (it = phyInstances.begin(); it != phyInstances.end() && y > 0; ++it)
+            {
 #define times (it->phys->profiler.times)
 #define names (it->phys->profiler.names)
 #define freq (it->phys->profiler.freq)
-            if ( times.size() > 0 )
-            {
-                double inv_freq = 1.0e-9;
-                typeof(times.back()) total = 0;
-
-                for ( typeof(times.begin()) it2 = times.begin(); it2 != times.end(); ++it2 )
-                    total += *it2;
-
-                for ( unsigned int j = 0; j < names.size(); ++j )
+                if ( times.size() > 0 )
                 {
+                    double inv_freq = 1.0e-9;
+                    typeof(times.back()) total = 0;
+
+                    for ( typeof(times.begin()) it2 = times.begin(); it2 != times.end(); ++it2 )
+                        total += *it2;
+
+                    for ( unsigned int j = 0; j < names.size(); ++j )
+                    {
+                        std::stringstream ss;
+                        double time = times[j];
+                        ss.width(20);
+                        ss << std::left << names[j] + ":";
+                        ss.width(10);
+                        ss << std::fixed << std::right << time / total * 100.0 << "% ";
+                        ss.width(10);
+                        ss << std::fixed << std::right << time * inv_freq << " ms";
+                        glRasterPos2f( 0, y-=height );
+                        DrawString( GLUT_BITMAP_9_BY_15, ss.str().c_str() );
+                    }
+
                     std::stringstream ss;
-                    double time = times[j];
-                    ss.width(20);
-                    ss << std::left << names[j] + ":";
-                    ss.width(10);
-                    ss << std::fixed << std::right << time / total * 100.0 << "% ";
-                    ss.width(10);
-                    ss << std::fixed << std::right << time * inv_freq << " ms";
+                    ss << "total: " << std::fixed << total * inv_freq << " ms";
                     glRasterPos2f( 0, y-=height );
                     DrawString( GLUT_BITMAP_9_BY_15, ss.str().c_str() );
                 }
-
-                std::stringstream ss;
-                ss << "total: " << std::fixed << total * inv_freq << " ms";
-                glRasterPos2f( 0, y-=height );
-                DrawString( GLUT_BITMAP_9_BY_15, ss.str().c_str() );
-            }
 #undef times
 #undef names
 #undef freq
+            }
         }
-        SDL_UnlockMutex(phyInstances_lock);
 
 /*
         {

@@ -1,25 +1,25 @@
+#include <list>
+#include <mutex>
+#include <string>
+#include <vector>
+
 #include <AL/al.h>
 #include <AL/alc.h>
 //#include <alut/alut.h>
-
 #include <SDL.h>
-#include "SDL_thread.h"
-#include "SDL_mutex.h"
-#include <vector>
-#include <list>
-#include <string>
+#include <SDL_thread.h>
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
 #endif
 
-#include "vectormath.h"
-#include "player.h"
-#include "physstruct.h"
-#include "scene.h"
-#include "world.h"
 #include "actor.h"
 #include "individual.h"
+#include "physstruct.h"
+#include "player.h"
+#include "scene.h"
+#include "vectormath.h"
+#include "world.h"
 
 template <class T>
 class ProtectedData
@@ -32,33 +32,31 @@ public:
 
     ProtectedData(const T data)
     {
-        mutex = SDL_CreateMutex();
         this->data = data;
     }
 
     ~ProtectedData()
     {
-        SDL_DestroyMutex(mutex);
     }
 
     T Get()
     {
         T tmp;
-        SDL_LockMutex(mutex);
-        tmp = data;
-        SDL_UnlockMutex(mutex);
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            tmp = data;
+        }
         return tmp;
     }
 
     void Set(T data)
     {
-        SDL_LockMutex(mutex);
+        std::lock_guard<std::mutex> lock(mutex);
         this->data = data;
-        SDL_UnlockMutex(mutex);
     }
 private:
     T data;
-    SDL_mutex *mutex;
+    std::mutex mutex;
 };
 
 int StartScene(void *data)
@@ -68,8 +66,6 @@ int StartScene(void *data)
 
 Scene::Scene()
 {
-    flags_mutex = SDL_CreateMutex();
-    actors_mutex = SDL_CreateMutex();
     flags = 0;
     realTicks = SDL_GetTicks();
     physicsTicks = 0;
@@ -77,38 +73,32 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    SDL_DestroyMutex(flags_mutex);
-    SDL_DestroyMutex(actors_mutex);
 }
 
 void Scene::Spawn(const char *filename)
 {
-    SDL_LockMutex(actors_mutex);
+    std::lock_guard<std::mutex> lock(actors_mutex);
     actors.push_back(new Individual(filename));
-    SDL_UnlockMutex(actors_mutex);
 }
 
 int Scene::GetFlags()
 {
     int tmp;
-    SDL_LockMutex(flags_mutex);
+    std::lock_guard<std::mutex> lock(flags_mutex);
     tmp = flags;
-    SDL_UnlockMutex(flags_mutex);
     return tmp;
 }
 
 void Scene::AddFlags(SceneFlags tmp)
 {
-    SDL_LockMutex(flags_mutex);
+    std::lock_guard<std::mutex> lock(flags_mutex);
     flags |= tmp;
-    SDL_UnlockMutex(flags_mutex);
 }
 
 void Scene::RemoveFlags(SceneFlags tmp)
 {
-    SDL_LockMutex(flags_mutex);
+    std::lock_guard<std::mutex> lock(flags_mutex);
     flags &= ~tmp;
-    SDL_UnlockMutex(flags_mutex);
 }
 
 int Scene::Loop()
@@ -169,7 +159,7 @@ int Scene::Loop()
 
 void Scene::UpdatePhysics()
 {
-    SDL_LockMutex(phyInstances_lock);
+    std::lock_guard<std::mutex> lock(phyInstances_lock);
 
     typeof(phyInstances.begin()) it, it2;
     for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
@@ -274,16 +264,11 @@ void Scene::UpdatePhysics()
 
     alListener3f(AL_POSITION, App::player.pos.x, App::player.pos.y, App::player.pos.z);
     alListener3f(AL_VELOCITY, App::player.vel.x, App::player.vel.y, App::player.vel.z);
-
-    SDL_UnlockMutex(phyInstances_lock);
 }
 
 void Scene::UpdateActors()
 {
-    SDL_LockMutex(actors_mutex);
-
+    std::lock_guard<std::mutex> lock(actors_mutex);
     for (typeof(actors.begin()) it = actors.begin(); it != actors.end(); ++it)
         (*it)->Update(physicsTicks);
-
-    SDL_UnlockMutex(actors_mutex);
 }

@@ -189,7 +189,7 @@ BEGIN_FUNC_CUSTOM("Pose", EmbPose, "")
         Py_RETURN_NONE;
     }
 
-    SDL_LockMutex(phyInstances_lock);
+    std::lock_guard<std::mutex> lock(phyInstances_lock);
 
     bool fail;
     if (b == b)
@@ -203,8 +203,6 @@ BEGIN_FUNC_CUSTOM("Pose", EmbPose, "")
     {
         // TODO: report error
 	}
-
-    SDL_UnlockMutex(phyInstances_lock);
 
     Py_RETURN_NONE;
 }
@@ -221,9 +219,12 @@ BEGIN_FUNC_CUSTOM("PollPhy", EmbPollPhy, "")
         LOG_S(ERROR) << "No physics instance";
         Py_RETURN_NONE;
     }
-    SDL_LockMutex(phyInstances_lock);
-    std::vector<REAL> ret = phyInstances.back().PollPhys(pollstring);
-    SDL_UnlockMutex(phyInstances_lock);
+
+    std::vector<REAL> ret;
+    {
+        std::lock_guard<std::mutex> lock(phyInstances_lock);
+        ret = phyInstances.back().PollPhys(pollstring);
+    }
 
     unsigned int size = ret.size();
     if ( size == 0 )
@@ -253,13 +254,13 @@ BEGIN_FUNC_CUSTOM("Motor", EmbMotor, "")
     if ( !PyArg_ParseTuple(args, "sfff:Motor", &name, &x, &y, &z) )
         return NULL;
 
+    std::lock_guard<std::mutex> lock(phyInstances_lock);
+
     if (phyInstances.empty())
     {
         LOG_S(ERROR) << "No physics instance";
         Py_RETURN_NONE;
     }
-
-    SDL_LockMutex(phyInstances_lock);
 
     PhyInstance *inst = &phyInstances.back();
     TypeName tn;
@@ -267,8 +268,6 @@ BEGIN_FUNC_CUSTOM("Motor", EmbMotor, "")
     tn.name = name;
     if ( inst->namesIndex.find(tn) != inst->namesIndex.end() )
         inst->phys->motors[inst->namesIndex[tn]].torque = Vec3r(x,y,z) * (inst->phys->time * inst->phys->time);
-
-    SDL_UnlockMutex(phyInstances_lock);
 
     Py_RETURN_NONE;
 }

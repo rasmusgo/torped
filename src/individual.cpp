@@ -60,9 +60,8 @@ void Individual::Draw()
 {
     if (inst)
     {
-        SDL_LockMutex(phyInstances_lock);
+        std::lock_guard<std::mutex> lock(phyInstances_lock);
         App::DrawPhysics(*inst);
-        SDL_UnlockMutex(phyInstances_lock);
     }
 }
 
@@ -89,8 +88,7 @@ int LuaMethodPose(lua_State* L)
 
         if (inst)
         {
-            SDL_LockMutex(phyInstances_lock);
-
+            std::lock_guard<std::mutex> lock(phyInstances_lock);
             bool fail;
             if (b == b)
                 fail = !inst->UpdatePhysBlend(str.c_str(), a, b);
@@ -98,8 +96,6 @@ int LuaMethodPose(lua_State* L)
                 fail = !inst->UpdatePhysBlend(str.c_str(), 1.0f-a, a);
             else
                 fail = !inst->UpdatePhys(str.c_str());
-
-            SDL_UnlockMutex(phyInstances_lock);
 
             if (fail)
             {
@@ -132,12 +128,9 @@ int LuaMethodMotor(lua_State* L)
 
         if (inst)
         {
-            SDL_LockMutex(phyInstances_lock);
-
+            std::lock_guard<std::mutex> lock(phyInstances_lock);
             if ( inst->namesIndex.find(tn) != inst->namesIndex.end() )
                 inst->phys->motors[inst->namesIndex[tn]].torque = torque * (inst->phys->time * inst->phys->time);
-
-            SDL_UnlockMutex(phyInstances_lock);
         }
     }
 

@@ -12,15 +12,13 @@
 #include "physstruct.h"
 #include "texture.h"
 
-using namespace std;
-
 // lock mutex before access to phyInstances
-SDL_mutex *phyInstances_lock = NULL;
-vector<PhyInstance> phyInstances;
+std::mutex phyInstances_lock;
+std::vector<PhyInstance> phyInstances;
 
-void PrintPhys(PhyInstance *inst, ostream *ostr = NULL)
+void PrintPhys(PhyInstance *inst, std::ostream *ostr = NULL)
 {
-    stringstream buffer;
+    std::stringstream buffer;
     if (ostr == NULL)
         ostr = &buffer;
     /*
@@ -91,7 +89,6 @@ void PrintPhys(PhyInstance *inst, ostream *ostr = NULL)
 
 bool InitPhys()
 {
-    phyInstances_lock = SDL_CreateMutex();
     // Clear errors
     return true;
 }
@@ -99,13 +96,11 @@ bool InitPhys()
 void QuitPhys()
 {
     PhyInstance::DeleteAll();
-    SDL_DestroyMutex(phyInstances_lock);
-    phyInstances_lock = NULL;
 }
 
 void PhyInstance::DeleteAll()
 {
-    SDL_LockMutex(phyInstances_lock);
+    std::lock_guard<std::mutex> lock(phyInstances_lock);
     for (typeof(phyInstances.begin()) it = phyInstances.begin(); it != phyInstances.end(); ++it)
     {
         // Destructors should be called here for everything that needs it
@@ -126,12 +121,11 @@ void PhyInstance::DeleteAll()
         it->memPool2 = NULL;
     }
     phyInstances.clear();
-    SDL_UnlockMutex(phyInstances_lock);
 }
 
 void PhyInstance::Remove()
 {
-    SDL_LockMutex(phyInstances_lock);
+    std::lock_guard<std::mutex> lock(phyInstances_lock);
     // should find the object and remove it...
     for (typeof(phyInstances.begin()) it = phyInstances.begin(); it != phyInstances.end(); ++it)
     {
@@ -157,7 +151,6 @@ void PhyInstance::Remove()
             break;
         }
     }
-    SDL_UnlockMutex(phyInstances_lock);
 }
 
 template <class T>
@@ -195,10 +188,11 @@ PhyInstance* PhyInstance::InsertPhysXML(const char *filename)
     }
     // keep track of the physics instance
     // lock mutex before access to phyInstances
-    SDL_LockMutex(phyInstances_lock);
-    // TODO: store inst on the heap and avoid copying
-    phyInstances.push_back(inst);
-    SDL_UnlockMutex(phyInstances_lock);
+    {
+        std::lock_guard<std::mutex> lock(phyInstances_lock);
+        // TODO: store inst on the heap and avoid copying
+        phyInstances.push_back(inst);
+    }
 
     //delete [] filename;
     //filename = NULL;
@@ -228,7 +222,7 @@ int PhyInstance::UpdatePhysBlend(const char name[], float a, float b)
 std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
 {
     TypeName typeName;
-    stringstream translator;
+    std::stringstream translator;
     std::vector<REAL> ret;
     translator << pollstring;
     translator >> typeName.type;
@@ -254,7 +248,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
             LOG_S(WARNING) << "warning: could not find node \"" << typeName.name << "\"";
             return ret;
         }
-        string what;
+        std::string what;
         translator >> what;
         if (what=="pos")
         {
@@ -275,7 +269,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
             LOG_S(WARNING) << "could not find point \"" << typeName.name << "\"";
             return ret;
         }
-        string what;
+        std::string what;
         translator >> what;
         if (what=="pos")
         {
@@ -306,7 +300,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
             LOG_S(WARNING) << "could not find spring \"" << typeName.name << "\"";
             return ret;
         }
-        string what;
+        std::string what;
         translator >> what;
         if (what=="length")
             ret.push_back(phys->springs[namesIndex[typeName]].l);
@@ -331,7 +325,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
             LOG_S(WARNING) << "could not find joint \"" << typeName.name << "\"";
             return ret;
         }
-        string what;
+        std::string what;
         translator >> what;
         if (what=="k")
             ret.push_back(phys->joints[namesIndex[typeName]].k);
@@ -349,10 +343,10 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
     {
         if ( namesIndex.find(typeName) == namesIndex.end() )
         {
-            LOG_S(WARNING) << "warning: could not find rigid \"" << typeName.name << "\"" << endl;
+            LOG_S(WARNING) << "warning: could not find rigid \"" << typeName.name << "\"";
             return ret;
         }
-        string what;
+        std::string what;
         translator >> what;
         if (what=="pos")
         {
@@ -397,7 +391,7 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
     return ret;
 }
 
-PhyPoint* PhyInstance::FindPoint(string name)
+PhyPoint* PhyInstance::FindPoint(std::string name)
 {
     TypeName tn;
     typeof(namesIndex.end()) it;
@@ -417,7 +411,7 @@ PhyPoint* PhyInstance::FindPoint(string name)
     return NULL;
 }
 
-int PhyInstance::FindPointIndex(string name)
+int PhyInstance::FindPointIndex(std::string name)
 {
     TypeName tn;
     typeof(namesIndex.end()) it;
@@ -612,7 +606,7 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
 
             if (pElem2->Attribute("normals") != NULL)
             {
-                stringstream ss;
+                std::stringstream ss;
                 ss << pElem2->Attribute("normals");
                 ss >> n1 >> n2 >> n3;
             }
@@ -639,7 +633,7 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
             int n1 = 0, n2 = 0, n3 = 0, n4 = 0;
             if (pElem2->Attribute("normals") != NULL)
             {
-                stringstream ss;
+                std::stringstream ss;
                 ss << pElem2->Attribute("normals");
                 ss >> n1 >> n2 >> n3 >> n4;
             }
@@ -689,7 +683,7 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
 
     // allocate memory for all the physics stuff
     // double the size to keep a copy of memPool to allow crash replay
-    inst.memPool = new (nothrow) char[size*2];
+    inst.memPool = new (std::nothrow) char[size*2];
     inst.memPool2 = inst.memPool+size; //new (nothrow) char[size];
     inst.memPool_size = size;
 
@@ -754,7 +748,7 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
 void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
 {
     {
-        stringstream ss;
+        std::stringstream ss;
         Vec3r tmp = phys->gravity / phys->time * phys->time;
         ss << hRoot->Element()->Attribute("gravity");
         ss >> tmp;
@@ -772,7 +766,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         pElem = TiXmlHandle(mesh).FirstChild("point").Element();
         for (; pElem; pElem = pElem->NextSiblingElement("point"))
         {
-            stringstream ss;
+            std::stringstream ss;
             ss << pElem->Attribute("pos");
             ss >> point->pos;
             ss.clear();
@@ -802,7 +796,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         rigid->nodes = node;
         rigid->points = point;
 
-        stringstream ss;
+        std::stringstream ss;
         ss << pElem->Attribute("pos");
         ss >> rigid->pos;
         ss.clear();
@@ -864,7 +858,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         pElem = TiXmlHandle(mesh).FirstChild("spring").Element();
         for (; pElem; pElem = pElem->NextSiblingElement("spring"))
         {
-            stringstream ss;
+            std::stringstream ss;
             ss << pElem->Attribute("k");
             ss >> spring->k;
             spring->k *= phys->time * phys->time;
@@ -895,7 +889,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         pElem = TiXmlHandle(mesh).FirstChild("joint").Element();
         for (; pElem; pElem = pElem->NextSiblingElement("joint"))
         {
-            stringstream ss;
+            std::stringstream ss;
             ss << pElem->Attribute("k");
             ss >> joint->k;
             joint->k *= phys->time * phys->time;
@@ -923,7 +917,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
     {
         balloon->points = ppoint;
 
-        stringstream ss;
+        std::stringstream ss;
         ss << pElem->Attribute("pressure");
         ss >> balloon->pressure;
 
@@ -945,8 +939,8 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
     pElem = hRoot->FirstChild("pose").Element();
     for (; pElem; pElem = pElem->NextSiblingElement("pose"))
     {
-        stringstream ss;
-        string name;
+        std::stringstream ss;
+        std::string name;
         ss << pElem->Attribute("name");
         ss >> name;
 
@@ -961,7 +955,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
     pElem = hRoot->FirstChild("motor").Element();
     for (; pElem; pElem = pElem->NextSiblingElement("motor"))
     {
-        stringstream ss;
+        std::stringstream ss;
         ss << pElem->Attribute("rigid1");
         ss >> tn.name;
         if (tn.name != "")
@@ -1066,7 +1060,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
                 vert[2] = &FindPoint(pElem2->Attribute("p3"))->pos;
 
                 int n1 = 0, n2 = 0, n3 = 0;
-                stringstream ss;
+                std::stringstream ss;
                 if (pElem2->Attribute("normals"))
                 {
                     ss << pElem2->Attribute("normals");
@@ -1121,7 +1115,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
                 vert[3] = &FindPoint(pElem2->Attribute("p4"))->pos;
 
                 int n1 = 0, n2 = 0, n3 = 0, n4 = 0;
-                stringstream ss;
+                std::stringstream ss;
                 if (pElem2->Attribute("normals"))
                 {
                     ss << pElem2->Attribute("normals");
@@ -1195,7 +1189,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         Camera *cam = &cameras[tmp];
         cam->rigid = &phys->rigids[it->second];
 
-        stringstream ss;
+        std::stringstream ss;
         if (pElem->Attribute("pos"))
         {
             ss << pElem->Attribute("pos");

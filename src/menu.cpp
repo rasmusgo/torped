@@ -1,8 +1,9 @@
+#include <deque>
+#include <mutex>
+
 #include "SDL_getenv.h"
-#include "SDL_mutex.h"
 #include "SDL_thread.h"
 #include <angelscript.h>
-#include <deque>
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <Python.h>
