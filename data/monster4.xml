@@ -7847,7 +7847,7 @@
 <motor name="Kaross_Axis_B" rigid1="Kaross" rigid2="Axis_B"/>
 <motor name="Kaross_Axis_F" rigid1="Kaross" rigid2="Axis_F"/>
 <texture name="monster.png" image="monster.png"/>
-<texture name="black.PNG" image="black.PNG"/>
+<texture name="black.png" image="black.png"/>
 <camera name="cam1" rigid="Kaross"/>
 <texture name="sky" image="skybox.png"/>
 <render texture="monster.png">

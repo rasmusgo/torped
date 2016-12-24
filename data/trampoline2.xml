@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document gravity="0 0 -9.82">
+<rigid name="Group" pos="0.000000 0.000000 2.750000" mass="20.000000" inertia="2.805426 2.805425 3.110850" rot="0.969367 0.000000 0.000000 -0.245615" >
+  <node name="Group_0" pos="0.000000 -0.000000 -0.250000"/>
+  <node name="Group_1" pos="-0.234288 0.346546 -0.250000"/>
+  <node name="Group_2" pos="-0.410712 0.079378 -0.250000"/>
+  <node name="Group_3" pos="-0.346546 -0.234289 -0.250000"/>
+  <node name="Group_4" pos="-0.079378 -0.410712 -0.250000"/>
+  <node name="Group_5" pos="0.234289 -0.346546 -0.250000"/>
+  <node name="Group_6" pos="0.410712 -0.079378 -0.250000"/>
+  <node name="Group_7" pos="0.346546 0.234289 -0.250000"/>
+  <node name="Group_8" pos="0.079378 0.410712 -0.250000"/>
+  <node name="Group_9" pos="0.079378 0.410712 0.250000"/>
+  <node name="Group_10" pos="0.346546 0.234289 0.250000"/>
+  <node name="Group_11" pos="0.410712 -0.079378 0.250000"/>
+  <node name="Group_12" pos="0.234289 -0.346546 0.250000"/>
+  <node name="Group_13" pos="-0.079378 -0.410712 0.250000"/>
+  <node name="Group_14" pos="-0.346546 -0.234289 0.250000"/>
+  <node name="Group_15" pos="-0.410712 0.079378 0.250000"/>
+  <node name="Group_16" pos="-0.234288 0.346546 0.250000"/>
+  <node name="Group_17" pos="0.000000 -0.000000 0.250000"/>
+</rigid>
+<texture name="Untitled.png" image="Untitled.png"/>
+<render texture="Untitled.png">  <gltriangle name="0" p1="Group_8" p2="Group_0" p3="Group_1" normals="8 0 1 " uvs="0.515147 0.496975 0.452649 0.346092 0.603532 0.408590 "/>
+  <gltriangle name="1" p1="Group_1" p2="Group_0" p3="Group_2" normals="1 0 2 " uvs="0.603532 0.408590 0.452649 0.346092 0.603533 0.283594 "/>
+  <gltriangle name="2" p1="Group_2" p2="Group_0" p3="Group_3" normals="2 0 3 " uvs="0.603533 0.283594 0.452649 0.346092 0.515147 0.195209 "/>
+  <gltriangle name="3" p1="Group_3" p2="Group_0" p3="Group_4" normals="3 0 4 " uvs="0.515147 0.195209 0.452649 0.346092 0.390152 0.195208 "/>
+  <gltriangle name="4" p1="Group_4" p2="Group_0" p3="Group_5" normals="4 0 5 " uvs="0.390152 0.195208 0.452649 0.346092 0.301766 0.283594 "/>
+  <gltriangle name="5" p1="Group_5" p2="Group_0" p3="Group_6" normals="5 0 6 " uvs="0.301766 0.283594 0.452649 0.346092 0.301766 0.408590 "/>
+  <gltriangle name="6" p1="Group_6" p2="Group_0" p3="Group_7" normals="6 0 7 " uvs="0.301766 0.408590 0.452649 0.346092 0.390152 0.496975 "/>
+  <gltriangle name="7" p1="Group_7" p2="Group_0" p3="Group_8" normals="7 0 8 " uvs="0.390152 0.496975 0.452649 0.346092 0.515147 0.496975 "/>
+  <glquad name="8" p1="Group_6" p2="Group_11" p3="Group_12" p4="Group_5" normals="25 11 12 24 " uvs="0.374990 0.195208 0.374990 0.000001 0.499986 0.000001 0.499987 0.195208 "/>
+  <glquad name="9" p1="Group_7" p2="Group_10" p3="Group_11" p4="Group_6" normals="18 10 11 25 " uvs="0.249993 0.195208 0.249994 0.000000 0.374990 0.000001 0.374990 0.195208 "/>
+  <glquad name="10" p1="Group_5" p2="Group_12" p3="Group_13" p4="Group_4" normals="24 12 13 23 " uvs="0.499987 0.195208 0.499986 0.000001 0.624981 0.000001 0.624982 0.195207 "/>
+  <glquad name="11" p1="Group_3" p2="Group_14" p3="Group_15" p4="Group_2" normals="22 14 15 21 " uvs="0.749977 0.195206 0.749976 0.000001 0.874971 0.000001 0.874971 0.195206 "/>
+  <glquad name="12" p1="Group_2" p2="Group_15" p3="Group_16" p4="Group_1" normals="21 15 16 20 " uvs="0.874971 0.195206 0.874971 0.000001 0.999966 0.000001 0.999965 0.195206 "/>
+  <glquad name="13" p1="Group_1" p2="Group_16" p3="Group_9" p4="Group_8" normals="20 16 9 19 " uvs="0.000000 0.195208 0.000000 0.000000 0.124997 0.000000 0.124997 0.195208 "/>
+  <glquad name="14" p1="Group_4" p2="Group_13" p3="Group_14" p4="Group_3" normals="23 13 14 22 " uvs="0.624982 0.195207 0.624981 0.000001 0.749976 0.000001 0.749977 0.195206 "/>
+  <glquad name="15" p1="Group_8" p2="Group_9" p3="Group_10" p4="Group_7" normals="19 9 10 18 " uvs="0.124997 0.195208 0.124997 0.000000 0.249994 0.000000 0.249993 0.195208 "/>
+  <gltriangle name="16" p1="Group_17" p2="Group_9" p3="Group_16" normals="17 32 31 " uvs="0.150883 0.346092 0.301766 0.283594 0.301766 0.408589 "/>
+  <gltriangle name="17" p1="Group_17" p2="Group_16" p3="Group_15" normals="17 31 30 " uvs="0.150883 0.346092 0.301766 0.408589 0.213381 0.496975 "/>
+  <gltriangle name="18" p1="Group_17" p2="Group_15" p3="Group_14" normals="17 30 29 " uvs="0.150883 0.346092 0.213381 0.496975 0.088385 0.496975 "/>
+  <gltriangle name="19" p1="Group_17" p2="Group_14" p3="Group_13" normals="17 29 28 " uvs="0.150883 0.346092 0.088385 0.496975 0.000000 0.408589 "/>
+  <gltriangle name="20" p1="Group_17" p2="Group_13" p3="Group_12" normals="17 28 27 " uvs="0.150883 0.346092 0.000000 0.408589 0.000000 0.283594 "/>
+  <gltriangle name="21" p1="Group_17" p2="Group_12" p3="Group_11" normals="17 27 26 " uvs="0.150883 0.346092 0.000000 0.283594 0.088386 0.195208 "/>
+  <gltriangle name="22" p1="Group_17" p2="Group_11" p3="Group_10" normals="17 26 33 " uvs="0.150883 0.346092 0.088386 0.195208 0.213381 0.195209 "/>
+  <gltriangle name="23" p1="Group_17" p2="Group_10" p3="Group_9" normals="17 33 32 " uvs="0.150883 0.346092 0.213381 0.195209 0.301766 0.283594 "/>
+</render>
+</document>

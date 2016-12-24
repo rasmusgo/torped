@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document gravity="0 0 -9.82">
+<rigid name="Base" pos="0.000272 0.000000 0.473183" mass="60.000000" inertia="35.222290 35.222305 67.605637" rot="0.991445 0.000000 0.130526 0.000000" >
+  <node name="Base_0" pos="-1.000000 1.000000 -0.043099"/>
+  <node name="Base_2" pos="-0.250000 0.250000 0.356901"/>
+  <node name="Base_7" pos="0.250000 -0.250000 0.356902"/>
+  <node name="Base_8" pos="-0.250000 -0.250000 0.356901"/>
+  <node name="Base_9" pos="-0.000000 -0.000000 0.916901"/>
+  <node name="Base_10" pos="1.000000 -1.000000 -0.043099"/>
+  <node name="Base_11" pos="-1.000000 -1.000000 -0.043099"/>
+  <node name="Base_16" pos="0.000000 -0.000000 0.456902"/>
+  <node name="Base_23" pos="1.000000 1.000000 -0.043099"/>
+  <node name="Base_105" pos="-1.000000 0.500000 -0.043099"/>
+  <node name="Base_106" pos="-1.000000 0.000000 -0.043099"/>
+  <node name="Base_107" pos="-1.000000 -0.500000 -0.043099"/>
+  <node name="Base_108" pos="0.500000 -1.000000 -0.043099"/>
+  <node name="Base_109" pos="-0.000000 -1.000000 -0.043099"/>
+  <node name="Base_110" pos="-0.500000 -1.000000 -0.043099"/>
+  <node name="Base_111" pos="-0.500000 1.000000 -0.043099"/>
+  <node name="Base_112" pos="-0.000000 1.000000 -0.043099"/>
+  <node name="Base_113" pos="0.500000 1.000000 -0.043099"/>
+  <node name="Base_114" pos="1.000000 -0.500000 -0.043099"/>
+  <node name="Base_115" pos="1.000000 0.000000 -0.043099"/>
+  <node name="Base_116" pos="1.000000 0.500000 -0.043099"/>
+  <node name="Base_117" pos="-0.500000 0.500000 -0.043099"/>
+  <node name="Base_118" pos="-0.000000 0.500000 -0.043099"/>
+  <node name="Base_119" pos="0.500000 0.500000 -0.043099"/>
+  <node name="Base_120" pos="-0.500000 0.000000 -0.043099"/>
+  <node name="Base_121" pos="-0.000000 0.000000 -0.043099"/>
+  <node name="Base_122" pos="0.500000 0.000000 -0.043099"/>
+  <node name="Base_123" pos="-0.500000 -0.500000 -0.043099"/>
+  <node name="Base_124" pos="-0.000000 -0.500000 -0.043099"/>
+  <node name="Base_125" pos="0.500000 -0.500000 -0.043099"/>
+  <node name="Base_128" pos="0.250000 0.250000 0.356902"/>
+  <node name="Base_130" pos="-1.000000 0.833333 -0.043099"/>
+  <node name="Base_131" pos="-1.000000 0.666667 -0.043099"/>
+  <node name="Base_132" pos="-1.000000 0.333333 -0.043099"/>
+  <node name="Base_133" pos="-1.000000 0.166667 -0.043099"/>
+  <node name="Base_134" pos="-1.000000 -0.166667 -0.043099"/>
+  <node name="Base_135" pos="-1.000000 -0.333333 -0.043099"/>
+  <node name="Base_136" pos="-1.000000 -0.833333 -0.043099"/>
+  <node name="Base_137" pos="-1.000000 -0.666667 -0.043099"/>
+  <node name="Base_138" pos="0.833333 -1.000000 -0.043099"/>
+  <node name="Base_139" pos="0.666667 -1.000000 -0.043099"/>
+  <node name="Base_140" pos="0.333333 -1.000000 -0.043099"/>
+  <node name="Base_141" pos="0.166667 -1.000000 -0.043099"/>
+  <node name="Base_142" pos="-0.166667 -1.000000 -0.043099"/>
+  <node name="Base_143" pos="-0.333333 -1.000000 -0.043099"/>
+  <node name="Base_144" pos="-0.833333 -1.000000 -0.043099"/>
+  <node name="Base_145" pos="-0.666667 -1.000000 -0.043099"/>
+  <node name="Base_146" pos="-0.833333 1.000000 -0.043099"/>
+  <node name="Base_147" pos="-0.666667 1.000000 -0.043099"/>
+  <node name="Base_148" pos="-0.333333 1.000000 -0.043099"/>
+  <node name="Base_149" pos="-0.166667 1.000000 -0.043099"/>
+  <node name="Base_150" pos="0.166667 1.000000 -0.043099"/>
+  <node name="Base_151" pos="0.333333 1.000000 -0.043099"/>
+  <node name="Base_152" pos="0.833333 1.000000 -0.043099"/>
+  <node name="Base_153" pos="0.666667 1.000000 -0.043099"/>
+  <node name="Base_154" pos="1.000000 -0.833333 -0.043099"/>
+  <node name="Base_155" pos="1.000000 -0.666667 -0.043099"/>
+  <node name="Base_156" pos="1.000000 -0.333333 -0.043099"/>
+  <node name="Base_157" pos="1.000000 -0.166667 -0.043099"/>
+  <node name="Base_158" pos="1.000000 0.166667 -0.043099"/>
+  <node name="Base_159" pos="1.000000 0.333333 -0.043099"/>
+  <node name="Base_160" pos="1.000000 0.833333 -0.043099"/>
+  <node name="Base_161" pos="1.000000 0.666667 -0.043099"/>
+  <node name="Base_162" pos="0.916667 0.916667 -0.043099"/>
+  <node name="Base_163" pos="0.833333 0.833333 -0.043099"/>
+  <node name="Base_164" pos="-0.916667 0.916667 -0.043099"/>
+  <node name="Base_165" pos="-0.833333 0.833333 -0.043099"/>
+  <node name="Base_166" pos="0.916667 -0.916667 -0.043099"/>
+  <node name="Base_167" pos="0.833333 -0.833333 -0.043099"/>
+  <node name="Base_168" pos="-0.916667 -0.916667 -0.043099"/>
+  <node name="Base_169" pos="-0.833333 -0.833333 -0.043099"/>
+</rigid>
+<rigid name="Rotor" pos="0.198027 -0.000000 1.211217" mass="5.000000" inertia="1.734061 0.020822 1.719244" rot="0.991445 0.000000 0.130526 0.000000" >
+  <node name="Rotor_1" pos="0.000000 1.980000 0.022833"/>
+  <node name="Rotor_3" pos="0.050000 0.080000 0.132833"/>
+  <node name="Rotor_4" pos="0.050000 -0.080000 0.132833"/>
+  <node name="Rotor_5" pos="-0.050000 -0.080000 0.132833"/>
+  <node name="Rotor_6" pos="-0.050000 0.080000 0.132833"/>
+  <node name="Rotor_9" pos="-0.000000 0.000000 0.152833"/>
+  <node name="Rotor_12" pos="-0.050000 0.050000 -0.157167"/>
+  <node name="Rotor_13" pos="-0.050000 -0.050000 -0.157168"/>
+  <node name="Rotor_14" pos="0.050000 -0.050000 -0.157167"/>
+  <node name="Rotor_15" pos="0.050000 0.050000 -0.157167"/>
+  <node name="Rotor_16" pos="0.000001 0.000000 -0.307167"/>
+  <node name="Rotor_17" pos="-0.050000 0.150000 0.065525"/>
+  <node name="Rotor_18" pos="-0.050000 0.150000 -0.098475"/>
+  <node name="Rotor_19" pos="-0.050000 -0.150000 0.065525"/>
+  <node name="Rotor_20" pos="-0.050000 -0.150000 -0.098475"/>
+  <node name="Rotor_21" pos="0.050000 0.150000 0.065525"/>
+  <node name="Rotor_22" pos="0.050000 0.150000 -0.098475"/>
+  <node name="Rotor_70" pos="0.050000 -0.150000 -0.098475"/>
+  <node name="Rotor_71" pos="0.050000 -0.150000 0.065525"/>
+  <node name="Rotor_72" pos="0.000000 -1.980000 0.022833"/>
+  <node name="Rotor_73" pos="0.010000 1.614000 0.021525"/>
+  <node name="Rotor_74" pos="0.020000 1.248000 0.011525"/>
+  <node name="Rotor_75" pos="0.030000 0.882000 -0.018475"/>
+  <node name="Rotor_76" pos="0.040000 0.516000 -0.048475"/>
+  <node name="Rotor_77" pos="0.010000 1.614000 0.065525"/>
+  <node name="Rotor_78" pos="0.020000 1.248000 0.065525"/>
+  <node name="Rotor_79" pos="0.030000 0.882000 0.065525"/>
+  <node name="Rotor_80" pos="0.040000 0.516000 0.065525"/>
+  <node name="Rotor_81" pos="-0.010000 1.614000 0.021525"/>
+  <node name="Rotor_82" pos="-0.020000 1.248000 0.011525"/>
+  <node name="Rotor_83" pos="-0.030000 0.882000 -0.018475"/>
+  <node name="Rotor_84" pos="-0.040000 0.516000 -0.048475"/>
+  <node name="Rotor_85" pos="-0.010000 1.614000 0.065525"/>
+  <node name="Rotor_86" pos="-0.020000 1.248000 0.065525"/>
+  <node name="Rotor_87" pos="-0.030000 0.882000 0.065525"/>
+  <node name="Rotor_88" pos="-0.040000 0.516000 0.065525"/>
+  <node name="Rotor_89" pos="0.040000 -0.516000 0.065525"/>
+  <node name="Rotor_90" pos="0.030000 -0.882000 0.065525"/>
+  <node name="Rotor_91" pos="0.020000 -1.248000 0.065525"/>
+  <node name="Rotor_92" pos="0.010000 -1.614000 0.065525"/>
+  <node name="Rotor_93" pos="0.040000 -0.516000 -0.048475"/>
+  <node name="Rotor_94" pos="0.030000 -0.882000 -0.018475"/>
+  <node name="Rotor_95" pos="0.020000 -1.248000 0.011525"/>
+  <node name="Rotor_96" pos="0.010000 -1.614000 0.021525"/>
+  <node name="Rotor_97" pos="-0.040000 -0.516000 -0.048475"/>
+  <node name="Rotor_98" pos="-0.030000 -0.882000 -0.018475"/>
+  <node name="Rotor_99" pos="-0.020000 -1.248000 0.011525"/>
+  <node name="Rotor_100" pos="-0.010000 -1.614000 0.021525"/>
+  <node name="Rotor_101" pos="-0.040000 -0.516000 0.065525"/>
+  <node name="Rotor_102" pos="-0.030000 -0.882000 0.065525"/>
+  <node name="Rotor_103" pos="-0.020000 -1.248000 0.065525"/>
+  <node name="Rotor_104" pos="-0.010000 -1.614000 0.065525"/>
+</rigid>
+<rigid name="crowbar" pos="1.129467 -0.000000 1.821329" mass="2.000000" inertia="0.295914 0.297972 0.014609" rot="0.984979 0.000000 0.172674 0.000000" >
+  <node name="crowbar_24" pos="0.037184 -0.025000 -0.402588"/>
+  <node name="crowbar_25" pos="0.037184 0.025000 -0.402588"/>
+  <node name="crowbar_26" pos="-0.029672 0.025000 -0.207575"/>
+  <node name="crowbar_27" pos="0.020146 0.025000 -0.203316"/>
+  <node name="crowbar_28" pos="-0.029672 -0.025000 -0.207575"/>
+  <node name="crowbar_29" pos="0.020146 -0.025000 -0.203316"/>
+  <node name="crowbar_30" pos="-0.046709 -0.025000 -0.008302"/>
+  <node name="crowbar_31" pos="0.003109 -0.025000 -0.004042"/>
+  <node name="crowbar_32" pos="0.003109 0.025000 -0.004042"/>
+  <node name="crowbar_33" pos="-0.046709 0.025000 -0.008302"/>
+  <node name="crowbar_34" pos="-0.066114 -0.025000 0.218673"/>
+  <node name="crowbar_35" pos="-0.016203 -0.025000 0.221844"/>
+  <node name="crowbar_36" pos="-0.066114 0.025000 0.218673"/>
+  <node name="crowbar_37" pos="-0.016203 0.025000 0.221844"/>
+  <node name="crowbar_38" pos="-0.079848 -0.025000 0.379308"/>
+  <node name="crowbar_39" pos="-0.079848 0.025000 0.379308"/>
+  <node name="crowbar_40" pos="-0.029096 0.025000 0.372644"/>
+  <node name="crowbar_41" pos="-0.060596 0.025000 0.413518"/>
+  <node name="crowbar_42" pos="-0.060596 -0.025000 0.413518"/>
+  <node name="crowbar_43" pos="-0.029096 -0.025000 0.372644"/>
+  <node name="crowbar_44" pos="-0.032037 -0.025000 0.428082"/>
+  <node name="crowbar_45" pos="-0.032037 0.025000 0.428082"/>
+  <node name="crowbar_46" pos="-0.007227 0.025000 0.391783"/>
+  <node name="crowbar_47" pos="0.011734 0.025000 0.423454"/>
+  <node name="crowbar_48" pos="0.011734 -0.025000 0.423454"/>
+  <node name="crowbar_49" pos="-0.007227 -0.025000 0.391783"/>
+  <node name="crowbar_50" pos="0.059219 -0.025000 0.394438"/>
+  <node name="crowbar_51" pos="0.041052 -0.025000 0.377750"/>
+  <node name="crowbar_52" pos="0.041052 0.025000 0.377750"/>
+  <node name="crowbar_53" pos="0.059219 0.025000 0.394438"/>
+  <node name="crowbar_54" pos="0.083565 0.025000 0.360924"/>
+  <node name="crowbar_55" pos="0.102883 0.025000 0.366424"/>
+  <node name="crowbar_56" pos="0.102883 -0.025000 0.366424"/>
+  <node name="crowbar_57" pos="0.083565 -0.025000 0.360924"/>
+  <node name="crowbar_58" pos="0.032519 0.025000 -0.436479"/>
+  <node name="crowbar_59" pos="-0.012635 0.025000 -0.406848"/>
+  <node name="crowbar_60" pos="-0.012635 -0.025000 -0.406848"/>
+  <node name="crowbar_61" pos="0.032519 -0.025000 -0.436479"/>
+  <node name="crowbar_62" pos="-0.028643 -0.025000 -0.462279"/>
+  <node name="crowbar_63" pos="0.000210 -0.025000 -0.484945"/>
+  <node name="crowbar_64" pos="0.000210 0.025000 -0.484945"/>
+  <node name="crowbar_65" pos="-0.028643 0.025000 -0.462279"/>
+  <node name="crowbar_66" pos="-0.054426 0.025000 -0.518525"/>
+  <node name="crowbar_67" pos="-0.047066 0.025000 -0.555131"/>
+  <node name="crowbar_68" pos="-0.054426 -0.025000 -0.518525"/>
+  <node name="crowbar_69" pos="-0.047066 -0.025000 -0.555131"/>
+  <node name="crowbar_126" pos="-0.037970 -0.250000 -0.425824"/>
+  <node name="crowbar_127" pos="0.313242 0.000000 -0.465974"/>
+  <node name="crowbar_129" pos="-0.037970 0.250000 -0.425824"/>
+</rigid>
+<mesh name="mesh1">
+  <spring name="361" p1="Base_16" p2="crowbar_126" length="1.010796" k="1616.721774" d="20.209022" s="40.854399"/>
+  <spring name="362" p1="Base_7" p2="crowbar_127" length="1.097232" k="1530.823436" d="19.135293" s="41.991699"/>
+  <spring name="363" p1="Base_128" p2="crowbar_129" length="0.917153" k="1720.270186" d="21.503377" s="39.443791"/>
+  <spring name="377" p1="Base_7" p2="crowbar_126" length="0.917153" k="1720.270054" d="21.503376" s="39.443786"/>
+  <spring name="378" p1="crowbar_127" p2="Base_128" length="1.097232" k="1530.823421" d="19.135293" s="41.991700"/>
+  <spring name="379" p1="Base_16" p2="crowbar_129" length="1.010796" k="1616.721887" d="20.209024" s="40.854402"/>
+</mesh>
+<joints name="joints1" >
+  <joint name="0" p1="Base_9" p2="Rotor_9" k="10000.000000" d="200.000000" s="10.000000"/>
+  <joint name="1" p1="Base_16" p2="Rotor_16" k="10000.000000" d="200.000000" s="10.000000"/>
+</joints>
+<balloon name="mesh1" pressure="1000.000000" >
+  <point p1="crowbar_127"/>
+  <point p1="crowbar_129"/>
+  <point p1="crowbar_126"/>
+  <point p1="Base_128"/>
+  <point p1="Base_7"/>
+  <point p1="Base_16"/>
+  <point p1="Base_16"/>
+  <point p1="Base_7"/>
+  <point p1="crowbar_126"/>
+  <point p1="Base_7"/>
+  <point p1="crowbar_127"/>
+  <point p1="crowbar_126"/>
+  <point p1="Base_128"/>
+  <point p1="crowbar_129"/>
+  <point p1="crowbar_127"/>
+  <point p1="Base_128"/>
+  <point p1="crowbar_127"/>
+  <point p1="Base_7"/>
+  <point p1="Base_16"/>
+  <point p1="crowbar_126"/>
+  <point p1="crowbar_129"/>
+  <point p1="Base_16"/>
+  <point p1="crowbar_129"/>
+  <point p1="Base_128"/>
+</balloon>
+<pose name="pose1">
+  <mesh name="mesh1">
+    <spring name="361" length="1.01079603578"/>
+    <spring name="362" length="1.09723167613"/>
+    <spring name="363" length="0.91715339357"/>
+    <spring name="377" length="0.917153349339"/>
+    <spring name="378" length="1.09723171475"/>
+    <spring name="379" length="1.01079604315"/>
+  </mesh>
+</pose>
+<pose name="pose2">
+  <mesh name="mesh1">
+    <spring name="361" length="0.973182771286"/>
+    <spring name="362" length="1.13934418216"/>
+    <spring name="363" length="0.960241493879"/>
+    <spring name="377" length="0.960241503739"/>
+    <spring name="378" length="1.13934415548"/>
+    <spring name="379" length="0.973182778942"/>
+  </mesh>
+</pose>
+<pose name="pose3">
+  <mesh name="mesh1">
+    <spring name="361" length="1.15248534649"/>
+    <spring name="362" length="0.899934270417"/>
+    <spring name="363" length="0.90310246199"/>
+    <spring name="377" length="0.903102518911"/>
+    <spring name="378" length="0.899934238276"/>
+    <spring name="379" length="1.15248535296"/>
+  </mesh>
+</pose>
+<motor name="engine" rigid1="Base" rigid2="Rotor"/>
+<sound name="sound1" p1="Rotor_1" sound="brus.ogg"/>
+<sound name="sound1" p1="crowbar_45" sound="brus.ogg"/>
+<sound name="sound1" p1="Rotor_72" sound="brus.ogg"/>
+<texture name="monster.png" image="monster.png"/>
+<render texture="monster.png">
+  <gltriangle name="0" p1="Base_8" p2="Base_7" p3="Base_16" normals="8 314 233 " uvs="0.803070 0.547483 0.806444 0.592899 0.780300 0.572008 "/>
+  <gltriangle name="1" p1="Base_2" p2="Base_8" p3="Base_16" normals="2 230 229 " uvs="0.757530 0.547483 0.803070 0.547483 0.780300 0.572008 "/>
+  <gltriangle name="2" p1="Base_128" p2="Base_2" p3="Base_16" normals="315 228 225 " uvs="0.754157 0.592900 0.757530 0.547483 0.780300 0.572008 "/>
+  <glquad name="3" p1="crowbar_59" p2="crowbar_26" p3="crowbar_27" p4="crowbar_25" normals="59 26 27 25 " uvs="0.086366 0.056179 0.086852 0.102697 0.075454 0.102637 0.075230 0.058640 "/>
+  <glquad name="4" p1="crowbar_60" p2="crowbar_28" p3="crowbar_26" p4="crowbar_59" normals="60 28 26 59 " uvs="0.098593 0.055418 0.098615 0.102750 0.086852 0.102697 0.086366 0.056179 "/>
+  <glquad name="5" p1="crowbar_25" p2="crowbar_27" p3="crowbar_29" p4="crowbar_24" normals="25 27 29 24 " uvs="0.075230 0.058640 0.075454 0.102637 0.063690 0.102395 0.065292 0.058358 "/>
+  <glquad name="6" p1="crowbar_24" p2="crowbar_29" p3="crowbar_28" p4="crowbar_60" normals="24 29 28 60 " uvs="0.065292 0.058358 0.063690 0.102395 0.051829 0.101999 0.054548 0.055120 "/>
+  <glquad name="7" p1="crowbar_28" p2="crowbar_29" p3="crowbar_31" p4="crowbar_30" normals="28 29 31 30 " uvs="0.051829 0.101999 0.063690 0.102395 0.062859 0.149268 0.051112 0.149059 "/>
+  <glquad name="8" p1="crowbar_29" p2="crowbar_27" p3="crowbar_32" p4="crowbar_31" normals="29 27 32 31 " uvs="0.063690 0.102395 0.075454 0.102637 0.074611 0.149447 0.062859 0.149268 "/>
+  <glquad name="9" p1="crowbar_26" p2="crowbar_28" p3="crowbar_30" p4="crowbar_33" normals="26 28 30 33 " uvs="0.086852 0.102697 0.098615 0.102750 0.098114 0.149709 0.086356 0.149596 "/>
+  <glquad name="10" p1="crowbar_27" p2="crowbar_26" p3="crowbar_33" p4="crowbar_32" normals="27 26 33 32 " uvs="0.075454 0.102637 0.086852 0.102697 0.086356 0.149596 0.074611 0.149447 "/>
+  <glquad name="11" p1="crowbar_32" p2="crowbar_33" p3="crowbar_36" p4="crowbar_37" normals="32 33 36 37 " uvs="0.074611 0.149447 0.086356 0.149596 0.085629 0.203595 0.073753 0.203420 "/>
+  <glquad name="12" p1="crowbar_33" p2="crowbar_30" p3="crowbar_34" p4="crowbar_36" normals="33 30 34 36 " uvs="0.086356 0.149596 0.098114 0.149709 0.097710 0.203315 0.085629 0.203595 "/>
+  <glquad name="13" p1="crowbar_31" p2="crowbar_32" p3="crowbar_37" p4="crowbar_35" normals="31 32 37 35 " uvs="0.062859 0.149268 0.074611 0.149447 0.073753 0.203420 0.061713 0.203049 "/>
+  <glquad name="14" p1="crowbar_30" p2="crowbar_31" p3="crowbar_35" p4="crowbar_34" normals="30 31 35 34 " uvs="0.051112 0.149059 0.062859 0.149268 0.061713 0.203049 0.049962 0.202405 "/>
+  <glquad name="15" p1="crowbar_34" p2="crowbar_35" p3="crowbar_43" p4="crowbar_38" normals="34 35 43 38 " uvs="0.049962 0.202405 0.061713 0.203049 0.058039 0.247373 0.043125 0.242602 "/>
+  <glquad name="16" p1="crowbar_35" p2="crowbar_37" p3="crowbar_40" p4="crowbar_43" normals="35 37 40 43 " uvs="0.061713 0.203049 0.073753 0.203420 0.074912 0.247563 0.058039 0.247373 "/>
+  <glquad name="17" p1="crowbar_36" p2="crowbar_34" p3="crowbar_38" p4="crowbar_39" normals="36 34 38 39 " uvs="0.085629 0.203595 0.097710 0.203315 0.100081 0.242488 0.089218 0.242745 "/>
+  <glquad name="18" p1="crowbar_37" p2="crowbar_36" p3="crowbar_39" p4="crowbar_40" normals="37 36 39 40 " uvs="0.073753 0.203420 0.085629 0.203595 0.089218 0.242745 0.074912 0.247563 "/>
+  <gltriangle name="19" p1="crowbar_40" p2="crowbar_39" p3="crowbar_41" normals="40 39 41 " uvs="0.074912 0.247563 0.089218 0.242745 0.089228 0.250392 "/>
+  <glquad name="20" p1="crowbar_39" p2="crowbar_38" p3="crowbar_42" p4="crowbar_41" normals="39 38 42 41 " uvs="0.089218 0.242745 0.100081 0.242488 0.099475 0.251483 0.089228 0.250392 "/>
+  <gltriangle name="21" p1="crowbar_38" p2="crowbar_43" p3="crowbar_42" normals="38 43 42 " uvs="0.043125 0.242602 0.058039 0.247373 0.042701 0.251277 "/>
+  <glquad name="22" p1="crowbar_42" p2="crowbar_43" p3="crowbar_49" p4="crowbar_44" normals="42 43 49 44 " uvs="0.042701 0.251277 0.058039 0.247373 0.058147 0.257443 0.045056 0.258104 "/>
+  <glquad name="23" p1="crowbar_43" p2="crowbar_40" p3="crowbar_46" p4="crowbar_49" normals="43 40 46 49 " uvs="0.058039 0.247373 0.074912 0.247563 0.076085 0.257543 0.058147 0.257443 "/>
+  <glquad name="24" p1="crowbar_41" p2="crowbar_42" p3="crowbar_44" p4="crowbar_45" normals="41 42 44 45 " uvs="0.089228 0.250392 0.099475 0.251483 0.098000 0.258731 0.087785 0.256290 "/>
+  <glquad name="25" p1="crowbar_40" p2="crowbar_41" p3="crowbar_45" p4="crowbar_46" normals="40 41 45 46 " uvs="0.074912 0.247563 0.089228 0.250392 0.087785 0.256290 0.076085 0.257543 "/>
+  <gltriangle name="26" p1="crowbar_46" p2="crowbar_45" p3="crowbar_47" normals="46 45 47 " uvs="0.076085 0.257543 0.087785 0.256290 0.084337 0.264250 "/>
+  <glquad name="27" p1="crowbar_45" p2="crowbar_44" p3="crowbar_48" p4="crowbar_47" normals="45 44 48 47 " uvs="0.087785 0.256290 0.098000 0.258731 0.094720 0.268154 0.084337 0.264250 "/>
+  <gltriangle name="28" p1="crowbar_44" p2="crowbar_49" p3="crowbar_48" normals="44 49 48 " uvs="0.045056 0.258104 0.058147 0.257443 0.050537 0.266014 "/>
+  <glquad name="29" p1="crowbar_48" p2="crowbar_49" p3="crowbar_51" p4="crowbar_50" normals="48 49 51 50 " uvs="0.050537 0.266014 0.058147 0.257443 0.062448 0.273125 0.058004 0.277768 "/>
+  <glquad name="30" p1="crowbar_49" p2="crowbar_46" p3="crowbar_52" p4="crowbar_51" normals="49 46 52 51 " uvs="0.058147 0.257443 0.076085 0.257543 0.074806 0.272154 0.062448 0.273125 "/>
+  <glquad name="31" p1="crowbar_47" p2="crowbar_48" p3="crowbar_50" p4="crowbar_53" normals="47 48 50 53 " uvs="0.084337 0.264250 0.094720 0.268154 0.089896 0.279676 0.079682 0.275580 "/>
+  <glquad name="32" p1="crowbar_46" p2="crowbar_47" p3="crowbar_53" p4="crowbar_52" normals="46 47 53 52 " uvs="0.076085 0.257543 0.084337 0.264250 0.079682 0.275580 0.074806 0.272154 "/>
+  <glquad name="33" p1="crowbar_52" p2="crowbar_53" p3="crowbar_55" p4="crowbar_54" normals="52 53 55 54 " uvs="0.074806 0.272154 0.079682 0.275580 0.075561 0.285661 0.074093 0.281756 "/>
+  <glquad name="34" p1="crowbar_53" p2="crowbar_50" p3="crowbar_56" p4="crowbar_55" normals="53 50 56 55 " uvs="0.079682 0.275580 0.089896 0.279676 0.085532 0.289937 0.075561 0.285661 "/>
+  <glquad name="35" p1="crowbar_51" p2="crowbar_52" p3="crowbar_54" p4="crowbar_57" normals="51 52 54 57 " uvs="0.062448 0.273125 0.074806 0.272154 0.074093 0.281756 0.065123 0.282898 "/>
+  <glquad name="36" p1="crowbar_50" p2="crowbar_51" p3="crowbar_57" p4="crowbar_56" normals="50 51 57 56 " uvs="0.058004 0.277768 0.062448 0.273125 0.065123 0.282898 0.064670 0.287469 "/>
+  <glquad name="37" p1="crowbar_57" p2="crowbar_54" p3="crowbar_55" p4="crowbar_56" normals="57 54 55 56 " uvs="0.065123 0.282898 0.074093 0.281756 0.075561 0.285661 0.064670 0.287469 "/>
+  <gltriangle name="38" p1="crowbar_59" p2="crowbar_25" p3="crowbar_58" normals="59 25 58 " uvs="0.086366 0.056179 0.075230 0.058640 0.075251 0.051958 "/>
+  <glquad name="39" p1="crowbar_25" p2="crowbar_24" p3="crowbar_61" p4="crowbar_58" normals="25 24 61 58 " uvs="0.075230 0.058640 0.065292 0.058358 0.065884 0.051828 0.075251 0.051958 "/>
+  <gltriangle name="40" p1="crowbar_24" p2="crowbar_60" p3="crowbar_61" normals="24 60 61 " uvs="0.065292 0.058358 0.054548 0.055120 0.065884 0.051828 "/>
+  <glquad name="41" p1="crowbar_61" p2="crowbar_60" p3="crowbar_62" p4="crowbar_63" normals="61 60 62 63 " uvs="0.065884 0.051828 0.054548 0.055120 0.056754 0.040460 0.065629 0.039675 "/>
+  <glquad name="42" p1="crowbar_58" p2="crowbar_61" p3="crowbar_63" p4="crowbar_64" normals="58 61 63 64 " uvs="0.075251 0.051958 0.065884 0.051828 0.065629 0.039675 0.076713 0.040397 "/>
+  <glquad name="43" p1="crowbar_60" p2="crowbar_59" p3="crowbar_65" p4="crowbar_62" normals="60 59 65 62 " uvs="0.098593 0.055418 0.086366 0.056179 0.085167 0.042139 0.097565 0.040684 "/>
+  <glquad name="44" p1="crowbar_59" p2="crowbar_58" p3="crowbar_64" p4="crowbar_65" normals="59 58 64 65 " uvs="0.086366 0.056179 0.075251 0.051958 0.076713 0.040397 0.085167 0.042139 "/>
+  <glquad name="45" p1="crowbar_65" p2="crowbar_64" p3="crowbar_67" p4="crowbar_66" normals="65 64 67 66 " uvs="0.085167 0.042139 0.076713 0.040397 0.079457 0.021413 0.083907 0.028946 "/>
+  <glquad name="46" p1="crowbar_62" p2="crowbar_65" p3="crowbar_66" p4="crowbar_68" normals="62 65 66 68 " uvs="0.097565 0.040684 0.085167 0.042139 0.083907 0.028946 0.094417 0.025116 "/>
+  <glquad name="47" p1="crowbar_64" p2="crowbar_63" p3="crowbar_69" p4="crowbar_67" normals="64 63 69 67 " uvs="0.076713 0.040397 0.065629 0.039675 0.067327 0.019721 0.079457 0.021413 "/>
+  <glquad name="48" p1="crowbar_63" p2="crowbar_62" p3="crowbar_68" p4="crowbar_69" normals="63 62 68 69 " uvs="0.065629 0.039675 0.056754 0.040460 0.060330 0.025465 0.067327 0.019721 "/>
+  <glquad name="49" p1="crowbar_66" p2="crowbar_67" p3="crowbar_69" p4="crowbar_68" normals="66 67 69 68 " uvs="0.083907 0.028946 0.079457 0.021413 0.090836 0.016618 0.094417 0.025116 "/>
+  <gltriangle name="50" p1="Base_112" p2="Base_2" p3="Base_128" normals="112 226 227 " uvs="0.719510 0.567493 0.757530 0.547483 0.754157 0.592900 "/>
+  <gltriangle name="51" p1="Base_106" p2="Base_8" p3="Base_2" normals="106 251 171 " uvs="0.780299 0.511050 0.803070 0.547483 0.757530 0.547483 "/>
+  <gltriangle name="52" p1="Base_128" p2="Base_7" p3="Base_115" normals="224 7 115 " uvs="0.780273 0.429073 0.803044 0.429065 0.780287 0.465507 "/>
+  <gltriangle name="53" p1="Base_23" p2="Base_152" p3="Base_128" normals="23 152 227 " uvs="0.717824 0.590202 0.718105 0.586417 0.754157 0.592900 "/>
+  <gltriangle name="54" p1="Base_152" p2="Base_153" p3="Base_128" normals="152 153 227 " uvs="0.718105 0.586417 0.718386 0.582632 0.754157 0.592900 "/>
+  <gltriangle name="55" p1="Base_153" p2="Base_113" p3="Base_128" normals="153 113 227 " uvs="0.718386 0.582632 0.718667 0.578848 0.754157 0.592900 "/>
+  <gltriangle name="56" p1="Base_111" p2="Base_147" p3="Base_2" normals="111 147 226 " uvs="0.720353 0.556139 0.720634 0.552355 0.757530 0.547483 "/>
+  <gltriangle name="57" p1="Base_147" p2="Base_146" p3="Base_2" normals="147 146 226 " uvs="0.720634 0.552355 0.720915 0.548570 0.757530 0.547483 "/>
+  <gltriangle name="58" p1="Base_146" p2="Base_0" p3="Base_2" normals="146 0 226 " uvs="0.720915 0.548570 0.721196 0.544785 0.757530 0.547483 "/>
+  <gltriangle name="59" p1="Base_113" p2="Base_151" p3="Base_128" normals="113 151 227 " uvs="0.718667 0.578848 0.718948 0.575063 0.754157 0.592900 "/>
+  <gltriangle name="60" p1="Base_151" p2="Base_150" p3="Base_128" normals="151 150 227 " uvs="0.718948 0.575063 0.719229 0.571278 0.754157 0.592900 "/>
+  <gltriangle name="61" p1="Base_150" p2="Base_112" p3="Base_128" normals="150 112 227 " uvs="0.719229 0.571278 0.719510 0.567493 0.754157 0.592900 "/>
+  <gltriangle name="62" p1="Base_112" p2="Base_149" p3="Base_2" normals="112 149 226 " uvs="0.719510 0.567493 0.719791 0.563709 0.757530 0.547483 "/>
+  <gltriangle name="63" p1="Base_149" p2="Base_148" p3="Base_2" normals="149 148 226 " uvs="0.719791 0.563709 0.720072 0.559924 0.757530 0.547483 "/>
+  <gltriangle name="64" p1="Base_148" p2="Base_111" p3="Base_2" normals="148 111 226 " uvs="0.720072 0.559924 0.720353 0.556139 0.757530 0.547483 "/>
+  <gltriangle name="65" p1="Base_10" p2="Base_154" p3="Base_7" normals="10 154 7 " uvs="0.803059 0.465499 0.799263 0.465500 0.803044 0.429065 "/>
+  <gltriangle name="66" p1="Base_154" p2="Base_155" p3="Base_7" normals="154 155 7 " uvs="0.799263 0.465500 0.795468 0.465502 0.803044 0.429065 "/>
+  <gltriangle name="67" p1="Base_155" p2="Base_114" p3="Base_7" normals="155 114 7 " uvs="0.795468 0.465502 0.791672 0.465503 0.803044 0.429065 "/>
+  <gltriangle name="68" p1="Base_116" p2="Base_161" p3="Base_128" normals="116 161 224 " uvs="0.768901 0.465511 0.765106 0.465513 0.757502 0.429082 "/>
+  <gltriangle name="69" p1="Base_161" p2="Base_160" p3="Base_128" normals="161 160 224 " uvs="0.765106 0.465513 0.761311 0.465514 0.757502 0.429082 "/>
+  <gltriangle name="70" p1="Base_160" p2="Base_23" p3="Base_128" normals="160 210 224 " uvs="0.761311 0.465514 0.757516 0.465515 0.757502 0.429082 "/>
+  <gltriangle name="71" p1="Base_114" p2="Base_156" p3="Base_7" normals="114 156 7 " uvs="0.791672 0.465503 0.787877 0.465504 0.803044 0.429065 "/>
+  <gltriangle name="72" p1="Base_156" p2="Base_157" p3="Base_7" normals="156 157 7 " uvs="0.787877 0.465504 0.784082 0.465506 0.803044 0.429065 "/>
+  <gltriangle name="73" p1="Base_157" p2="Base_115" p3="Base_7" normals="157 115 7 " uvs="0.784082 0.465506 0.780287 0.465507 0.803044 0.429065 "/>
+  <gltriangle name="74" p1="Base_115" p2="Base_158" p3="Base_128" normals="115 158 224 " uvs="0.780287 0.465507 0.776492 0.465508 0.757502 0.429082 "/>
+  <gltriangle name="75" p1="Base_158" p2="Base_159" p3="Base_128" normals="158 159 224 " uvs="0.776492 0.465508 0.772697 0.465510 0.757502 0.429082 "/>
+  <gltriangle name="76" p1="Base_159" p2="Base_116" p3="Base_128" normals="159 116 224 " uvs="0.772697 0.465510 0.768901 0.465511 0.757502 0.429082 "/>
+  <gltriangle name="77" p1="Base_0" p2="Base_130" p3="Base_2" normals="170 130 171 " uvs="0.757528 0.511053 0.761323 0.511052 0.757530 0.547483 "/>
+  <gltriangle name="78" p1="Base_130" p2="Base_131" p3="Base_2" normals="130 131 171 " uvs="0.761323 0.511052 0.765118 0.511052 0.757530 0.547483 "/>
+  <gltriangle name="79" p1="Base_131" p2="Base_105" p3="Base_2" normals="131 105 171 " uvs="0.765118 0.511052 0.768913 0.511051 0.757530 0.547483 "/>
+  <gltriangle name="80" p1="Base_107" p2="Base_137" p3="Base_8" normals="107 137 251 " uvs="0.791684 0.511049 0.795479 0.511049 0.803070 0.547483 "/>
+  <gltriangle name="81" p1="Base_137" p2="Base_136" p3="Base_8" normals="137 136 251 " uvs="0.795479 0.511049 0.799275 0.511048 0.803070 0.547483 "/>
+  <gltriangle name="82" p1="Base_136" p2="Base_11" p3="Base_8" normals="136 11 251 " uvs="0.799275 0.511048 0.803070 0.511048 0.803070 0.547483 "/>
+  <gltriangle name="83" p1="Base_105" p2="Base_132" p3="Base_2" normals="105 132 171 " uvs="0.768913 0.511051 0.772708 0.511051 0.757530 0.547483 "/>
+  <gltriangle name="84" p1="Base_132" p2="Base_133" p3="Base_2" normals="132 133 171 " uvs="0.772708 0.511051 0.776503 0.511051 0.757530 0.547483 "/>
+  <gltriangle name="85" p1="Base_133" p2="Base_106" p3="Base_2" normals="133 106 171 " uvs="0.776503 0.511051 0.780299 0.511050 0.757530 0.547483 "/>
+  <gltriangle name="86" p1="Base_106" p2="Base_134" p3="Base_8" normals="106 134 251 " uvs="0.780299 0.511050 0.784094 0.511050 0.803070 0.547483 "/>
+  <gltriangle name="87" p1="Base_134" p2="Base_135" p3="Base_8" normals="134 135 251 " uvs="0.784094 0.511050 0.787889 0.511049 0.803070 0.547483 "/>
+  <gltriangle name="88" p1="Base_135" p2="Base_107" p3="Base_8" normals="135 107 251 " uvs="0.787889 0.511049 0.791684 0.511049 0.803070 0.547483 "/>
+  <gltriangle name="89" p1="crowbar_127" p2="crowbar_129" p3="crowbar_126" normals="127 129 236 " uvs="0.447948 0.700230 0.494070 0.700022 0.494293 0.749697 "/>
+  <gltriangle name="90" p1="Base_16" p2="Base_7" p3="crowbar_126" normals="231 232 126 " uvs="0.383391 0.505488 0.448747 0.517065 0.378782 0.607053 "/>
+  <gltriangle name="91" p1="Base_7" p2="crowbar_127" p3="crowbar_126" normals="214 216 215 " uvs="0.448747 0.517065 0.446309 0.617324 0.378782 0.607053 "/>
+  <gltriangle name="92" p1="Base_128" p2="crowbar_129" p3="crowbar_127" normals="128 313 312 " uvs="0.493746 0.517204 0.493613 0.567470 0.446309 0.617324 "/>
+  <gltriangle name="93" p1="Base_128" p2="crowbar_127" p3="Base_7" normals="211 213 212 " uvs="0.493746 0.517204 0.446309 0.617324 0.448747 0.517065 "/>
+  <gltriangle name="94" p1="Base_16" p2="crowbar_126" p3="crowbar_129" normals="235 217 234 " uvs="0.603523 0.505487 0.608532 0.606600 0.541234 0.617066 "/>
+  <gltriangle name="95" p1="Base_16" p2="crowbar_129" p3="Base_128" normals="219 218 220 " uvs="0.603523 0.505487 0.541234 0.617066 0.538744 0.517343 "/>
+</render>
+<render texture="monster.png">
+  <gltriangle name="0" p1="Base_9" p2="Rotor_4" p3="Rotor_3" normals="310 4 3 " uvs="0.289889 0.510597 0.285684 0.516539 0.285043 0.504948 "/>
+  <gltriangle name="1" p1="Base_9" p2="Rotor_6" p3="Rotor_5" normals="9 6 5 " uvs="0.235652 0.518951 0.230860 0.526069 0.230860 0.511833 "/>
+  <gltriangle name="2" p1="Base_9" p2="Rotor_3" p3="Rotor_6" normals="295 296 308 " uvs="0.289889 0.510597 0.285043 0.504948 0.292260 0.502699 "/>
+  <gltriangle name="3" p1="Base_9" p2="Rotor_5" p3="Rotor_4" normals="281 280 282 " uvs="0.289889 0.510597 0.292999 0.518456 0.285684 0.516539 "/>
+  <gltriangle name="4" p1="Rotor_14" p2="Rotor_13" p3="Base_16" normals="14 268 311 " uvs="0.199106 0.509244 0.205440 0.514363 0.193235 0.518921 "/>
+  <gltriangle name="5" p1="Rotor_12" p2="Rotor_15" p3="Base_16" normals="12 254 16 " uvs="0.205673 0.523349 0.199351 0.528280 0.193235 0.518921 "/>
+  <gltriangle name="6" p1="Rotor_13" p2="Rotor_12" p3="Base_16" normals="13 266 267 " uvs="0.205440 0.514363 0.205673 0.523349 0.193235 0.518921 "/>
+  <gltriangle name="7" p1="Rotor_15" p2="Rotor_14" p3="Base_16" normals="15 252 253 " uvs="0.260542 0.505920 0.260227 0.515072 0.245913 0.509999 "/>
+  <glquad name="8" p1="Rotor_4" p2="Rotor_71" p3="Rotor_21" p4="Rotor_3" normals="4 283 21 3 " uvs="0.285684 0.516539 0.280596 0.524622 0.280596 0.497384 0.285043 0.504948 "/>
+  <glquad name="9" p1="Rotor_71" p2="Rotor_70" p3="Rotor_22" p4="Rotor_21" normals="283 293 22 21 " uvs="0.280596 0.524622 0.265285 0.524409 0.266228 0.496951 0.280596 0.497384 "/>
+  <glquad name="10" p1="Rotor_70" p2="Rotor_14" p3="Rotor_15" p4="Rotor_22" normals="293 252 15 22 " uvs="0.265285 0.524409 0.260227 0.515072 0.260542 0.505920 0.266228 0.496951 "/>
+  <glquad name="11" p1="Rotor_6" p2="Rotor_17" p3="Rotor_19" p4="Rotor_5" normals="6 17 19 5 " uvs="0.230860 0.526069 0.224872 0.532298 0.224871 0.505605 0.230860 0.511833 "/>
+  <glquad name="12" p1="Rotor_18" p2="Rotor_12" p3="Rotor_13" p4="Rotor_20" normals="18 266 13 269 " uvs="0.210701 0.532463 0.205673 0.523349 0.205440 0.514363 0.210306 0.505364 "/>
+  <glquad name="13" p1="Rotor_3" p2="Rotor_21" p3="Rotor_17" p4="Rotor_6" normals="296 297 307 308 " uvs="0.285043 0.504948 0.280596 0.497384 0.289607 0.495362 0.292260 0.502699 "/>
+  <glquad name="14" p1="Rotor_22" p2="Rotor_15" p3="Rotor_12" p4="Rotor_18" normals="255 254 12 265 " uvs="0.203051 0.535317 0.199351 0.528280 0.205673 0.523349 0.210701 0.532463 "/>
+  <glquad name="15" p1="Rotor_5" p2="Rotor_19" p3="Rotor_71" p4="Rotor_4" normals="280 279 71 282 " uvs="0.292999 0.518456 0.290331 0.526385 0.280596 0.524622 0.285684 0.516539 "/>
+  <glquad name="16" p1="Rotor_20" p2="Rotor_13" p3="Rotor_14" p4="Rotor_70" normals="20 268 14 70 " uvs="0.210306 0.505364 0.205440 0.514363 0.199106 0.509244 0.203031 0.502378 "/>
+</render>
+<render texture="monster.png">
+  <glquad name="0" p1="Rotor_17" p2="Rotor_18" p3="Rotor_20" p4="Rotor_19" normals="17 18 269 19 " uvs="0.224872 0.532298 0.210701 0.532463 0.210306 0.505364 0.224871 0.505605 "/>
+  <gltriangle name="1" p1="Rotor_73" p2="Rotor_1" p3="Rotor_77" normals="73 1 77 " uvs="0.276947 0.379378 0.280596 0.351693 0.280596 0.379588 "/>
+  <glquad name="2" p1="Rotor_22" p2="Rotor_76" p3="Rotor_80" p4="Rotor_21" normals="22 76 80 21 " uvs="0.266228 0.496951 0.271376 0.465002 0.280596 0.465025 0.280596 0.497384 "/>
+  <glquad name="3" p1="Rotor_76" p2="Rotor_75" p3="Rotor_79" p4="Rotor_80" normals="76 75 79 80 " uvs="0.271376 0.465002 0.274020 0.436318 0.280596 0.436364 0.280596 0.465025 "/>
+  <glquad name="4" p1="Rotor_75" p2="Rotor_74" p3="Rotor_78" p4="Rotor_79" normals="75 74 78 79 " uvs="0.274020 0.436318 0.276401 0.407786 0.280596 0.407773 0.280596 0.436364 "/>
+  <glquad name="5" p1="Rotor_74" p2="Rotor_73" p3="Rotor_77" p4="Rotor_78" normals="74 73 77 78 " uvs="0.276401 0.407786 0.276947 0.379378 0.280596 0.379588 0.280596 0.407773 "/>
+  <gltriangle name="6" p1="Rotor_85" p2="Rotor_1" p3="Rotor_81" normals="85 309 81 " uvs="0.224871 0.656446 0.224871 0.688322 0.220852 0.656702 "/>
+  <glquad name="7" p1="Rotor_17" p2="Rotor_88" p3="Rotor_84" p4="Rotor_18" normals="17 88 84 18 " uvs="0.224872 0.532298 0.224871 0.563321 0.215550 0.563363 0.210701 0.532463 "/>
+  <glquad name="8" p1="Rotor_88" p2="Rotor_87" p3="Rotor_83" p4="Rotor_84" normals="88 87 83 84 " uvs="0.224871 0.563321 0.224871 0.594469 0.217847 0.594403 0.215550 0.563363 "/>
+  <glquad name="9" p1="Rotor_87" p2="Rotor_86" p3="Rotor_82" p4="Rotor_83" normals="87 86 82 83 " uvs="0.224871 0.594469 0.224871 0.625678 0.220231 0.625651 0.217847 0.594403 "/>
+  <glquad name="10" p1="Rotor_86" p2="Rotor_85" p3="Rotor_81" p4="Rotor_82" normals="86 85 81 82 " uvs="0.224871 0.625678 0.224871 0.656446 0.220852 0.656702 0.220231 0.625651 "/>
+  <gltriangle name="11" p1="Rotor_77" p2="Rotor_1" p3="Rotor_85" normals="301 302 303 " uvs="0.280596 0.379588 0.280596 0.351693 0.284246 0.379492 "/>
+  <glquad name="12" p1="Rotor_21" p2="Rotor_80" p3="Rotor_88" p4="Rotor_17" normals="297 298 306 307 " uvs="0.280596 0.497384 0.280596 0.465025 0.286806 0.464781 0.289607 0.495362 "/>
+  <glquad name="13" p1="Rotor_80" p2="Rotor_79" p3="Rotor_87" p4="Rotor_88" normals="298 299 305 306 " uvs="0.280596 0.465025 0.280596 0.436364 0.285276 0.436290 0.286806 0.464781 "/>
+  <glquad name="14" p1="Rotor_79" p2="Rotor_78" p3="Rotor_86" p4="Rotor_87" normals="299 300 304 305 " uvs="0.280596 0.436364 0.280596 0.407773 0.284331 0.407811 0.285276 0.436290 "/>
+  <glquad name="15" p1="Rotor_78" p2="Rotor_77" p3="Rotor_85" p4="Rotor_86" normals="300 301 303 304 " uvs="0.280596 0.407773 0.280596 0.379588 0.284246 0.379492 0.284331 0.407811 "/>
+  <gltriangle name="16" p1="Rotor_81" p2="Rotor_1" p3="Rotor_73" normals="261 260 259 " uvs="0.220852 0.656702 0.224871 0.688322 0.216816 0.657115 "/>
+  <glquad name="17" p1="Rotor_18" p2="Rotor_84" p3="Rotor_76" p4="Rotor_22" normals="265 264 256 255 " uvs="0.210701 0.532463 0.215550 0.563363 0.208996 0.564292 0.203051 0.535317 "/>
+  <glquad name="18" p1="Rotor_84" p2="Rotor_83" p3="Rotor_75" p4="Rotor_76" normals="264 263 257 256 " uvs="0.215550 0.563363 0.217847 0.594403 0.212824 0.594849 0.208996 0.564292 "/>
+  <glquad name="19" p1="Rotor_83" p2="Rotor_82" p3="Rotor_74" p4="Rotor_75" normals="263 262 258 257 " uvs="0.217847 0.594403 0.220231 0.625651 0.216116 0.625804 0.212824 0.594849 "/>
+  <glquad name="20" p1="Rotor_82" p2="Rotor_81" p3="Rotor_73" p4="Rotor_74" normals="262 261 259 258 " uvs="0.220231 0.625651 0.220852 0.656702 0.216816 0.657115 0.216116 0.625804 "/>
+  <gltriangle name="21" p1="Rotor_96" p2="Rotor_72" p3="Rotor_100" normals="96 294 100 " uvs="0.217103 0.384637 0.224871 0.354484 0.220995 0.385035 "/>
+  <glquad name="22" p1="Rotor_70" p2="Rotor_93" p3="Rotor_97" p4="Rotor_20" normals="70 93 97 20 " uvs="0.203031 0.502378 0.209541 0.473942 0.215759 0.474898 0.210306 0.505364 "/>
+  <glquad name="23" p1="Rotor_93" p2="Rotor_94" p3="Rotor_98" p4="Rotor_97" normals="93 94 98 97 " uvs="0.209541 0.473942 0.213279 0.444583 0.218110 0.445019 0.215759 0.474898 "/>
+  <glquad name="24" p1="Rotor_94" p2="Rotor_95" p3="Rotor_99" p4="Rotor_98" normals="94 95 99 98 " uvs="0.213279 0.444583 0.216442 0.414780 0.220404 0.414926 0.218110 0.445019 "/>
+  <glquad name="25" p1="Rotor_95" p2="Rotor_96" p3="Rotor_100" p4="Rotor_99" normals="95 96 100 99 " uvs="0.216442 0.414780 0.217103 0.384637 0.220995 0.385035 0.220404 0.414926 "/>
+  <gltriangle name="26" p1="Rotor_104" p2="Rotor_72" p3="Rotor_92" normals="104 72 92 " uvs="0.284809 0.657472 0.280596 0.689479 0.280596 0.657301 "/>
+  <glquad name="27" p1="Rotor_19" p2="Rotor_101" p3="Rotor_89" p4="Rotor_71" normals="279 101 89 71 " uvs="0.290331 0.526385 0.287846 0.559933 0.280596 0.559672 0.280596 0.524622 "/>
+  <glquad name="28" p1="Rotor_101" p2="Rotor_102" p3="Rotor_90" p4="Rotor_89" normals="101 102 90 89 " uvs="0.287846 0.559933 0.285941 0.592543 0.280596 0.592388 0.280596 0.559672 "/>
+  <glquad name="29" p1="Rotor_102" p2="Rotor_103" p3="Rotor_91" p4="Rotor_90" normals="102 103 91 90 " uvs="0.285941 0.592543 0.284890 0.625104 0.280596 0.624981 0.280596 0.592388 "/>
+  <glquad name="30" p1="Rotor_103" p2="Rotor_104" p3="Rotor_92" p4="Rotor_91" normals="103 104 92 91 " uvs="0.284890 0.625104 0.284809 0.657472 0.280596 0.657301 0.280596 0.624981 "/>
+  <gltriangle name="31" p1="Rotor_92" p2="Rotor_72" p3="Rotor_96" normals="287 288 289 " uvs="0.280596 0.657301 0.280596 0.689479 0.276380 0.657542 "/>
+  <glquad name="32" p1="Rotor_71" p2="Rotor_89" p3="Rotor_93" p4="Rotor_70" normals="283 284 292 293 " uvs="0.280596 0.524622 0.280596 0.559672 0.270265 0.559636 0.265285 0.524409 "/>
+  <glquad name="33" p1="Rotor_89" p2="Rotor_90" p3="Rotor_94" p4="Rotor_93" normals="284 285 291 292 " uvs="0.280596 0.559672 0.280596 0.592388 0.273092 0.592419 0.270265 0.559636 "/>
+  <glquad name="34" p1="Rotor_90" p2="Rotor_91" p3="Rotor_95" p4="Rotor_94" normals="285 286 290 291 " uvs="0.280596 0.592388 0.280596 0.624981 0.275792 0.624963 0.273092 0.592419 "/>
+  <glquad name="35" p1="Rotor_91" p2="Rotor_92" p3="Rotor_96" p4="Rotor_95" normals="286 287 289 290 " uvs="0.280596 0.624981 0.280596 0.657301 0.276380 0.657542 0.275792 0.624963 "/>
+  <gltriangle name="36" p1="Rotor_100" p2="Rotor_72" p3="Rotor_104" normals="273 274 275 " uvs="0.220995 0.385035 0.224871 0.354484 0.224871 0.385284 "/>
+  <glquad name="37" p1="Rotor_20" p2="Rotor_97" p3="Rotor_101" p4="Rotor_19" normals="269 270 278 19 " uvs="0.210306 0.505364 0.215759 0.474898 0.224871 0.474963 0.224871 0.505605 "/>
+  <glquad name="38" p1="Rotor_97" p2="Rotor_98" p3="Rotor_102" p4="Rotor_101" normals="270 271 277 278 " uvs="0.215759 0.474898 0.218110 0.445019 0.224871 0.444957 0.224871 0.474963 "/>
+  <glquad name="39" p1="Rotor_98" p2="Rotor_99" p3="Rotor_103" p4="Rotor_102" normals="271 272 276 277 " uvs="0.218110 0.445019 0.220404 0.414926 0.224871 0.414898 0.224871 0.444957 "/>
+  <glquad name="40" p1="Rotor_99" p2="Rotor_100" p3="Rotor_104" p4="Rotor_103" normals="272 273 275 276 " uvs="0.220404 0.414926 0.220995 0.385035 0.224871 0.385284 0.224871 0.414898 "/>
+  <gltriangle name="41" p1="Base_109" p2="Base_7" p3="Base_8" normals="109 238 172 " uvs="0.841089 0.567492 0.806444 0.592899 0.803070 0.547483 "/>
+  <glquad name="42" p1="Base_118" p2="Base_119" p3="Base_122" p4="Base_121" normals="118 119 122 121 " uvs="0.768909 0.488282 0.768905 0.476896 0.780291 0.476893 0.780294 0.488279 "/>
+  <glquad name="43" p1="Base_117" p2="Base_118" p3="Base_121" p4="Base_120" normals="117 118 121 120 " uvs="0.768911 0.499666 0.768909 0.488282 0.780294 0.488279 0.780296 0.499664 "/>
+  <glquad name="44" p1="Base_121" p2="Base_122" p3="Base_125" p4="Base_124" normals="121 122 125 124 " uvs="0.780294 0.488279 0.780291 0.476893 0.791677 0.476889 0.791680 0.488276 "/>
+  <glquad name="45" p1="Base_120" p2="Base_121" p3="Base_124" p4="Base_123" normals="120 121 124 123 " uvs="0.780296 0.499664 0.780294 0.488279 0.791680 0.488276 0.791682 0.499662 "/>
+  <gltriangle name="46" p1="Base_11" p2="Base_144" p3="Base_8" normals="250 144 172 " uvs="0.839402 0.544784 0.839684 0.548569 0.803070 0.547483 "/>
+  <gltriangle name="47" p1="Base_144" p2="Base_145" p3="Base_8" normals="144 145 172 " uvs="0.839684 0.548569 0.839965 0.552353 0.803070 0.547483 "/>
+  <gltriangle name="48" p1="Base_145" p2="Base_110" p3="Base_8" normals="145 110 172 " uvs="0.839965 0.552353 0.840246 0.556138 0.803070 0.547483 "/>
+  <gltriangle name="49" p1="Base_108" p2="Base_139" p3="Base_7" normals="108 139 238 " uvs="0.841933 0.578846 0.842214 0.582630 0.806444 0.592899 "/>
+  <gltriangle name="50" p1="Base_139" p2="Base_138" p3="Base_7" normals="139 138 238 " uvs="0.842214 0.582630 0.842495 0.586415 0.806444 0.592899 "/>
+  <gltriangle name="51" p1="Base_138" p2="Base_10" p3="Base_7" normals="138 237 238 " uvs="0.842495 0.586415 0.842776 0.590199 0.806444 0.592899 "/>
+  <gltriangle name="52" p1="Base_110" p2="Base_143" p3="Base_8" normals="110 143 172 " uvs="0.840246 0.556138 0.840527 0.559923 0.803070 0.547483 "/>
+  <gltriangle name="53" p1="Base_143" p2="Base_142" p3="Base_8" normals="143 142 172 " uvs="0.840527 0.559923 0.840808 0.563707 0.803070 0.547483 "/>
+  <gltriangle name="54" p1="Base_142" p2="Base_109" p3="Base_8" normals="142 109 172 " uvs="0.840808 0.563707 0.841089 0.567492 0.803070 0.547483 "/>
+  <gltriangle name="55" p1="Base_109" p2="Base_141" p3="Base_7" normals="109 141 238 " uvs="0.841089 0.567492 0.841371 0.571276 0.806444 0.592899 "/>
+  <gltriangle name="56" p1="Base_141" p2="Base_140" p3="Base_7" normals="141 140 238 " uvs="0.841371 0.571276 0.841652 0.575061 0.806444 0.592899 "/>
+  <gltriangle name="57" p1="Base_140" p2="Base_108" p3="Base_7" normals="140 108 238 " uvs="0.841652 0.575061 0.841933 0.578846 0.806444 0.592899 "/>
+  <glquad name="58" p1="Base_23" p2="Base_160" p3="Base_162" p4="Base_152" normals="197 196 162 198 " uvs="0.757516 0.465515 0.761311 0.465514 0.759414 0.467412 0.757517 0.469310 "/>
+  <glquad name="59" p1="Base_113" p2="Base_153" p3="Base_163" p4="Base_119" normals="200 199 163 119 " uvs="0.757520 0.476900 0.757519 0.473105 0.761312 0.469309 0.768905 0.476896 "/>
+  <glquad name="60" p1="Base_119" p2="Base_163" p3="Base_161" p4="Base_116" normals="119 163 195 194 " uvs="0.768905 0.476896 0.761312 0.469309 0.765106 0.465513 0.768901 0.465511 "/>
+  <glquad name="61" p1="Base_162" p2="Base_160" p3="Base_161" p4="Base_163" normals="162 196 195 163 " uvs="0.759414 0.467412 0.761311 0.465514 0.765106 0.465513 0.761312 0.469309 "/>
+  <glquad name="62" p1="Base_162" p2="Base_163" p3="Base_153" p4="Base_152" normals="162 163 199 198 " uvs="0.759414 0.467412 0.761312 0.469309 0.757519 0.473105 0.757517 0.469310 "/>
+  <glquad name="63" p1="Base_150" p2="Base_151" p3="Base_119" p4="Base_118" normals="202 201 119 118 " uvs="0.757523 0.484490 0.757522 0.480695 0.768905 0.476896 0.768909 0.488282 "/>
+  <gltriangle name="64" p1="Base_112" p2="Base_150" p3="Base_118" normals="203 202 118 " uvs="0.757524 0.488285 0.757523 0.484490 0.768909 0.488282 "/>
+  <gltriangle name="65" p1="Base_151" p2="Base_113" p3="Base_119" normals="201 200 119 " uvs="0.757522 0.480695 0.757520 0.476900 0.768905 0.476896 "/>
+  <glquad name="66" p1="Base_148" p2="Base_149" p3="Base_118" p4="Base_117" normals="205 204 118 117 " uvs="0.757526 0.495874 0.757525 0.492079 0.768909 0.488282 0.768911 0.499666 "/>
+  <gltriangle name="67" p1="Base_111" p2="Base_148" p3="Base_117" normals="206 205 117 " uvs="0.757527 0.499669 0.757526 0.495874 0.768911 0.499666 "/>
+  <gltriangle name="68" p1="Base_149" p2="Base_112" p3="Base_118" normals="204 203 118 " uvs="0.757525 0.492079 0.757524 0.488285 0.768909 0.488282 "/>
+  <glquad name="69" p1="Base_0" p2="Base_146" p3="Base_164" p4="Base_130" normals="209 208 164 249 " uvs="0.757528 0.511053 0.757528 0.507258 0.759425 0.509155 0.761323 0.511052 "/>
+  <glquad name="70" p1="Base_105" p2="Base_131" p3="Base_165" p4="Base_117" normals="247 248 165 117 " uvs="0.768913 0.511051 0.765118 0.511052 0.761323 0.507258 0.768911 0.499666 "/>
+  <glquad name="71" p1="Base_117" p2="Base_165" p3="Base_147" p4="Base_111" normals="117 165 207 206 " uvs="0.768911 0.499666 0.761323 0.507258 0.757527 0.503463 0.757527 0.499669 "/>
+  <glquad name="72" p1="Base_164" p2="Base_146" p3="Base_147" p4="Base_165" normals="164 208 207 165 " uvs="0.759425 0.509155 0.757528 0.507258 0.757527 0.503463 0.761323 0.507258 "/>
+  <glquad name="73" p1="Base_164" p2="Base_165" p3="Base_131" p4="Base_130" normals="164 165 248 249 " uvs="0.759425 0.509155 0.761323 0.507258 0.765118 0.511052 0.761323 0.511052 "/>
+  <glquad name="74" p1="Base_159" p2="Base_158" p3="Base_122" p4="Base_119" normals="193 192 122 119 " uvs="0.772697 0.465510 0.776492 0.465508 0.780291 0.476893 0.768905 0.476896 "/>
+  <gltriangle name="75" p1="Base_116" p2="Base_159" p3="Base_119" normals="194 193 119 " uvs="0.768901 0.465511 0.772697 0.465510 0.768905 0.476896 "/>
+  <gltriangle name="76" p1="Base_158" p2="Base_115" p3="Base_122" normals="192 191 122 " uvs="0.776492 0.465508 0.780287 0.465507 0.780291 0.476893 "/>
+  <glquad name="77" p1="Base_133" p2="Base_132" p3="Base_117" p4="Base_120" normals="245 246 117 120 " uvs="0.776503 0.511051 0.772708 0.511051 0.768911 0.499666 0.780296 0.499664 "/>
+  <gltriangle name="78" p1="Base_106" p2="Base_133" p3="Base_120" normals="244 245 120 " uvs="0.780299 0.511050 0.776503 0.511051 0.780296 0.499664 "/>
+  <gltriangle name="79" p1="Base_132" p2="Base_105" p3="Base_117" normals="246 247 117 " uvs="0.772708 0.511051 0.768913 0.511051 0.768911 0.499666 "/>
+  <glquad name="80" p1="Base_157" p2="Base_156" p3="Base_125" p4="Base_122" normals="190 189 125 122 " uvs="0.784082 0.465506 0.787877 0.465504 0.791677 0.476889 0.780291 0.476893 "/>
+  <gltriangle name="81" p1="Base_115" p2="Base_157" p3="Base_122" normals="191 190 122 " uvs="0.780287 0.465507 0.784082 0.465506 0.780291 0.476893 "/>
+  <gltriangle name="82" p1="Base_156" p2="Base_114" p3="Base_125" normals="189 188 125 " uvs="0.787877 0.465504 0.791672 0.465503 0.791677 0.476889 "/>
+  <glquad name="83" p1="Base_135" p2="Base_134" p3="Base_120" p4="Base_123" normals="242 243 120 123 " uvs="0.787889 0.511049 0.784094 0.511050 0.780296 0.499664 0.791682 0.499662 "/>
+  <gltriangle name="84" p1="Base_107" p2="Base_135" p3="Base_123" normals="241 242 123 " uvs="0.791684 0.511049 0.787889 0.511049 0.791682 0.499662 "/>
+  <gltriangle name="85" p1="Base_134" p2="Base_106" p3="Base_120" normals="243 244 120 " uvs="0.784094 0.511050 0.780299 0.511050 0.780296 0.499664 "/>
+  <glquad name="86" p1="Base_10" p2="Base_138" p3="Base_166" p4="Base_154" normals="185 184 166 186 " uvs="0.803059 0.465499 0.803060 0.469294 0.801162 0.467397 0.799263 0.465500 "/>
+  <glquad name="87" p1="Base_114" p2="Base_155" p3="Base_167" p4="Base_125" normals="188 187 167 125 " uvs="0.791672 0.465503 0.795468 0.465502 0.799265 0.469296 0.791677 0.476889 "/>
+  <glquad name="88" p1="Base_125" p2="Base_167" p3="Base_139" p4="Base_108" normals="125 167 183 182 " uvs="0.791677 0.476889 0.799265 0.469296 0.803062 0.473090 0.803063 0.476886 "/>
+  <glquad name="89" p1="Base_166" p2="Base_138" p3="Base_139" p4="Base_167" normals="166 184 183 167 " uvs="0.801162 0.467397 0.803060 0.469294 0.803062 0.473090 0.799265 0.469296 "/>
+  <glquad name="90" p1="Base_166" p2="Base_167" p3="Base_155" p4="Base_154" normals="166 167 187 186 " uvs="0.801162 0.467397 0.799265 0.469296 0.795468 0.465502 0.799263 0.465500 "/>
+  <glquad name="91" p1="Base_140" p2="Base_141" p3="Base_124" p4="Base_125" normals="181 180 124 125 " uvs="0.803064 0.480681 0.803066 0.484477 0.791680 0.488276 0.791677 0.476889 "/>
+  <gltriangle name="92" p1="Base_108" p2="Base_140" p3="Base_125" normals="182 181 125 " uvs="0.803063 0.476886 0.803064 0.480681 0.791677 0.476889 "/>
+  <gltriangle name="93" p1="Base_141" p2="Base_109" p3="Base_124" normals="180 179 124 " uvs="0.803066 0.484477 0.803067 0.488273 0.791680 0.488276 "/>
+  <glquad name="94" p1="Base_142" p2="Base_143" p3="Base_123" p4="Base_124" normals="178 177 123 124 " uvs="0.803068 0.492069 0.803068 0.495865 0.791682 0.499662 0.791680 0.488276 "/>
+  <gltriangle name="95" p1="Base_109" p2="Base_142" p3="Base_124" normals="179 178 124 " uvs="0.803067 0.488273 0.803068 0.492069 0.791680 0.488276 "/>
+  <gltriangle name="96" p1="Base_143" p2="Base_110" p3="Base_123" normals="177 176 123 " uvs="0.803068 0.495865 0.803069 0.499661 0.791682 0.499662 "/>
+  <glquad name="97" p1="Base_11" p2="Base_136" p3="Base_168" p4="Base_144" normals="173 239 168 174 " uvs="0.803070 0.511048 0.799275 0.511048 0.801172 0.509150 0.803070 0.507252 "/>
+  <glquad name="98" p1="Base_110" p2="Base_145" p3="Base_169" p4="Base_123" normals="176 175 169 123 " uvs="0.803069 0.499661 0.803070 0.503456 0.799274 0.507253 0.791682 0.499662 "/>
+  <glquad name="99" p1="Base_123" p2="Base_169" p3="Base_137" p4="Base_107" normals="123 169 240 241 " uvs="0.791682 0.499662 0.799274 0.507253 0.795479 0.511049 0.791684 0.511049 "/>
+  <glquad name="100" p1="Base_168" p2="Base_136" p3="Base_137" p4="Base_169" normals="168 239 240 169 " uvs="0.801172 0.509150 0.799275 0.511048 0.795479 0.511049 0.799274 0.507253 "/>
+  <glquad name="101" p1="Base_168" p2="Base_169" p3="Base_145" p4="Base_144" normals="168 169 175 174 " uvs="0.801172 0.509150 0.799274 0.507253 0.803070 0.503456 0.803070 0.507252 "/>
+</render>
+</document>
