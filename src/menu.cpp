@@ -189,7 +189,8 @@ namespace App
                     ReloadVideo();
                     return 1;
                 }
-                if ( event.key.keysym.sym == SDLK_F4 && event.key.keysym.mod & KMOD_ALT )
+                if ((event.key.keysym.sym == SDLK_F4 && event.key.keysym.mod & KMOD_ALT) ||
+                    (event.key.keysym.sym == SDLK_q && event.key.keysym.mod & KMOD_CTRL))
                 {
                     return 0; // quits
                 }
