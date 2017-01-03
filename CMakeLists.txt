@@ -15,6 +15,9 @@
 cmake_minimum_required(VERSION 2.8.7)
 project(TORPED_PROJECT)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 find_package(GLEW REQUIRED)
 
 find_package(GLUT REQUIRED)
