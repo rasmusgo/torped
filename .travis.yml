@@ -3,10 +3,13 @@ addons:
   apt:
     sources:
       - george-edison55-precise-backports # cmake 3.2.3 / doxygen 1.8.3
+      - ubuntu-toolchain-r-test
     packages:
       - cmake
       - cmake-data
       - freeglut3-dev
+      - g++-4.8
+      - gcc-4.8
       - libglew-dev
       - liblua5.1-dev
       - libopenal-dev
