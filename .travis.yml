@@ -11,8 +11,8 @@ addons:
       - cmake
       - cmake-data
       - freeglut3-dev
-      - g++-4.8
-      - gcc-4.8
+      - g++-5
+      - gcc-5
       - libglew-dev
       - liblua5.1-dev
       - libopenal-dev
@@ -24,4 +24,6 @@ addons:
       - libvorbis-dev
       - python2.7-dev
 script:
+  - export CXX=g++-5
+  - export CC=gcc-5
   - ./build.sh
