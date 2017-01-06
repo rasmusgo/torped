@@ -22,6 +22,7 @@ addons:
       - libsdl-ttf2.0-dev
       - libtinyxml-dev
       - libvorbis-dev
+      - libxi-dev
       - python2.7-dev
 script:
   - export CXX=g++-5
