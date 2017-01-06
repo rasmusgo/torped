@@ -12,8 +12,11 @@
 #     libvorbis-dev       \
 #     python2.7-dev
 
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.0.2)
 project(TORPED_PROJECT)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(GLEW REQUIRED)
 
