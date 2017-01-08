@@ -45,6 +45,11 @@ include_directories(${LUA_INCLUDE_DIR})
 find_package(PythonLibs 2.7 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
+find_library(OGG_LIBRARY ogg)
+find_library(VORBIS_LIBRARY vorbis)
+find_library(VORBISFILE_LIBRARY vorbisfile)
+find_library(TINYXML_LIBRARY tinyxml)
+
 add_subdirectory(thirdparty)
 
 include_directories(
