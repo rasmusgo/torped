@@ -5,7 +5,11 @@
 #include "SDL_thread.h"
 #include <angelscript.h>
 #include <GL/glew.h>
+#ifdef __APPLE__
+#include <glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include <Python.h>
 #include <SDL.h>
 

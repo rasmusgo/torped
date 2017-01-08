@@ -3,8 +3,13 @@
 #include <string>
 #include <vector>
 
+#ifdef __APPLE__
+#include <al.h>
+#include <alc.h>
+#else
 #include <AL/al.h>
 #include <AL/alc.h>
+#endif
 //#include <alut/alut.h>
 #include <SDL.h>
 #include <SDL_thread.h>
