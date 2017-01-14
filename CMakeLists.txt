@@ -12,6 +12,12 @@
 #     libvorbis-dev       \
 #     python2.7-dev
 
+# sudo port install git-lfs
+# git lfs install
+# git lfs fetch
+# git lfs checkout
+# sudo port install glew physfs libsdl libsdl_image lua51 tinyxml libvorbis libogg
+
 cmake_minimum_required(VERSION 3.0.2)
 project(TORPED_PROJECT)
 
