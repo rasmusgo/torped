@@ -25,7 +25,13 @@ addons:
       - libvorbis-dev
       - libxi-dev
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo port install glew physfs libsdl libsdl_image lua51 tinyxml libvorbis libogg; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      curl -O "https://github.com/macports/macports-base/releases/download/v2.3.5/MacPorts-2.3.5-10.11-ElCapitan.pkg";
+      sudo installer -pkg MacPorts-2.3.5-10.11-ElCapitan.pkg -target /;
+      export PATH=/opt/local/bin:$PATH;
+      sudo port selfupdate;
+      sudo port install glew physfs libsdl libsdl_image lua51 tinyxml libvorbis libogg;
+    fi
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX=g++-5; export CC=gcc-5; fi
   - ./build.sh
