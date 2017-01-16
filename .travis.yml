@@ -25,7 +25,7 @@ addons:
       - libvorbis-dev
       - libxi-dev
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then port install glew physfs libsdl libsdl_image lua51 tinyxml libvorbis libogg; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo port install glew physfs libsdl libsdl_image lua51 tinyxml libvorbis libogg; fi
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX=g++-5; export CC=gcc-5; fi
   - ./build.sh
