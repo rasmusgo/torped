@@ -5,3 +5,5 @@ _Torped_ is slang for _hitman_ in Swedish. Like many others who started programm
 The game might be described as a first person physics sandbox game. The player character and his surroundings are simulated in a finer degree than in most games. It is common practice to simulate characters in games as cylinders or capsules fixed in upright poses sliding on perfectly flat floors and against perfectly flat walls in a mostly static environment. The characters are not propelled by legs, the legs are added as graphical afterthought to make things look better. In Torped on the other hand, the characters interact with the world in a delicate way. They walk with legs and feet. They pick things up with their hands. Running into a wall at full speed is not a pleasant experience in the real world and doing so in Torped will have a similar dramatic effect.
 
 See [spec](docs/spec.md) for a technical description of the game.
+
+![travis build](https://travis-ci.org/rasmusgo/torped.svg?branch=master)
