@@ -6,4 +6,4 @@ The game might be described as a first person physics sandbox game. The player c
 
 See [spec](docs/spec.md) for a technical description of the game.
 
-![travis build](https://travis-ci.org/rasmusgo/torped.svg?branch=master)
+[![Build Status](https://travis-ci.org/rasmusgo/torped.svg?branch=master)](https://travis-ci.org/rasmusgo/torped)
