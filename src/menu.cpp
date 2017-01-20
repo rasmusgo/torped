@@ -36,7 +36,6 @@ namespace App
     std::deque<std::string> consoleLines;
     std::vector<std::string> commands;
     Texture consoleBackground;
-    Texture angelscriptIcon;
     Texture luaIcon;
 
     inline void DrawString(void *font, const char string[])
@@ -50,9 +49,6 @@ namespace App
     {
         if (consoleBackground.GetID() == 0)
             consoleBackground.Aquire("consoleback.png");
-
-        if (angelscriptIcon.GetID() == 0)
-            angelscriptIcon.Aquire("icon_angelscript.png");
 
         if (luaIcon.GetID() == 0)
             luaIcon.Aquire("icon_lua.png");
