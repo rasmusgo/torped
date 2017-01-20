@@ -10,7 +10,6 @@ target_link_libraries(torped LINK_PRIVATE
     ${OPENAL_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${PHYSFS_LIBRARY}
-    ${PYTHON_LIBRARIES}
     ${SDL_IMAGE_LIBRARIES}
     ${SDL_LIBRARY}
     ${TINYXML_LIBRARY}
