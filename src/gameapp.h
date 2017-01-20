@@ -11,7 +11,6 @@
 #include <math.h>
 #include <thread>
 #include <manymouse.h>
-#include <angelscript.h>
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"
@@ -71,6 +70,4 @@ namespace App
     extern Profiler profiler;
 
     extern std::vector<std::thread> threads;
-
-    extern asIScriptEngine *as_engine;
 } // namespace App

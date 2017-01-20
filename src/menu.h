@@ -4,7 +4,6 @@
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
 
-#include <angelscript.h>
 #include <iostream>
 #include <manymouse.h>
 #include <map>

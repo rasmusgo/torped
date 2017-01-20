@@ -23,7 +23,6 @@ addons:
       - libtinyxml-dev
       - libvorbis-dev
       - libxi-dev
-      - python2.7-dev
 script:
   - export CXX=g++-5
   - export CC=gcc-5

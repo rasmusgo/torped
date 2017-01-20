@@ -9,8 +9,7 @@
 #     libsdl-net1.2-dev   \
 #     libsdl-ttf2.0-dev   \
 #     libtinyxml-dev      \
-#     libvorbis-dev       \
-#     python2.7-dev
+#     libvorbis-dev
 
 # sudo port install git-lfs
 # git lfs install
@@ -48,9 +47,6 @@ include_directories(${SDL_IMAGE_INCLUDE_DIR})
 find_package(Lua51 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
 
-find_package(PythonLibs 2.7 REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
-
 find_library(OGG_LIBRARY ogg)
 find_library(VORBIS_LIBRARY vorbis)
 find_library(VORBISFILE_LIBRARY vorbisfile)
@@ -59,7 +55,6 @@ find_library(TINYXML_LIBRARY tinyxml)
 add_subdirectory(thirdparty)
 
 include_directories(
-    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/angelscript/sdk/angelscript/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/manymouse"
     "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/loguru"
 )
