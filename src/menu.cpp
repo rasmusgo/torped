@@ -9,7 +9,6 @@
 #else
 #include <GL/glut.h>
 #endif
-#include <Python.h>
 #include <SDL.h>
 
 extern "C"
@@ -29,7 +28,6 @@ extern "C"
 #include "input.h"
 #include "luawrap.h"
 #include "menu.h"
-#include "pythonstruct.h"
 #include "shader.h"
 
 namespace App
@@ -39,7 +37,6 @@ namespace App
     std::deque<std::string> consoleLines;
     std::vector<std::string> commands;
     Texture consoleBackground;
-    Texture pythonIcon;
     Texture angelscriptIcon;
     Texture luaIcon;
 
@@ -54,9 +51,6 @@ namespace App
     {
         if (consoleBackground.GetID() == 0)
             consoleBackground.Aquire("consoleback.png");
-
-        if (pythonIcon.GetID() == 0)
-            pythonIcon.Aquire("icon_python.png");
 
         if (angelscriptIcon.GetID() == 0)
             angelscriptIcon.Aquire("icon_angelscript.png");
@@ -112,8 +106,8 @@ namespace App
 
         consoleBackground.Disable();
 
-        pythonIcon.Enable();
-        pythonIcon.Bind();
+        luaIcon.Enable();
+        luaIcon.Bind();
 
         glBegin(GL_QUADS);
         glTexCoord2f(0,0);
@@ -126,7 +120,7 @@ namespace App
         glVertex2f(0, 15);
         glEnd();
 
-        pythonIcon.Disable();
+        luaIcon.Disable();
 
         glColor3f(0.8, 0.8, 0.8);
         glRasterPos2f( 18, 5 );
@@ -217,33 +211,6 @@ namespace App
                 {
                     LOG_S(INFO) << "> " << commands.back();
                     redraw = true;
-
-                    PyObject *m, *d, *v;
-                    m = PyImport_AddModule("__main__");
-
-                    if (m == NULL)
-                        break;
-
-                    d = PyModule_GetDict(m);
-                    v = PyRun_String(commands.back().c_str(), Py_single_input, d, d);
-
-                    if (v == NULL)
-                    {
-                        PyErr_Print();
-                        fetch_pos = commands.size()-1;
-                        commands.push_back(commands.back());
-                        break;
-                    }
-
-                    if (v != Py_None)
-                    {
-                        LOG_S(INFO) << PyString_AsString(PyObject_Str(v));
-                    }
-
-                    Py_DECREF(v);
-
-                    if (Py_FlushLine())
-                        PyErr_Clear();
 
                     fetch_pos = commands.size();
                     commands.push_back("");

@@ -11,7 +11,6 @@
 #endif
 #include <physfs.h>
 #include <deque>
-#include <Python.h>
 #include <angelscript.h>
 
 extern "C"
@@ -37,7 +36,6 @@ extern "C"
 #include "menu.h"
 #include "physfsstruct.h"
 #include "player.h"
-#include "pythonstruct.h"
 #include "scene.h"
 #include "shader.h"
 #include "world.h"
@@ -227,16 +225,6 @@ namespace App
         //alSourcei(source, AL_LOOPING, AL_TRUE);
         alSourcePlay(source);
 
-        LOG_S(INFO) << "Initializing Python...";
-
-        if (!InitPython())
-        {
-            LOG_S(ERROR) << "Fatal error: InitPython() failed";
-            fatal_error = true;
-            return;
-        }
-        PySys_SetArgv(argc, argv);
-
         LOG_S(INFO) << "Initializing AngelScript...";
 
         // Create the script engine
@@ -320,7 +308,6 @@ namespace App
         if (as_engine)
             as_engine->Release();
 
-        QuitPython();
         // destroy and quit physics
         QuitPhys();
 
