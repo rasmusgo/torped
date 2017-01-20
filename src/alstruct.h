@@ -4,8 +4,13 @@
 #include "Fluid_Studios_Memory_Manager/nommgr.h"
 #endif
 
+#ifdef __APPLE__
+#include <al.h>
+#include <alc.h>
+#else
 #include <AL/al.h>
 #include <AL/alc.h>
+#endif
 //#include <alut/alut.h>
 #include <vector>
 #include <string>

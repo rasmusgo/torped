@@ -349,8 +349,8 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
         return;
     }
 
-    SDL_Rect srcrect = {0, height, width, height};
-    SDL_Rect dstrect = {0, 0, width, height};
+    SDL_Rect srcrect{0, (Sint16)height, (Uint16)width, (Uint16)height};
+    SDL_Rect dstrect{0, 0, (Uint16)width, (Uint16)height};
 
     SDL_BlitSurface(image, &srcrect, tmp, &dstrect);
     gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);

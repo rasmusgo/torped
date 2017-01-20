@@ -5,7 +5,11 @@
 #include "SDL_thread.h"
 //#include "SDL_opengl.h"
 #include "SDL_getenv.h"
+#ifdef __APPLE__
+#include <glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include <physfs.h>
 #include <deque>
 #include <Python.h>
@@ -828,8 +832,8 @@ namespace App
         if (App::developermode)
         {
             //  normal length should be 1: a*a + a*a + a*a = 1*1
-            float a = sqrt(1.0/3.0);
-            float bounds[] =
+            double a = sqrt(1.0/3.0);
+            double bounds[] =
             {
                 phys->bounds_min.x, phys->bounds_min.y, phys->bounds_min.z, -a,-a,-a,
                 phys->bounds_min.x, phys->bounds_min.y, phys->bounds_max.z, -a,-a, a,
@@ -856,8 +860,8 @@ namespace App
             glEnableClientState(GL_VERTEX_ARRAY);
             glEnableClientState(GL_NORMAL_ARRAY);
 
-            glVertexPointer(3, GL_FLOAT, sizeof(float)*6, static_cast<void*>(bounds));
-            glNormalPointer(GL_FLOAT, sizeof(float)*6, static_cast<void*>(bounds+3));
+            glVertexPointer(3, GL_DOUBLE, sizeof(float)*6, static_cast<void*>(bounds));
+            glNormalPointer(GL_DOUBLE, sizeof(float)*6, static_cast<void*>(bounds+3));
 
             glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, static_cast<void*>(indices));
             glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, static_cast<void*>(indices+4));

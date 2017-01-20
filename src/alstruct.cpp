@@ -53,7 +53,7 @@ static bool LoadSound(const char filename[])
     }
 
     alBufferData(buffer, format, &buffer_data[0], static_cast<ALsizei>(buffer_data.size()), freq);
-    if (err = alGetError())
+    if ((err = alGetError()))
     {
         alDeleteBuffers(1, &buffer);
         App::console << "alBufferData() failed: " << alGetString(err) << std::endl;
@@ -259,7 +259,7 @@ bool AlStruct::LoadSound(const char filename[])
     }
 
     alBufferData(buffer, format, &buffer_data[0], static_cast<ALsizei>(buffer_data.size()), freq);
-    if (err = alGetError())
+    if ((err = alGetError()))
     {
         alDeleteBuffers(1, &buffer);
         LOG_S(ERROR) << "alBufferData() failed: " << alGetString(err);
@@ -281,7 +281,7 @@ ALuint AlStruct::AddSound(const char filename[], const Vec3r &pos, const Vec3r &
 
     ALuint source;
     alGenSources(1, &source);
-    if (err = alGetError())
+    if ((err = alGetError()))
     {
         LOG_S(ERROR) << "alGenSources() failed: " << alGetString(err);
         return 0;
@@ -289,7 +289,7 @@ ALuint AlStruct::AddSound(const char filename[], const Vec3r &pos, const Vec3r &
     sources.push_back(source);
 
     alSourcei(source, AL_BUFFER, buffers[filename]);
-    if (err = alGetError())
+    if ((err = alGetError()))
     {
         LOG_S(ERROR) << "alSourcei() failed: " << alGetString(err);
         return 0;
@@ -297,14 +297,14 @@ ALuint AlStruct::AddSound(const char filename[], const Vec3r &pos, const Vec3r &
 
     alSource3f(source, AL_POSITION, pos.x, pos.y, pos.z);
     alSource3f(source, AL_VELOCITY, vel.x, vel.y, vel.z);
-    if (err = alGetError())
+    if ((err = alGetError()))
     {
         LOG_S(ERROR) << "alSourcefv() failed: " << alGetString(err);
         return 0;
     }
 
     alSourcef(source, AL_GAIN, gain);
-    if (err = alGetError())
+    if ((err = alGetError()))
     {
         LOG_S(ERROR) << "alSourcef() failed: " << alGetString(err);
         return 0;

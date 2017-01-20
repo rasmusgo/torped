@@ -76,8 +76,8 @@ void Player::MoveMouse(float x, float y)
 
     Mat3x3r mat(rot);
 
-    ALfloat orientation[] = { mat.vec1.x, mat.vec1.y, mat.vec1.z,
-                              mat.vec3.x, mat.vec3.y, mat.vec3.z };
+    ALfloat orientation[] = { float(mat.vec1.x), float(mat.vec1.y), float(mat.vec1.z),
+                              float(mat.vec3.x), float(mat.vec3.y), float(mat.vec3.z) };
 
     alListenerfv(AL_ORIENTATION, orientation);
 }
