@@ -106,8 +106,8 @@ namespace App
 
         consoleBackground.Disable();
 
-        pythonIcon.Enable();
-        pythonIcon.Bind();
+        luaIcon.Enable();
+        luaIcon.Bind();
 
         glBegin(GL_QUADS);
         glTexCoord2f(0,0);
@@ -120,7 +120,7 @@ namespace App
         glVertex2f(0, 15);
         glEnd();
 
-        pythonIcon.Disable();
+        luaIcon.Disable();
 
         glColor3f(0.8, 0.8, 0.8);
         glRasterPos2f( 18, 5 );
