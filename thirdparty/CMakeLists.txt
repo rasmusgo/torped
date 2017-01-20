@@ -14,5 +14,3 @@ if(APPLE)
        ${CARBON_LIBRARY} ${IOKIT_LIBRARY}
    )
 endif(APPLE)
-
-add_subdirectory(angelscript/sdk/angelscript/projects/cmake)

@@ -15,7 +15,5 @@ target_link_libraries(torped LINK_PRIVATE
     ${TINYXML_LIBRARY}
     ${VORBIS_LIBRARY}
     ${VORBISFILE_LIBRARY}
-    angelscript
     manymouse
-    pthread
 )

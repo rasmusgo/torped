@@ -11,7 +11,6 @@
 #endif
 #include <physfs.h>
 #include <deque>
-#include <angelscript.h>
 
 extern "C"
 {
@@ -25,7 +24,6 @@ extern "C"
 #endif
 
 #include "alstruct.h"
-#include "aswrap.h"
 #include "collide.h"
 #include "comparelist.h"
 #include "console.h"
@@ -87,7 +85,6 @@ namespace App
 
     Shader shader;
 
-    asIScriptEngine *as_engine = NULL;
     lua_State* lua_console = NULL;
 
     std::thread scene_thread;
@@ -225,23 +222,6 @@ namespace App
         //alSourcei(source, AL_LOOPING, AL_TRUE);
         alSourcePlay(source);
 
-        LOG_S(INFO) << "Initializing AngelScript...";
-
-        // Create the script engine
-        as_engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
-
-        if( as_engine == NULL )
-        {
-            LOG_S(ERROR) << "Fatal error: Failed to create AngelScript engine.";
-            fatal_error = true;
-            return;
-        }
-
-        // Configure the script engine with all the functions,
-        // and variables that the script should be able to use.
-        AsWrapConsoleCmds(as_engine);
-        AsRunFile(as_engine, "autoexec.as");
-
         // Initialize Lua
         LOG_S(INFO) << "Initializing Lua...";
 
@@ -303,10 +283,6 @@ namespace App
         // Close Lua console
         if (lua_console)
             lua_close(lua_console);
-
-        // Release the AngelScript engine
-        if (as_engine)
-            as_engine->Release();
 
         // destroy and quit physics
         QuitPhys();
