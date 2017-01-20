@@ -9,8 +9,7 @@
 #     libsdl-net1.2-dev   \
 #     libsdl-ttf2.0-dev   \
 #     libtinyxml-dev      \
-#     libvorbis-dev       \
-#     python2.7-dev
+#     libvorbis-dev
 
 # sudo port install git-lfs
 # git lfs install
