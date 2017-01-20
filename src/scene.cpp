@@ -10,9 +10,7 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #endif
-//#include <alut/alut.h>
 #include <SDL.h>
-#include <SDL_thread.h>
 
 #ifdef MEMORY_MANAGER
 #include "Fluid_Studios_Memory_Manager/mmgr.h"

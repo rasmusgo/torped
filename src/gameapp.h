@@ -9,6 +9,7 @@
 #include <sstream>
 #include <map>
 #include <math.h>
+#include <thread>
 #include <manymouse.h>
 #include <angelscript.h>
 
@@ -69,7 +70,7 @@ namespace App
 
     extern Profiler profiler;
 
-    extern std::vector<SDL_Thread*> threads;
+    extern std::vector<std::thread> threads;
 
     extern asIScriptEngine *as_engine;
 } // namespace App

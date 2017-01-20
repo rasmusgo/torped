@@ -1,9 +1,8 @@
 #include <mutex>
+#include <thread>
 
 #include <GL/glew.h>
 #include <SDL.h>
-#include "SDL_thread.h"
-//#include "SDL_opengl.h"
 #include "SDL_getenv.h"
 #ifdef __APPLE__
 #include <glut.h>
@@ -82,7 +81,7 @@ namespace App
     float view_depth;
     int profilermode;
 
-    std::vector<SDL_Thread*> threads;
+    std::vector<std::thread> threads;
 
     bool fatal_error = false;
 
@@ -93,7 +92,7 @@ namespace App
     asIScriptEngine *as_engine = NULL;
     lua_State* lua_console = NULL;
 
-    SDL_Thread *scene_thread = NULL;
+    std::thread scene_thread;
     Scene *scene = NULL;
 
     std::mutex game_physics_messages_lock;
@@ -281,15 +280,7 @@ namespace App
 
         LOG_S(INFO) << "Initializing Threads...";
         scene = new Scene();
-        scene_thread = SDL_CreateThread(StartScene, (void*)scene);
-
-        if ( scene_thread == NULL )
-        {
-            LOG_S(ERROR) << "Fatal error: Failed to create physics thread";
-            fatal_error = true;
-            return;
-        }
-        threads.push_back(scene_thread);
+        threads.push_back(std::thread(StartScene, (void*)scene));
 
         LOG_S(INFO) << "Initialization finished!";
 
@@ -306,8 +297,9 @@ namespace App
 
         // wait for all open threads
         for (unsigned int i=0; i<threads.size(); ++i )
-            SDL_WaitThread(threads[i], NULL);
-
+        {
+            threads[i].join();
+        }
         threads.clear();
 
         delete scene;

@@ -9,14 +9,11 @@
 #include <GL/glew.h>
 #include <sstream>
 #include <memory>
-//#include <new>
 #include <string>
 #include <vector>
 #include <deque>
 #include <map>
 #include <math.h>
-#include <SDL/SDL_thread.h>
-//#include <SDL/SDL_opengl.h>
 #include <tinyxml.h>
 
 #ifdef MEMORY_MANAGER

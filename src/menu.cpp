@@ -2,7 +2,6 @@
 #include <mutex>
 
 #include "SDL_getenv.h"
-#include "SDL_thread.h"
 #include <angelscript.h>
 #include <GL/glew.h>
 #ifdef __APPLE__
