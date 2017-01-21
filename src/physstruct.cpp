@@ -763,22 +763,39 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         for (; pElem; pElem = pElem->NextSiblingElement("point"))
         {
             std::stringstream ss;
-            ss << pElem->Attribute("pos");
-            ss >> point->pos;
-            ss.clear();
-            // TODO: premuliply with timestep
-            ss << pElem->Attribute("vel");
-            ss >> point->vel;
-            ss.clear();
-            // TODO: premuliply with timestep
-            ss << pElem->Attribute("force");
-            ss >> point->force;
-            REAL mass = 0;
-            ss.clear();
-            ss << pElem->Attribute("mass");
-            ss >> mass;
-            if (mass != 0)
-                point->inv_mass = 1.0/mass;
+            if (auto pos = pElem->Attribute("pos"))
+            {
+                ss << pos;
+                ss >> point->pos;
+                ss.clear();
+            }
+            else
+            {
+                ABORT_S() << "Point has no position (\"pos\")";
+            }
+            // TODO: premultiply with timestep
+            if (auto vel = pElem->Attribute("vel"))
+            {
+                ss << vel;
+                ss >> point->vel;
+                ss.clear();
+            }
+            // TODO: premultiply with timestep
+            if (auto force = pElem->Attribute("force"))
+            {
+                ss << force;
+                ss >> point->force;
+                ss.clear();
+            }
+            if (auto mass = pElem->Attribute("mass"))
+            {
+                ss << mass;
+                ss >> point->inv_mass;
+                if (point->inv_mass != 0)
+                {
+                    point->inv_mass = REAL{1} / point->inv_mass;
+                }
+            }
             ++point;
         }
     }
@@ -791,42 +808,65 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
     {
         rigid->nodes = node;
         rigid->points = point;
-
         std::stringstream ss;
-        ss << pElem->Attribute("pos");
-        ss >> rigid->pos;
-        ss.clear();
-        // TODO: premuliply with timestep
-        ss << pElem->Attribute("vel");
-        ss >> rigid->vel;
-        ss.clear();
-        // TODO: premuliply with timestep
-        ss << pElem->Attribute("force");
-        ss >> rigid->force;
-        ss.clear();
-        rigid->orient = Quat4r(1,0,0,0);
-        ss << pElem->Attribute("rot");
-        ss >> rigid->orient;
-        ss.clear();
-        // TODO: premuliply with timestep
-        ss << pElem->Attribute("spin");
-        ss >> rigid->spin;
-        ss.clear();
-        // TODO: premuliply with timestep
-        ss << pElem->Attribute("torque");
-        ss >> rigid->torque;
-        REAL mass = 0;
-        ss.clear();
-        ss << pElem->Attribute("mass");
-        ss >> mass;
-        if (mass != 0)
-            rigid->inv_mass = 1.0/mass;
-        Vec3r inertia = Vec3r(0,0,0);
-        ss.clear();
-        ss << pElem->Attribute("inertia");
-        ss >> inertia;
-        if (inertia != Vec3r(0,0,0))
-            rigid->inv_inertia = Vec3r(1.0/inertia.x, 1.0/inertia.y, 1.0/inertia.z);
+
+        if (auto pos = pElem->Attribute("pos"))
+        {
+            ss << pos;
+            ss >> rigid->pos;
+            ss.clear();
+        }
+        // TODO: premultiply with timestep
+        if (auto vel = pElem->Attribute("vel"))
+        {
+            ss << vel;
+            ss >> rigid->vel;
+            ss.clear();
+        }
+        // TODO: premultiply with timestep
+        if (auto force = pElem->Attribute("force"))
+        {
+            ss << force;
+            ss >> rigid->force;
+            ss.clear();
+        }
+        if (auto orient = pElem->Attribute("rot"))
+        {
+            rigid->orient = Quat4r(1,0,0,0);
+            ss << orient;
+            ss >> rigid->orient;
+            ss.clear();
+        }
+        // TODO: premultiply with timestep
+        if (auto spin = pElem->Attribute("spin"))
+        {
+            ss << spin;
+            ss >> rigid->spin;
+            ss.clear();
+        }
+        // TODO: premultiply with timestep
+        if (auto torque = pElem->Attribute("torque"))
+        {
+            ss << torque;
+            ss >> rigid->torque;
+            ss.clear();
+        }
+        if (auto mass = pElem->Attribute("mass"))
+        {
+            ss << mass;
+            ss >> rigid->inv_mass;
+            if (rigid->inv_mass != 0)
+                rigid->inv_mass = REAL{1} / rigid->inv_mass;
+            ss.clear();
+        }
+
+        if (auto inertia = pElem->Attribute("inertia"))
+        {
+            ss << inertia;
+            ss >> rigid->inv_inertia;
+            if (rigid->inv_inertia != Vec3r(0,0,0))
+                rigid->inv_inertia = Vec3r(1.0/rigid->inv_inertia.x, 1.0/rigid->inv_inertia.y, 1.0/rigid->inv_inertia.z);
+        }
 
         pElem2 = TiXmlHandle(pElem).FirstChild("node").Element();
         for (; pElem2; pElem2 = pElem2->NextSiblingElement("node"))
@@ -855,20 +895,32 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         for (; pElem; pElem = pElem->NextSiblingElement("spring"))
         {
             std::stringstream ss;
-            ss << pElem->Attribute("k");
-            ss >> spring->k;
-            spring->k *= phys->time * phys->time;
-            ss.clear();
-            ss << pElem->Attribute("d");
-            ss >> spring->d;
-            spring->d *= phys->time;
-            ss.clear();
-            ss << pElem->Attribute("s");
-            ss >> spring->s;
-            spring->s *= phys->time * phys->time;
-            ss.clear();
-            ss << pElem->Attribute("length");
-            ss >> spring->l;
+            if (auto k = pElem->Attribute("k"))
+            {
+                ss << k;
+                ss >> spring->k;
+                spring->k *= phys->time * phys->time;
+                ss.clear();
+            }
+            if (auto d = pElem->Attribute("d"))
+            {
+                ss << d;
+                ss >> spring->d;
+                spring->d *= phys->time;
+                ss.clear();
+            }
+            if (auto s = pElem->Attribute("s"))
+            {
+                ss << s;
+                ss >> spring->s;
+                spring->s *= phys->time * phys->time;
+                ss.clear();
+            }
+            if (auto length = pElem->Attribute("length"))
+            {
+                ss << length;
+                ss >> spring->l;
+            }
 
             spring->p1 = FindPoint(pElem->Attribute("p1"));
             spring->p2 = FindPoint(pElem->Attribute("p2"));
@@ -886,17 +938,26 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         for (; pElem; pElem = pElem->NextSiblingElement("joint"))
         {
             std::stringstream ss;
-            ss << pElem->Attribute("k");
-            ss >> joint->k;
-            joint->k *= phys->time * phys->time;
-            ss.clear();
-            ss << pElem->Attribute("d");
-            ss >> joint->d;
-            joint->d *= phys->time;
-            ss.clear();
-            ss << pElem->Attribute("s");
-            ss >> joint->s;
-            joint->s *= phys->time * phys->time;
+            if (auto k = pElem->Attribute("k"))
+            {
+                ss << k;
+                ss >> joint->k;
+                joint->k *= phys->time * phys->time;
+                ss.clear();
+            }
+            if (auto d = pElem->Attribute("d"))
+            {
+                ss << d;
+                ss >> joint->d;
+                joint->d *= phys->time;
+                ss.clear();
+            }
+            if (auto s = pElem->Attribute("s"))
+            {
+                ss << s;
+                ss >> joint->s;
+                joint->s *= phys->time * phys->time;
+            }
 
             joint->p1 = FindPoint(pElem->Attribute("p1"));
             joint->p2 = FindPoint(pElem->Attribute("p2"));
@@ -954,11 +1015,12 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
         std::stringstream ss;
         ss << pElem->Attribute("rigid1");
         ss >> tn.name;
+        ss.clear();
         if (tn.name != "")
             motor->r1 = &phys->rigids[namesIndex[tn]];
-        ss.clear();
         ss << pElem->Attribute("rigid2");
         ss >> tn.name;
+        ss.clear();
         if (tn.name != "")
             motor->r2 = &phys->rigids[namesIndex[tn]];
 
@@ -1057,10 +1119,11 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
 
                 int n1 = 0, n2 = 0, n3 = 0;
                 std::stringstream ss;
-                if (pElem2->Attribute("normals"))
+                if (auto normals = pElem2->Attribute("normals"))
                 {
-                    ss << pElem2->Attribute("normals");
+                    ss << normals;
                     ss >> n1 >> n2 >> n3;
+                    ss.clear();
                     normal[0] = &glnormals[n1];
                     normal[1] = &glnormals[n2];
                     normal[2] = &glnormals[n3];
@@ -1072,21 +1135,33 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
                     normal[2] = glnormals + FindPointIndex(pElem2->Attribute("p3"));
                 }
 
-                ss.clear();
-                ss << pElem2->Attribute("uvs");
-                ss >> texcoord[0] >> texcoord[1];
-                ss >> texcoord[2] >> texcoord[3];
-                ss >> texcoord[4] >> texcoord[5];
+                if (auto uvs = pElem2->Attribute("uvs"))
+                {
+                    ss << uvs;
+                    ss >> texcoord[0] >> texcoord[1];
+                    ss >> texcoord[2] >> texcoord[3];
+                    ss >> texcoord[4] >> texcoord[5];
+                    ss.clear();
+                }
 
-                ss.clear();
-                ss << pElem2->Attribute("uv1");
-                ss >> texcoord[0] >> texcoord[1];
-                ss.clear();
-                ss << pElem2->Attribute("uv2");
-                ss >> texcoord[2] >> texcoord[3];
-                ss.clear();
-                ss << pElem2->Attribute("uv3");
-                ss >> texcoord[4] >> texcoord[5];
+                if (auto uv1 = pElem2->Attribute("uv1"))
+                {
+                    ss << uv1;
+                    ss >> texcoord[0] >> texcoord[1];
+                    ss.clear();
+                }
+                if (auto uv2 = pElem2->Attribute("uv2"))
+                {
+                    ss << uv2;
+                    ss >> texcoord[2] >> texcoord[3];
+                    ss.clear();
+                }
+                if (auto uv3 = pElem2->Attribute("uv3"))
+                {
+                    ss << uv3;
+                    ss >> texcoord[4] >> texcoord[5];
+                    ss.clear();
+                }
 
                 vert += 3;
                 normal += 3;
@@ -1116,6 +1191,8 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
                 {
                     ss << pElem2->Attribute("normals");
                     ss >> n1 >> n2 >> n3 >> n4;
+                    ss.clear();
+
                     normal[0] = &glnormals[n1];
                     normal[1] = &glnormals[n2];
                     normal[2] = &glnormals[n3];
@@ -1129,25 +1206,40 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
                     normal[3] = glnormals + FindPointIndex(pElem2->Attribute("p4"));
                 }
 
-                ss.clear();
-                ss << pElem2->Attribute("uvs");
-                ss >> texcoord[0] >> texcoord[1];
-                ss >> texcoord[2] >> texcoord[3];
-                ss >> texcoord[4] >> texcoord[5];
-                ss >> texcoord[6] >> texcoord[7];
+                if (auto uvs = pElem2->Attribute("uvs"))
+                {
+                    ss << uvs;
+                    ss >> texcoord[0] >> texcoord[1];
+                    ss >> texcoord[2] >> texcoord[3];
+                    ss >> texcoord[4] >> texcoord[5];
+                    ss >> texcoord[6] >> texcoord[7];
+                    ss.clear();
+                }
 
-                ss.clear();
-                ss << pElem2->Attribute("uv1");
-                ss >> texcoord[0] >> texcoord[1];
-                ss.clear();
-                ss << pElem2->Attribute("uv2");
-                ss >> texcoord[2] >> texcoord[3];
-                ss.clear();
-                ss << pElem2->Attribute("uv3");
-                ss >> texcoord[4] >> texcoord[5];
-                ss.clear();
-                ss << pElem2->Attribute("uv4");
-                ss >> texcoord[6] >> texcoord[7];
+                if (auto uv1 = pElem2->Attribute("uv1"))
+                {
+                    ss << uv1;
+                    ss >> texcoord[0] >> texcoord[1];
+                    ss.clear();
+                }
+                if (auto uv2 = pElem2->Attribute("uv2"))
+                {
+                    ss << uv2;
+                    ss >> texcoord[2] >> texcoord[3];
+                    ss.clear();
+                }
+                if (auto uv3 = pElem2->Attribute("uv3"))
+                {
+                    ss << uv3;
+                    ss >> texcoord[4] >> texcoord[5];
+                    ss.clear();
+                }
+                if (auto uv4 = pElem2->Attribute("uv4"))
+                {
+                    ss << uv4;
+                    ss >> texcoord[6] >> texcoord[7];
+                    ss.clear();
+                }
 
                 vert += 4;
                 normal += 4;

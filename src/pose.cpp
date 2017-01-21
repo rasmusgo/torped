@@ -20,20 +20,36 @@ void Pose::Load(const TiXmlHandle &hPose, PhyInstance *inst)
             SpringState spring = {NAN, NAN, NAN, NAN};
 
             stringstream ss;
-            ss << pElem->Attribute("name");
-            ss >> tn.name;
-            ss.clear();
-            ss << pElem->Attribute("k");
-            ss >> spring.k;
-            ss.clear();
-            ss << pElem->Attribute("d");
-            ss >> spring.d;
-            ss.clear();
-            ss << pElem->Attribute("s");
-            ss >> spring.s;
-            ss.clear();
-            ss << pElem->Attribute("length");
-            ss >> spring.l;
+            if (auto name = pElem->Attribute("name"))
+            {
+                ss << name;
+                ss >> tn.name;
+                ss.clear();
+            }
+            if (auto k = pElem->Attribute("k"))
+            {
+                ss << k;
+                ss >> spring.k;
+                ss.clear();
+            }
+            if (auto d = pElem->Attribute("d"))
+            {
+                ss << d;
+                ss >> spring.d;
+                ss.clear();
+            }
+            if (auto s = pElem->Attribute("s"))
+            {
+                ss << s;
+                ss >> spring.s;
+                ss.clear();
+            }
+            if (auto length = pElem->Attribute("length"))
+            {
+                ss << length;
+                ss >> spring.l;
+                ss.clear();
+            }
 
             spring.k *= inst->phys->time*inst->phys->time;
             spring.d *= inst->phys->time;
