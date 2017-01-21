@@ -37,6 +37,7 @@ namespace App
     std::vector<std::string> commands;
     Texture consoleBackground;
     Texture luaIcon;
+    extern lua_State* lua_console;
 
     inline void DrawString(void *font, const char string[])
     {
@@ -206,6 +207,9 @@ namespace App
                 {
                     LOG_S(INFO) << "> " << commands.back();
                     redraw = true;
+
+                    CHECK_NOTNULL_F(lua_console);
+                    LuaRunString(lua_console, commands.back().data());
 
                     fetch_pos = commands.size();
                     commands.push_back("");
