@@ -27,9 +27,14 @@ void LuaReportErrors(lua_State *L, int status)
     }
 }
 
+void LuaRunString(lua_State *L, const char *buffer)
+{
+    LuaReportErrors( L, luaL_loadstring(L, buffer) || lua_pcall(L, 0, 0, 0) );
+}
+
 void LuaRunFile(lua_State *L, const char *filename)
 {
-    char *buffer;
+    char *buffer; // TODO(Rasmus): Replace with RAII
     PhysFSLoadFile(filename, buffer);
     if (buffer == NULL)
     {
@@ -37,7 +42,8 @@ void LuaRunFile(lua_State *L, const char *filename)
         return;
     }
 
-    LuaReportErrors( L, luaL_loadstring(L, buffer) || lua_pcall(L, 0, 0, 0) );
+    LuaRunString(L, buffer);
+    
     delete [] buffer;
     buffer = NULL;
 }
