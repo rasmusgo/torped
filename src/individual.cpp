@@ -5,18 +5,14 @@ extern "C"
 #include <lualib.h>
 }
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "gameapp.h"
-#include "individual.h"
-#include "input.h"
-#include "logging.h"
-#include "luawrap.h"
-#include "physfsstruct.h"
-#include "physstruct.h"
-#include "player.h"
+#include "gameapp.hpp"
+#include "individual.hpp"
+#include "input.hpp"
+#include "logging.hpp"
+#include "luawrap.hpp"
+#include "physfsstruct.hpp"
+#include "physstruct.hpp"
+#include "player.hpp"
 
 std::map<lua_State*, Individual*> Individual::lua_state_to_individual;
 

@@ -2,10 +2,6 @@
 
 #include <mutex>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 #include <GL/glew.h>
 #include <sstream>
 #include <memory>
@@ -16,14 +12,10 @@
 #include <math.h>
 #include <tinyxml.h>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "physics.h"
-#include "parser.h"
-#include "pose.h"
-#include "texture.h"
+#include "physics.hpp"
+#include "parser.hpp"
+#include "pose.hpp"
+#include "texture.hpp"
 
 // lock mutex before access to phyInstances
 extern std::mutex phyInstances_lock;

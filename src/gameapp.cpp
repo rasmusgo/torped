@@ -19,24 +19,20 @@ extern "C"
 #include <lualib.h>
 }
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "alstruct.h"
-#include "collide.h"
-#include "comparelist.h"
-#include "console.h"
-#include "gameapp.h"
-#include "input.h"
-#include "logging.h"
-#include "luawrap.h"
-#include "menu.h"
-#include "physfsstruct.h"
-#include "player.h"
-#include "scene.h"
-#include "shader.h"
-#include "world.h"
+#include "alstruct.hpp"
+#include "collide.hpp"
+#include "comparelist.hpp"
+#include "console.hpp"
+#include "gameapp.hpp"
+#include "input.hpp"
+#include "logging.hpp"
+#include "luawrap.hpp"
+#include "menu.hpp"
+#include "physfsstruct.hpp"
+#include "player.hpp"
+#include "scene.hpp"
+#include "shader.hpp"
+#include "world.hpp"
 
 #ifdef REAL_DOUBLE
 #define glVertex3rv glVertex3dv
@@ -987,7 +983,7 @@ namespace App
 
     int GameFrame()
     {
-        if ( SCENE_DRAW & scene->GetFlags() )
+        if ( scene && SCENE_DRAW & scene->GetFlags() )
         {
             DrawGame();
             scene->RemoveFlags(SCENE_DRAW);

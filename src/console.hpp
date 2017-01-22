@@ -1,20 +1,12 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 #include <deque>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "logging.h"
+#include "logging.hpp"
 
 namespace App
 {

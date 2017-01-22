@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 extern "C"
 {
 #include <lua.h>
@@ -13,13 +9,9 @@ extern "C"
 
 #include <map>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "actor.h"
-#include "physics.h"
-#include "physstruct.h"
+#include "actor.hpp"
+#include "physics.hpp"
+#include "physstruct.hpp"
 
 class Individual: public Actor
 {

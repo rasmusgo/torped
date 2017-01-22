@@ -5,18 +5,14 @@ extern "C"
 #include <lualib.h>
 }
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "gameapp.h"
-#include "input.h"
-#include "logging.h"
-#include "luawrap.h"
-#include "physfsstruct.h"
-#include "physstruct.h"
-#include "player.h"
-#include "scene.h"
+#include "gameapp.hpp"
+#include "input.hpp"
+#include "logging.hpp"
+#include "luawrap.hpp"
+#include "physfsstruct.hpp"
+#include "physstruct.hpp"
+#include "player.hpp"
+#include "scene.hpp"
 
 void LuaReportErrors(lua_State *L, int status)
 {
@@ -43,7 +39,7 @@ void LuaRunFile(lua_State *L, const char *filename)
     }
 
     LuaRunString(L, buffer);
-    
+
     delete [] buffer;
     buffer = NULL;
 }

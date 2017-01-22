@@ -1,16 +1,8 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 #include <GL/glew.h>
 #include <string>
 #include <map>
-
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
 
 class Shader
 {

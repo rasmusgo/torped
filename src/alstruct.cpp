@@ -5,12 +5,8 @@
 #include <errno.h>
 #include <physfs.h>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "alstruct.h"
-#include "logging.h"
+#include "alstruct.hpp"
+#include "logging.hpp"
 #include "physfsrwops.h"
 
 using namespace std;
