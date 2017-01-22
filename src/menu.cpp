@@ -17,17 +17,13 @@ extern "C"
 #include <lualib.h>
 }
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "comparelist.h"
-#include "console.h"
-#include "gameapp.h"
-#include "input.h"
-#include "luawrap.h"
-#include "menu.h"
-#include "shader.h"
+#include "comparelist.hpp"
+#include "console.hpp"
+#include "gameapp.hpp"
+#include "input.hpp"
+#include "luawrap.hpp"
+#include "menu.hpp"
+#include "shader.hpp"
 
 namespace App
 {

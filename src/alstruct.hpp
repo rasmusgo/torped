@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 #ifdef __APPLE__
 #include <al.h>
 #include <alc.h>
@@ -16,11 +12,7 @@
 #include <string>
 #include <map>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "vectormath.h"
+#include "vectormath.hpp"
 
 class AlStruct
 {

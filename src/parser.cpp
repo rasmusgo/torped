@@ -1,13 +1,9 @@
 #include <sstream>
 //#include <fstream>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "logging.h"
-#include "parser.h"
-#include "physfsstruct.h"
+#include "logging.hpp"
+#include "parser.hpp"
+#include "physfsstruct.hpp"
 
 using namespace std;
 

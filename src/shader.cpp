@@ -1,12 +1,8 @@
 #include <GL/glew.h>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "logging.h"
-#include "physfsstruct.h"
-#include "shader.h"
+#include "logging.hpp"
+#include "physfsstruct.hpp"
+#include "shader.hpp"
 
 // Definition of Shader static variables
 typeof(Shader::vertex_shaders) Shader::vertex_shaders;
@@ -50,35 +46,35 @@ void Shader::Aquire(const std::string &vertex_file, const std::string &fragment_
 
 void Shader::Release()
 {
-    typeof(programs.begin()) it = programs.find(program);
+    auto program_it = programs.find(program);
 
-    if ( it != programs.end() )
+    if ( program_it != programs.end() )
     {
-        typeof(vertex_shaders.end()) vert = vertex_shaders.find(program.vertex_name);
-        typeof(fragment_shaders.end()) frag = fragment_shaders.find(program.fragment_name);
+        auto vert_it = vertex_shaders.find(program.vertex_name);
+        auto frag_it = fragment_shaders.find(program.fragment_name);
 
-        if ( vert != vertex_shaders.end() )
+        if ( vert_it != vertex_shaders.end() )
         {
-            if ( --vert->second.ref == 0 )
+            if ( --vert_it->second.ref == 0 )
             {
-                glDeleteShader(vert->second.id);
-                vertex_shaders.erase(vert);
+                glDeleteShader(vert_it->second.id);
+                vertex_shaders.erase(vert_it);
             }
         }
 
-        if ( frag != fragment_shaders.end() )
+        if ( frag_it != fragment_shaders.end() )
         {
-            if ( --frag->second.ref == 0 )
+            if ( --frag_it->second.ref == 0 )
             {
-                glDeleteShader(frag->second.id);
-                fragment_shaders.erase(frag);
+                glDeleteShader(frag_it->second.id);
+                fragment_shaders.erase(frag_it);
             }
         }
 
-        if ( --it->second.ref == 0)
+        if ( --program_it->second.ref == 0)
         {
-            glDeleteProgram(it->second.id);
-            programs.erase(it);
+            glDeleteProgram(program_it->second.id);
+            programs.erase(program_it);
         }
     }
 
@@ -88,10 +84,10 @@ void Shader::Release()
 
 void Shader::Enable()
 {
-    typeof(programs.begin()) it = programs.find(program);
+    auto program_it = programs.find(program);
 
-    if (it != programs.end())
-        glUseProgramObjectARB(it->second.id);
+    if (program_it != programs.end())
+        glUseProgramObjectARB(program_it->second.id);
     else
         glUseProgramObjectARB(0);
 }
@@ -105,35 +101,35 @@ void Shader::ReloadAll()
 {
     LOG_IF_ERROR("");
 
-    for (typeof(vertex_shaders.end()) vert = vertex_shaders.begin(); vert != vertex_shaders.end(); ++vert)
+    for (auto& vert : vertex_shaders)
     {
-        if (glIsShader(vert->second.id))
-            glDeleteShader(vert->second.id);
+        if (glIsShader(vert.second.id))
+            glDeleteShader(vert.second.id);
     }
     vertex_shaders.clear();
 
     LOG_IF_ERROR("");
 
-    for (typeof(fragment_shaders.end()) frag = fragment_shaders.begin(); frag != fragment_shaders.end(); ++frag)
+    for (auto& frag : fragment_shaders)
     {
-        if (glIsShader(frag->second.id))
-            glDeleteShader(frag->second.id);
+        if (glIsShader(frag.second.id))
+            glDeleteShader(frag.second.id);
     }
     fragment_shaders.clear();
 
     LOG_IF_ERROR("");
 
-    for (typeof(programs.end()) prog = programs.begin(); prog != programs.end(); ++prog)
+    for (auto& prog : programs)
     {
-        if (glIsProgram(prog->second.id))
-            glDeleteProgram(prog->second.id);
+        if (glIsProgram(prog.second.id))
+            glDeleteProgram(prog.second.id);
     }
 
     LOG_IF_ERROR("");
 
-    for (typeof(programs.end()) prog = programs.begin(); prog != programs.end(); ++prog)
+    for (auto& prog : programs)
     {
-        LoadProgram(prog->first);
+        LoadProgram(prog.first);
     }
 
     LOG_IF_ERROR("");
@@ -186,6 +182,7 @@ void Shader::LoadShader(const GLuint type, const std::string &filename)
             LOG_S(ERROR) << "Failed to compile shader \"" << filename << "\": Unknown error.";
         }
         glDeleteShader(id_ref.id);
+        id_ref.id = 0;
         return;
     }
 
@@ -263,6 +260,7 @@ void Shader::LoadProgram(const ProgramName &prog)
         }
 
         glDeleteProgram(id_ref.id);
+        id_ref.id = 0;
         return;
     }
 

@@ -2,18 +2,14 @@
 #include <GL/glew.h>
 //#include "SDL_opengl.h"
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
 //#include "cgstruct.h"
-#include "logging.h"
-#include "parser.h"
+#include "logging.hpp"
+#include "parser.hpp"
 #include "physfsrwops.h"
-#include "physics.h"
-#include "physstruct.h"
-#include "player.h"
-#include "world.h"
+#include "physics.hpp"
+#include "physstruct.hpp"
+#include "player.hpp"
+#include "world.hpp"
 
 using namespace std;
 

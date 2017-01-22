@@ -1,12 +1,8 @@
 #include <sstream>
 #include <iostream>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "physics.h"
-//#include "logging.h"
+#include "physics.hpp"
+//#include "logging.hpp"
 
 
 Physics::Physics(): gravity(0,0,0), time(0.001), break_limit(0.05), insane(0)

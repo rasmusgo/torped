@@ -1,15 +1,11 @@
 #include <algorithm>
 #include <vector>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "collide.h"
-#include "comparelist.h"
-//#include "gameapp.h"
-#include "logging.h"
-#include "physics.h"
+#include "collide.hpp"
+#include "comparelist.hpp"
+//#include "gameapp.hpp"
+#include "logging.hpp"
+#include "physics.hpp"
 //#include "world.h"
 
 //#define min(a,b) ((a)<?(b))

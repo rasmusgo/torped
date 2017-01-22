@@ -1,7 +1,3 @@
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 extern "C"
 {
 #include <lua.h>
@@ -9,11 +5,7 @@ extern "C"
 #include <lualib.h>
 }
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "actor.h"
+#include "actor.hpp"
 
 void LuaReportErrors(lua_State *L, int status);
 void LuaRunString(lua_State *L, const char *buffer);

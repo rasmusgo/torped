@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 #include <GL/glew.h>
 #include <SDL.h>
 #include "SDL_image.h"
@@ -11,10 +7,6 @@
 #include <string>
 #include <map>
 #include <set>
-
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
 
 void FlipImageY(SDL_Surface *image);
 

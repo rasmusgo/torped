@@ -1,12 +1,8 @@
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "logging.h"
-#include "parser.h"
-#include "physics.h"
-#include "physstruct.h"
-#include "pose.h"
+#include "logging.hpp"
+#include "parser.hpp"
+#include "physics.hpp"
+#include "physstruct.hpp"
+#include "pose.hpp"
 
 using namespace std;
 
