@@ -1,3 +1,6 @@
 [submodule "thirdparty/loguru"]
 	path = thirdparty/loguru
 	url = https://github.com/emilk/loguru.git
+[submodule "thirdparty/configuru"]
+	path = thirdparty/configuru
+	url = https://github.com/emilk/configuru
