@@ -2,12 +2,8 @@
 #include "physfsrwops.h"
 #include <memory>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "logging.h"
-#include "texture.h"
+#include "logging.hpp"
+#include "texture.hpp"
 
 static SDL_PixelFormat RGBA8Format =
 {

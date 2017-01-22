@@ -1,16 +1,12 @@
 #include <fstream>
 #include <memory>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "alstruct.h"
-#include "gameapp.h"
-#include "logging.h"
-#include "physfsstruct.h"
-#include "physstruct.h"
-#include "texture.h"
+#include "alstruct.hpp"
+#include "gameapp.hpp"
+#include "logging.hpp"
+#include "physfsstruct.hpp"
+#include "physstruct.hpp"
+#include "texture.hpp"
 
 // lock mutex before access to phyInstances
 std::mutex phyInstances_lock;

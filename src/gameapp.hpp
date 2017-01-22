@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -12,13 +8,9 @@
 #include <thread>
 #include <manymouse.h>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "physstruct.h"
-#include "physics.h"
-#include "profiler.h"
+#include "physstruct.hpp"
+#include "physics.hpp"
+#include "profiler.hpp"
 
 namespace App
 {

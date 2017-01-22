@@ -1,15 +1,7 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "vectormath.h"
-#include "profiler.h"
+#include "vectormath.hpp"
+#include "profiler.hpp"
 
 struct PhyPoint
 {

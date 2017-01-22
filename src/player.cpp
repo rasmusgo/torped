@@ -1,11 +1,7 @@
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "alstruct.h"
-#include "logging.h"
-#include "physstruct.h"
-#include "player.h"
+#include "alstruct.hpp"
+#include "logging.hpp"
+#include "physstruct.hpp"
+#include "player.hpp"
 
 namespace App
 {

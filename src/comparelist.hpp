@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
 template <class T>
 class CompareList
 {

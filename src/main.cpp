@@ -1,12 +1,8 @@
 //#include "SDL_main.h"
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "console.h"
-#include "gameapp.h"
-#include "logging.h"
+#include "console.hpp"
+#include "gameapp.hpp"
+#include "logging.hpp"
 
 int main(int argc, char *argv[])
 {

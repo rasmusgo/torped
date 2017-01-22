@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 #include <GL/glew.h>
 #include <string>
 #include <math.h>
@@ -13,12 +9,8 @@
 //#include <gl/gl.h>
 //#include <gl/glext.h>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "texture.h"
-#include "vectormath.h"
+#include "texture.hpp"
+#include "vectormath.hpp"
 //float g_model1[6 * ]
 
 class Physics;

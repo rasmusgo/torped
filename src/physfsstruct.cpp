@@ -1,15 +1,7 @@
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 #include <memory>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "logging.h"
-#include "physfsstruct.h"
+#include "logging.hpp"
+#include "physfsstruct.hpp"
 
 using namespace std;
 

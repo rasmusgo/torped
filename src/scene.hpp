@@ -1,19 +1,11 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/nommgr.h"
-#endif
-
 #include <list>
 #include <mutex>
 #include <string>
 #include <vector>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "actor.h"
+#include "actor.hpp"
 
 enum SceneFlags
 {

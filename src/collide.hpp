@@ -1,11 +1,7 @@
 #pragma once
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "vectormath.h"
-#include "physics.h"
+#include "vectormath.hpp"
+#include "physics.hpp"
 
 struct TraceResult
 {

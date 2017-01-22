@@ -1,12 +1,8 @@
 #include <SDL.h>
 #include <manymouse.h>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "input.h"
-#include "logging.h"
+#include "input.hpp"
+#include "logging.hpp"
 
 namespace App
 {

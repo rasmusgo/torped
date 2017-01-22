@@ -12,17 +12,13 @@
 #endif
 #include <SDL.h>
 
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "actor.h"
-#include "individual.h"
-#include "physstruct.h"
-#include "player.h"
-#include "scene.h"
-#include "vectormath.h"
-#include "world.h"
+#include "actor.hpp"
+#include "individual.hpp"
+#include "physstruct.hpp"
+#include "player.hpp"
+#include "scene.hpp"
+#include "vectormath.hpp"
+#include "world.hpp"
 
 template <class T>
 class ProtectedData

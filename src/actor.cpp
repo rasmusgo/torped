@@ -1,8 +1,4 @@
-#ifdef MEMORY_MANAGER
-#include "Fluid_Studios_Memory_Manager/mmgr.h"
-#endif
-
-#include "actor.h"
+#include "actor.hpp"
 
 Actor::Actor()
 {
