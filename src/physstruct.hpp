@@ -48,9 +48,8 @@ public:
 class PhyInstance
 {
 private:
-	char *memPool;
-	char *memPool2;
-	unsigned int memPool_size;
+    std::vector<char> memPool;
+    std::vector<char> memPool2;
 
 public:
 	std::map<TypeName, int> namesIndex;

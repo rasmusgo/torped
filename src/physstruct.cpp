@@ -112,9 +112,8 @@ void PhyInstance::DeleteAll()
             alDeleteSources(1, &it->phys->sounds[i].source);
         }
 
-        delete [] it->memPool;
-        it->memPool = NULL;
-        it->memPool2 = NULL;
+        it->memPool.clear();
+        it->memPool2.clear();
     }
     phyInstances.clear();
 }
@@ -140,9 +139,8 @@ void PhyInstance::Remove()
                 alDeleteSources(1, &it->phys->sounds[i].source);
             }
 
-            delete [] it->memPool;
-            it->memPool = NULL;
-            it->memPool2 = NULL;
+            it->memPool.clear();
+            it->memPool2.clear();
             phyInstances.erase(it);
             break;
         }
@@ -432,9 +430,8 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
     //LOG(__FUNCTION__ << ": " << __LINE__);
 
     PhyInstance inst;
-    inst.memPool = NULL;
-    inst.memPool2 = NULL;
-    inst.memPool_size = 0;
+    inst.memPool.clear();
+    inst.memPool2.clear();
     inst.phys = NULL;
 
     char* buffer = NULL;
@@ -679,20 +676,11 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
 
     // allocate memory for all the physics stuff
     // double the size to keep a copy of memPool to allow crash replay
-    inst.memPool = new (std::nothrow) char[size*2];
-    inst.memPool2 = inst.memPool+size; //new (nothrow) char[size];
-    inst.memPool_size = size;
-
-    if (inst.memPool == NULL)
-    {
-        LOG_S(ERROR) << "Unable to allocate memory: " << size << " bytes";
-        return inst;
-    }
-
-    memset(inst.memPool, 0, size);
+    inst.memPool.assign(size, 0);
+    inst.memPool2.assign(size, 0);
 
     // insertion place in memory
-    char * place = inst.memPool;
+    char * place = inst.memPool.data();
 
     // create the physics instance
     inst.phys = AddAndIncrement<Physics>(place, 1);
@@ -1351,15 +1339,16 @@ void PhyInstance::CrashHandling()
         LOG_S(WARNING) << "CrashHandling load: insane: " << phys->insane << "...";
         char * profiler_buffer = new char[sizeof(Profiler)];
         memcpy(profiler_buffer, &phys->profiler, sizeof(Profiler));
-        phys->insane = memPool_size;
-        memcpy(memPool, memPool2, memPool_size);
+        phys->insane = 0;
+        memcpy(memPool.data(), memPool2.data(), memPool.size());
         memcpy(&phys->profiler, profiler_buffer, sizeof(Profiler));
         //LOG("CrashHandling early end0 phys->insane: " << phys->insane);
-        return;
     }
-
-    // Save
-    //LOG("CrashHandling save...");
-    memcpy(memPool2, memPool, memPool_size);
-    //LOG("CrashHandling end");
+    else
+    {
+        // Save
+        //LOG("CrashHandling save...");
+        memcpy(memPool2.data(), memPool.data(), memPool.size());
+        //LOG("CrashHandling end");
+    }
 }
