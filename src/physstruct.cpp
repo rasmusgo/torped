@@ -10,7 +10,7 @@
 
 // lock mutex before access to phyInstances
 std::mutex phyInstances_lock;
-std::vector<PhyInstance> phyInstances;
+std::vector<std::unique_ptr<PhyInstance>> phyInstances;
 
 void PrintPhys(PhyInstance *inst, std::ostream *ostr = NULL)
 {
@@ -94,27 +94,36 @@ void QuitPhys()
     PhyInstance::DeleteAll();
 }
 
+PhyInstance::~PhyInstance()
+{
+    // Destructors should be called here for everything that needs it
+    if (phys != nullptr)
+        phys->~Physics();
+
+    for (unsigned int i = 0; i < textures_count; ++i)
+    {
+        textures[i].~Texture();
+    }
+
+    for (unsigned int i = 0; i < phys->sounds_count; ++i)
+    {
+        alDeleteSources(1, &phys->sounds[i].source);
+    }
+}
+
+/*
+// Copy constructor
+PhyInstance::PhyInstance(const PhyInstance& other)
+{
+
+}
+
+PhyInstance& operator=(const PhyInstance& other); // Copy assignment operator
+*/
+
 void PhyInstance::DeleteAll()
 {
     std::lock_guard<std::mutex> lock(phyInstances_lock);
-    for (typeof(phyInstances.begin()) it = phyInstances.begin(); it != phyInstances.end(); ++it)
-    {
-        // Destructors should be called here for everything that needs it
-        it->phys->~Physics();
-
-        for (unsigned int i = 0; i < it->textures_count; ++i)
-        {
-            it->textures[i].~Texture();
-        }
-
-        for (unsigned int i = 0; i < it->phys->sounds_count; ++i)
-        {
-            alDeleteSources(1, &it->phys->sounds[i].source);
-        }
-
-        it->memPool.clear();
-        it->memPool2.clear();
-    }
     phyInstances.clear();
 }
 
@@ -122,27 +131,12 @@ void PhyInstance::Remove()
 {
     std::lock_guard<std::mutex> lock(phyInstances_lock);
     // should find the object and remove it...
-    for (typeof(phyInstances.begin()) it = phyInstances.begin(); it != phyInstances.end(); ++it)
+    for (auto it = phyInstances.begin(); it != phyInstances.end(); ++it)
     {
-        if ( &(*it) == this )
+        if ( it->get() == this )
         {
-            // Destructors should be called here for everything that needs it
-            it->phys->~Physics();
-
-            for (unsigned int i = 0; i < it->textures_count; ++i)
-            {
-                it->textures[i].~Texture();
-            }
-
-            for (unsigned int i = 0; i < it->phys->sounds_count; ++i)
-            {
-                alDeleteSources(1, &it->phys->sounds[i].source);
-            }
-
-            it->memPool.clear();
-            it->memPool2.clear();
             phyInstances.erase(it);
-            break;
+            return;
         }
     }
 }
@@ -174,25 +168,18 @@ T Lerp(const T &a, const T &b, float f)
 // TODO: separate more to allow a service thread
 PhyInstance* PhyInstance::InsertPhysXML(const char *filename)
 {
-    PhyInstance inst = PhyInstance::LoadPhysXML(filename);
-    if (inst.phys == NULL)
+    LOG_SCOPE_F(2, "InsertPhysXML");
+    std::unique_ptr<PhyInstance> inst = PhyInstance::LoadPhysXML(filename);
+    if (inst == nullptr || inst->phys == nullptr)
     {
         LOG_S(ERROR) << "LoadPhysXML failed";
-        return NULL;
+        return nullptr;
     }
     // keep track of the physics instance
     // lock mutex before access to phyInstances
-    {
-        std::lock_guard<std::mutex> lock(phyInstances_lock);
-        // TODO: store inst on the heap and avoid copying
-        phyInstances.push_back(inst);
-    }
-
-    //delete [] filename;
-    //filename = NULL;
-    VLOG_S(3) << "End of InsertPhysXML";
-
-    return &phyInstances.back();
+    std::lock_guard<std::mutex> lock(phyInstances_lock);
+    phyInstances.push_back(std::move(inst));
+    return phyInstances.back().get();
 }
 
 int PhyInstance::UpdatePhys(const char name[])
@@ -425,14 +412,11 @@ int PhyInstance::FindPointIndex(std::string name)
     return 0;
 }
 
-PhyInstance PhyInstance::LoadPhysXML(const char *filename)
+std::unique_ptr<PhyInstance> PhyInstance::LoadPhysXML(const char *filename)
 {
     //LOG(__FUNCTION__ << ": " << __LINE__);
 
-    PhyInstance inst;
-    inst.memPool.clear();
-    inst.memPool2.clear();
-    inst.phys = NULL;
+    std::unique_ptr<PhyInstance> inst(new PhyInstance());
 
     char* buffer = NULL;
     PhysFSLoadFile(filename, buffer);
@@ -474,8 +458,8 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
         {
             typeName.name = pElem->Attribute("name");
             if ( typeName.name != "" )
-                inst.namesIndex[typeName] = inst.typeCount[typeName.type];
-            inst.typeCount[typeName.type]++;
+                inst->namesIndex[typeName] = inst->typeCount[typeName.type];
+            inst->typeCount[typeName.type]++;
         }
     }
 
@@ -486,8 +470,8 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
     {
         typeName.name = pElem->Attribute("name");
         if ( typeName.name != "" )
-            inst.namesIndex[typeName] = inst.typeCount[typeName.type];
-        inst.typeCount[typeName.type]++;
+            inst->namesIndex[typeName] = inst->typeCount[typeName.type];
+        inst->typeCount[typeName.type]++;
 
         TypeName tn;
         tn.type = "node";
@@ -496,8 +480,8 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
         {
             tn.name = pElem2->Attribute("name");
             if ( tn.name != "" )
-                inst.namesIndex[tn] = inst.typeCount[tn.type];
-            inst.typeCount[tn.type]++;
+                inst->namesIndex[tn] = inst->typeCount[tn.type];
+            inst->typeCount[tn.type]++;
         }
     }
 
@@ -511,8 +495,8 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
         {
             typeName.name = pElem->Attribute("name");
             if ( typeName.name != "" )
-                inst.namesIndex[typeName] = inst.typeCount[typeName.type];
-            inst.typeCount[typeName.type]++;
+                inst->namesIndex[typeName] = inst->typeCount[typeName.type];
+            inst->typeCount[typeName.type]++;
         }
     }
 
@@ -526,8 +510,8 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
         {
             typeName.name = pElem->Attribute("name");
             if ( typeName.name != "" )
-                inst.namesIndex[typeName] = inst.typeCount["joint"];
-            inst.typeCount["joint"]++;
+                inst->namesIndex[typeName] = inst->typeCount["joint"];
+            inst->typeCount["joint"]++;
         }
     }
 
@@ -538,15 +522,15 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
     {
         typeName.name = pElem->Attribute("name");
         if ( typeName.name != "" )
-            inst.namesIndex[typeName] = inst.typeCount[typeName.type];
-        inst.typeCount[typeName.type]++;
+            inst->namesIndex[typeName] = inst->typeCount[typeName.type];
+        inst->typeCount[typeName.type]++;
 
         TypeName tn;
         tn.type = "ppoint";
         pElem2 = TiXmlHandle(pElem).FirstChild("point").Element();
         for (; pElem2; pElem2 = pElem2->NextSiblingElement("point"))
         {
-            inst.typeCount[tn.type]++;
+            inst->typeCount[tn.type]++;
         }
     }
 
@@ -557,8 +541,8 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
     {
         typeName.name = pElem->Attribute("name");
         if ( typeName.name != "" )
-            inst.namesIndex[typeName] = inst.typeCount[typeName.type];
-        inst.typeCount[typeName.type]++;
+            inst->namesIndex[typeName] = inst->typeCount[typeName.type];
+        inst->typeCount[typeName.type]++;
     }
 
 	// Count sounds
@@ -568,8 +552,8 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
     {
         typeName.name = pElem->Attribute("name");
         if ( typeName.name != "" )
-            inst.namesIndex[typeName] = inst.typeCount[typeName.type];
-        inst.typeCount[typeName.type]++;
+            inst->namesIndex[typeName] = inst->typeCount[typeName.type];
+        inst->typeCount[typeName.type]++;
     }
 
     // Count textures
@@ -580,8 +564,8 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
         typeName.name = pElem->Attribute("name");
         if ( typeName.name != "" )
         {
-            inst.namesIndex[typeName] = inst.typeCount["texture"];
-            inst.typeCount["texture"]++;
+            inst->namesIndex[typeName] = inst->typeCount["texture"];
+            inst->typeCount["texture"]++;
         }
     }
 
@@ -589,12 +573,12 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
     pElem = hRoot.FirstChild("render").Element();
     for (; pElem; pElem = pElem->NextSiblingElement("render"))
     {
-        inst.typeCount["render"]++;
+        inst->typeCount["render"]++;
 
         pElem2 = TiXmlHandle(pElem).FirstChild("gltriangle").Element();
         for (; pElem2; pElem2 = pElem2->NextSiblingElement("gltriangle"))
         {
-            inst.typeCount["gltriangle"]++;
+            inst->typeCount["gltriangle"]++;
             int n1 = 0, n2 = 0, n3 = 0;
 
             if (pElem2->Attribute("normals") != NULL)
@@ -605,23 +589,23 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
             }
             else
             {
-                n1 = inst.FindPointIndex(pElem2->Attribute("p1"));
-                n2 = inst.FindPointIndex(pElem2->Attribute("p2"));
-                n3 = inst.FindPointIndex(pElem2->Attribute("p3"));
+                n1 = inst->FindPointIndex(pElem2->Attribute("p1"));
+                n2 = inst->FindPointIndex(pElem2->Attribute("p2"));
+                n3 = inst->FindPointIndex(pElem2->Attribute("p3"));
             }
 
-            if (inst.typeCount["glnormal"] <= n1)
-                inst.typeCount["glnormal"] = n1+1;
-            if (inst.typeCount["glnormal"] <= n2)
-                inst.typeCount["glnormal"] = n2+1;
-            if (inst.typeCount["glnormal"] <= n3)
-                inst.typeCount["glnormal"] = n3+1;
+            if (inst->typeCount["glnormal"] <= n1)
+                inst->typeCount["glnormal"] = n1+1;
+            if (inst->typeCount["glnormal"] <= n2)
+                inst->typeCount["glnormal"] = n2+1;
+            if (inst->typeCount["glnormal"] <= n3)
+                inst->typeCount["glnormal"] = n3+1;
         }
 
         pElem2 = TiXmlHandle(pElem).FirstChild("glquad").Element();
         for (; pElem2; pElem2 = pElem2->NextSiblingElement("glquad"))
         {
-            inst.typeCount["glquad"]++;
+            inst->typeCount["glquad"]++;
 
             int n1 = 0, n2 = 0, n3 = 0, n4 = 0;
             if (pElem2->Attribute("normals") != NULL)
@@ -632,96 +616,96 @@ PhyInstance PhyInstance::LoadPhysXML(const char *filename)
             }
             else
             {
-                n1 = inst.FindPointIndex(pElem2->Attribute("p1"));
-                n2 = inst.FindPointIndex(pElem2->Attribute("p2"));
-                n3 = inst.FindPointIndex(pElem2->Attribute("p3"));
-                n4 = inst.FindPointIndex(pElem2->Attribute("p4"));
+                n1 = inst->FindPointIndex(pElem2->Attribute("p1"));
+                n2 = inst->FindPointIndex(pElem2->Attribute("p2"));
+                n3 = inst->FindPointIndex(pElem2->Attribute("p3"));
+                n4 = inst->FindPointIndex(pElem2->Attribute("p4"));
             }
 
-            if (inst.typeCount["glnormal"] <= n1)
-                inst.typeCount["glnormal"] = n1+1;
-            if (inst.typeCount["glnormal"] <= n2)
-                inst.typeCount["glnormal"] = n2+1;
-            if (inst.typeCount["glnormal"] <= n3)
-                inst.typeCount["glnormal"] = n3+1;
-            if (inst.typeCount["glnormal"] <= n4)
-                inst.typeCount["glnormal"] = n4+1;
+            if (inst->typeCount["glnormal"] <= n1)
+                inst->typeCount["glnormal"] = n1+1;
+            if (inst->typeCount["glnormal"] <= n2)
+                inst->typeCount["glnormal"] = n2+1;
+            if (inst->typeCount["glnormal"] <= n3)
+                inst->typeCount["glnormal"] = n3+1;
+            if (inst->typeCount["glnormal"] <= n4)
+                inst->typeCount["glnormal"] = n4+1;
         }
     }
 
     // calculate required storage size
     unsigned int size;
     size = sizeof(Physics) +
-           sizeof(PhyPoint)    * inst.typeCount["point"]      +
-           sizeof(PhyPoint)    * inst.typeCount["node"]       +
-           sizeof(PhyNode)     * inst.typeCount["node"]       +
-           sizeof(PhySpring)   * inst.typeCount["spring"]     +
-           sizeof(PhyJoint)    * inst.typeCount["joint"]      +
-           sizeof(PhyRigid)    * inst.typeCount["rigid"]      +
-           sizeof(PhyBalloon)  * inst.typeCount["balloon"]    +
-           sizeof(PhyPoint*)   * inst.typeCount["ppoint"]     +
-           sizeof(PhyMotor)    * inst.typeCount["motor"]      +
-           sizeof(PhySound)    * inst.typeCount["sound"]      +
+           sizeof(PhyPoint)    * inst->typeCount["point"]      +
+           sizeof(PhyPoint)    * inst->typeCount["node"]       +
+           sizeof(PhyNode)     * inst->typeCount["node"]       +
+           sizeof(PhySpring)   * inst->typeCount["spring"]     +
+           sizeof(PhyJoint)    * inst->typeCount["joint"]      +
+           sizeof(PhyRigid)    * inst->typeCount["rigid"]      +
+           sizeof(PhyBalloon)  * inst->typeCount["balloon"]    +
+           sizeof(PhyPoint*)   * inst->typeCount["ppoint"]     +
+           sizeof(PhyMotor)    * inst->typeCount["motor"]      +
+           sizeof(PhySound)    * inst->typeCount["sound"]      +
            // vertex and normal pointers
-           sizeof(Vec3r*) * 6  * inst.typeCount["gltriangle"] +
-           sizeof(Vec3r*) * 8  * inst.typeCount["glquad"]     +
+           sizeof(Vec3r*) * 6  * inst->typeCount["gltriangle"] +
+           sizeof(Vec3r*) * 8  * inst->typeCount["glquad"]     +
            // gltexcoords
-           sizeof(GLfloat) * 6 * inst.typeCount["gltriangle"] +
-           sizeof(GLfloat) * 8 * inst.typeCount["glquad"]     +
+           sizeof(GLfloat) * 6 * inst->typeCount["gltriangle"] +
+           sizeof(GLfloat) * 8 * inst->typeCount["glquad"]     +
            // glnormals
-           sizeof(Vec3r)       * inst.typeCount["glnormal"]   +
-           sizeof(Texture)     * inst.typeCount["texture"]    +
-           sizeof(RenderPass)  * inst.typeCount["render"]     +
+           sizeof(Vec3r)       * inst->typeCount["glnormal"]   +
+           sizeof(Texture)     * inst->typeCount["texture"]    +
+           sizeof(RenderPass)  * inst->typeCount["render"]     +
            0;
 
     // allocate memory for all the physics stuff
     // double the size to keep a copy of memPool to allow crash replay
-    inst.memPool.assign(size, 0);
-    inst.memPool2.assign(size, 0);
+    inst->memPool.assign(size, 0);
+    inst->memPool2.assign(size, 0);
 
     // insertion place in memory
-    char * place = inst.memPool.data();
+    char * place = inst->memPool.data();
 
     // create the physics instance
-    inst.phys = AddAndIncrement<Physics>(place, 1);
+    inst->phys = AddAndIncrement<Physics>(place, 1);
 
     // create points and stuff
     // add points controlled by nodes after regular points
-    inst.phys->points           = AddAndIncrement<PhyPoint   >(place, inst.typeCount["point"]+inst.typeCount["node"]);
-    inst.phys->nodes            = AddAndIncrement<PhyNode    >(place, inst.typeCount["node"]);
-    inst.phys->springs          = AddAndIncrement<PhySpring  >(place, inst.typeCount["spring"]);
-    inst.phys->joints           = AddAndIncrement<PhyJoint   >(place, inst.typeCount["joint"]);
-    inst.phys->rigids           = AddAndIncrement<PhyRigid   >(place, inst.typeCount["rigid"]);
-    inst.phys->balloons         = AddAndIncrement<PhyBalloon >(place, inst.typeCount["balloon"]);
-    inst.phys->ppoints          = AddAndIncrement<PhyPoint*  >(place, inst.typeCount["ppoint"]);
-    inst.phys->motors           = AddAndIncrement<PhyMotor   >(place, inst.typeCount["motor"]);
-    inst.phys->sounds           = AddAndIncrement<PhySound   >(place, inst.typeCount["sound"]);
-    inst.gltriangle_verts       = AddAndIncrement<Vec3r*     >(place, inst.typeCount["gltriangle"]*3);
-    inst.gltriangle_normals     = AddAndIncrement<Vec3r*     >(place, inst.typeCount["gltriangle"]*3);
-    inst.glquad_verts           = AddAndIncrement<Vec3r*     >(place, inst.typeCount["glquad"]*4);
-    inst.glquad_normals         = AddAndIncrement<Vec3r*     >(place, inst.typeCount["glquad"]*4);
-    inst.gltexcoords            = AddAndIncrement<GLfloat    >(place, inst.typeCount["gltriangle"]*6+inst.typeCount["glquad"]*8);
-    inst.glnormals              = AddAndIncrement<Vec3r      >(place, inst.typeCount["glnormal"]);
-    inst.textures               = AddAndIncrement<Texture    >(place, inst.typeCount["texture"]);
-    inst.renderpasses           = AddAndIncrement<RenderPass >(place, inst.typeCount["render"]);
+    inst->phys->points           = AddAndIncrement<PhyPoint   >(place, inst->typeCount["point"]+inst->typeCount["node"]);
+    inst->phys->nodes            = AddAndIncrement<PhyNode    >(place, inst->typeCount["node"]);
+    inst->phys->springs          = AddAndIncrement<PhySpring  >(place, inst->typeCount["spring"]);
+    inst->phys->joints           = AddAndIncrement<PhyJoint   >(place, inst->typeCount["joint"]);
+    inst->phys->rigids           = AddAndIncrement<PhyRigid   >(place, inst->typeCount["rigid"]);
+    inst->phys->balloons         = AddAndIncrement<PhyBalloon >(place, inst->typeCount["balloon"]);
+    inst->phys->ppoints          = AddAndIncrement<PhyPoint*  >(place, inst->typeCount["ppoint"]);
+    inst->phys->motors           = AddAndIncrement<PhyMotor   >(place, inst->typeCount["motor"]);
+    inst->phys->sounds           = AddAndIncrement<PhySound   >(place, inst->typeCount["sound"]);
+    inst->gltriangle_verts       = AddAndIncrement<Vec3r*     >(place, inst->typeCount["gltriangle"]*3);
+    inst->gltriangle_normals     = AddAndIncrement<Vec3r*     >(place, inst->typeCount["gltriangle"]*3);
+    inst->glquad_verts           = AddAndIncrement<Vec3r*     >(place, inst->typeCount["glquad"]*4);
+    inst->glquad_normals         = AddAndIncrement<Vec3r*     >(place, inst->typeCount["glquad"]*4);
+    inst->gltexcoords            = AddAndIncrement<GLfloat    >(place, inst->typeCount["gltriangle"]*6+inst->typeCount["glquad"]*8);
+    inst->glnormals              = AddAndIncrement<Vec3r      >(place, inst->typeCount["glnormal"]);
+    inst->textures               = AddAndIncrement<Texture    >(place, inst->typeCount["texture"]);
+    inst->renderpasses           = AddAndIncrement<RenderPass >(place, inst->typeCount["render"]);
 
     // remember count
-    inst.phys->points_count     = inst.typeCount["point"];
-    inst.phys->nodes_count      = inst.typeCount["node"];
-    inst.phys->springs_count    = inst.typeCount["spring"];
-    inst.phys->joints_count     = inst.typeCount["joint"];
-    inst.phys->rigids_count     = inst.typeCount["rigid"];
-    inst.phys->balloons_count   = inst.typeCount["balloon"];
-    inst.phys->ppoints_count    = inst.typeCount["ppoint"];
-    inst.phys->motors_count     = inst.typeCount["motor"];
-    inst.phys->sounds_count     = inst.typeCount["sound"];
-    inst.gltriangle_verts_count = inst.typeCount["gltriangle"]*3;
-    inst.glquad_verts_count     = inst.typeCount["glquad"]*4;
-    inst.glnormals_count        = inst.typeCount["glnormal"];
-    inst.textures_count         = inst.typeCount["texture"];
-    inst.renderpasses_count     = inst.typeCount["render"];
+    inst->phys->points_count     = inst->typeCount["point"];
+    inst->phys->nodes_count      = inst->typeCount["node"];
+    inst->phys->springs_count    = inst->typeCount["spring"];
+    inst->phys->joints_count     = inst->typeCount["joint"];
+    inst->phys->rigids_count     = inst->typeCount["rigid"];
+    inst->phys->balloons_count   = inst->typeCount["balloon"];
+    inst->phys->ppoints_count    = inst->typeCount["ppoint"];
+    inst->phys->motors_count     = inst->typeCount["motor"];
+    inst->phys->sounds_count     = inst->typeCount["sound"];
+    inst->gltriangle_verts_count = inst->typeCount["gltriangle"]*3;
+    inst->glquad_verts_count     = inst->typeCount["glquad"]*4;
+    inst->glnormals_count        = inst->typeCount["glnormal"];
+    inst->textures_count         = inst->typeCount["texture"];
+    inst->renderpasses_count     = inst->typeCount["render"];
 
-    inst.ParsePhysXML(&hRoot);
+    inst->ParsePhysXML(&hRoot);
 
     //PrintPhys(&inst, &ofstream("loadphysxml.txt"));
 
@@ -1047,7 +1031,7 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
             tmp = pElem->Attribute("cubemap");
             if (tmp != NULL)
             {
-                textures[inst.namesIndex[tn]].(tmp);
+                textures[inst->namesIndex[tn]].(tmp);
                 continue;
             }
             */

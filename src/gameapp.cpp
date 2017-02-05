@@ -447,9 +447,9 @@ namespace App
             glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
             //SDL_LockMutex(phyInstances_lock);
-            if ( !phyInstances.empty() && !phyInstances.back().cameras.empty() )
+            if ( !phyInstances.empty() && !phyInstances.back()->cameras.empty() )
             {
-                Camera *cam = &phyInstances.back().cameras.begin()->second;
+                Camera *cam = &phyInstances.back()->cameras.begin()->second;
 
                 static Vec3r last_delta(0, 0, 0);
                 if (cam->rigid != NULL)
@@ -496,8 +496,7 @@ namespace App
                     //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 2.0 / 3.0 );
                     DrawPlayer(player);
                     //SDL_LockMutex(phyInstances_lock);
-                    typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
-                    for (; it != end; ++it)
+                    for (const auto& it : phyInstances)
                         DrawPhysics(*it);
                     //SDL_UnlockMutex(phyInstances_lock);
 
@@ -528,8 +527,7 @@ namespace App
                     //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 4.0 / 3.0 );
                     DrawPlayer(player);
                     //SDL_LockMutex(phyInstances_lock);
-                    typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
-                    for (; it != end; ++it)
+                    for (const auto& it : phyInstances)
                         DrawPhysics(*it);
                     //SDL_UnlockMutex(phyInstances_lock);
 
@@ -569,8 +567,7 @@ namespace App
                     //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 4.0 / 3.0 );
                     DrawPlayer(player);
                     //SDL_LockMutex(phyInstances_lock);
-                    typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
-                    for (; it != end; ++it)
+                    for (const auto& it : phyInstances)
                         DrawPhysics(*it);
                     //SDL_UnlockMutex(phyInstances_lock);
 
@@ -585,8 +582,7 @@ namespace App
 
                 DrawPlayer(player);
                 //SDL_LockMutex(phyInstances_lock);
-                typeof(phyInstances.begin()) it = phyInstances.begin(), end = phyInstances.end();
-                for (; it != end; ++it)
+                for (const auto& it : phyInstances)
                     DrawPhysics(*it);
                 //SDL_UnlockMutex(phyInstances_lock);
             }
@@ -871,9 +867,10 @@ namespace App
 
         {
             std::lock_guard<std::mutex> lock(phyInstances_lock);
-            typeof(phyInstances.begin()) it;
-            for (it = phyInstances.begin(); it != phyInstances.end() && y > 0; ++it)
+            for (auto& it : phyInstances)
             {
+                if (y <= 0)
+                    break;
 #define times (it->phys->profiler.times)
 #define names (it->phys->profiler.names)
 #define freq (it->phys->profiler.freq)

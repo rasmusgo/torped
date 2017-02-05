@@ -160,8 +160,7 @@ void Scene::UpdatePhysics()
 {
     std::lock_guard<std::mutex> lock(phyInstances_lock);
 
-    typeof(phyInstances.begin()) it, it2;
-    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+    for (auto& it : phyInstances)
     {
         it->phys->DoFrame1();
 
@@ -176,21 +175,21 @@ void Scene::UpdatePhysics()
     }
 
     // TODO: Fixa smartare test typ dela upp rymden i regioner och testa regionerna för sig
-    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
-        for (it2 = it+1; it2 != phyInstances.end(); ++it2)
-            it->phys->TestBounds(*(it2->phys), 0.1);
+    for (auto it = phyInstances.begin(); it != phyInstances.end(); ++it)
+        for (auto it2 = it+1; it2 != phyInstances.end(); ++it2)
+            (*it)->phys->TestBounds(*((*it2)->phys), 0.1);
 
-    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+    for (auto& it : phyInstances)
         it->phys->DoFrame2();
 
     static unsigned int last_crashhandling = 0;
     if (physicsTicks % 500 == last_crashhandling)
     {
-        for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+        for (auto& it : phyInstances)
             it->CrashHandling();
     }
 
-    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+    for (auto& it : phyInstances)
     {
         if (it->phys->insane)
         {
@@ -200,7 +199,7 @@ void Scene::UpdatePhysics()
     }
 
     // Sound emitters
-    for (it = phyInstances.begin(); it != phyInstances.end(); ++it)
+    for (auto& it : phyInstances)
     {
         for (unsigned int j = 0; j < it->phys->sounds_count; ++j)
         {
