@@ -1,8 +1,16 @@
+#include <utility>
+#include <string>
+
 #include <SDL.h>
 #include <manymouse.h>
 
 #include "input.hpp"
 #include "logging.hpp"
+
+void to_lower(std::string& str)
+{
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
 
 namespace App
 {
@@ -26,7 +34,7 @@ namespace App
             if (joysticks.back() != NULL)
             {
                 LOG_S(INFO) << " Joystick #" << i << ":";
-                LOG_S(INFO) << "  Name: " << SDL_JoystickName(i);
+                LOG_S(INFO) << "  Name: " << SDL_JoystickName(joysticks.back());
                 LOG_S(INFO) << "  Number of Axes: " << SDL_JoystickNumAxes(joysticks.back());
                 LOG_S(INFO) << "  Number of Buttons: " << SDL_JoystickNumButtons(joysticks.back());
                 LOG_S(INFO) << "  Number of Balls: " << SDL_JoystickNumBalls(joysticks.back());
@@ -203,16 +211,15 @@ namespace App
                     case SDL_BUTTON_MIDDLE:
                         ParseEvent("mouse_button2", value, !value);
                         break;
-                    case SDL_BUTTON_WHEELUP:
-                        // NOTE: wheel event will be sent twice here but not for individual mice
-                        ParseEvent("mouse_wheel0", value, !value);
-                        break;
-                    case SDL_BUTTON_WHEELDOWN:
-                        ParseEvent("mouse_wheel0", -value, !value);
-                        break;
                     }
                 }
                 break;
+            case SDL_MOUSEWHEEL:
+            {
+                int value = event.wheel.y;
+                ParseEvent("mouse_wheel0", value, !value);
+                break;
+            }
             case SDL_KEYDOWN:
                 //App::console << "Pressed " << SDL_GetKeyName(event.key.keysym.sym) << endl;
                 if (event.key.keysym.sym == SDLK_ESCAPE)
@@ -220,12 +227,12 @@ namespace App
                     SwitchMode(MENU);
                     return 1;
                 }
-                ParseEvent( SDL_GetKeyName(SDLKey(event.key.keysym.sym)), 1, false);
+                ParseEvent( SDL_GetKeyName(event.key.keysym.sym), 1, false);
                 break;
             case SDL_KEYUP:
                 if (event.key.keysym.sym == SDLK_ESCAPE)
                     break;
-                ParseEvent( SDL_GetKeyName(SDLKey(event.key.keysym.sym)), 0, true);
+                ParseEvent( SDL_GetKeyName(event.key.keysym.sym), 0, true);
                 break;
             case SDL_QUIT:
                 return 0;
@@ -247,6 +254,7 @@ namespace App
 
     void ParseEvent(std::string event, float value, bool silent)
     {
+        to_lower(event);
         if ( actions_table.find(event) != actions_table.end() )
         {
             actions_table[event]->Run(value);
@@ -259,6 +267,7 @@ namespace App
 
     void Bind(std::string event, Action *action)
     {
+        LOG_S(INFO) << "Binding: " << event;
         UnBind(event);
         actions_table[event] = action;
     }

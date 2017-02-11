@@ -3,7 +3,6 @@
 
 #include <GL/glew.h>
 #include <SDL.h>
-#include "SDL_getenv.h"
 #ifdef __APPLE__
 #include <glut.h>
 #else
@@ -58,7 +57,8 @@ namespace App
     int xRes;
     int yRes;
     int fullscreen;
-    SDL_Surface *screen;
+    SDL_Window* window;
+    SDL_GLContext glcontext;
     //World *world;
     //Player player;
     AppMode appMode;
@@ -136,15 +136,6 @@ namespace App
 
         LOG_S(INFO) << "Initializing SDL...";
 
-        putenv("SDL_VIDEO_CENTERED=1");
-#if 0
-        if ( getenv("SDL_VIDEODRIVER") == NULL )
-            //*
-            putenv("SDL_VIDEODRIVER=directx"); /*/
-            putenv("SDL_VIDEODRIVER=windib");
-            //*/
-#endif
-
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_TIMER) != 0)
         {
             LOG_S(ERROR) << "Fatal error: SDL_Init failed: " << SDL_GetError();
@@ -153,31 +144,23 @@ namespace App
 
         LOG_S(INFO) << "Initializing video...";
 
-        if (SDL_GL_LoadLibrary(NULL) != 0)
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+
+
+        window = SDL_CreateWindow(
+            "Torped",
+            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
+            xRes, yRes,
+            (fullscreen ? SDL_WINDOW_FULLSCREEN : 0) | SDL_WINDOW_OPENGL);
+        if (window == NULL)
         {
-            LOG_S(ERROR) << "Error: SDL_GL_LoadLibrary failed: " << SDL_GetError();
-        }
-
-        // icon is icon TEXT not icon filename
-        SDL_WM_SetCaption("Torped", "Torped");
-        /*
-        SDL_Surface *icon = IMG_Load("torped.png");
-        SDL_WM_SetIcon(icon, NULL);
-        SDL_FreeSurface(icon);
-        //*/
-
-        SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
-        SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
-        SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
-        SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
-        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
-        screen = SDL_SetVideoMode(xRes, yRes, 0, (fullscreen ? SDL_FULLSCREEN : 0) | SDL_OPENGL);
-        if (screen == NULL)
-        {
-            LOG_S(ERROR) << "Fatal error: SDL_SetVideoMode failed: " << SDL_GetError();
+            LOG_S(ERROR) << "Fatal error: SDL_CreateWindow failed: " << SDL_GetError();
             return;
         }
+        glcontext = SDL_GL_CreateContext(window);
 
         int value = -1;
         SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &value);
@@ -296,6 +279,8 @@ namespace App
         }
         joysticks.clear();
 
+        SDL_GL_DeleteContext(glcontext);
+        SDL_DestroyWindow(window);
         SDL_Quit();
         ManyMouse_Quit();
         LOG_S(INFO) << "shutdown";
@@ -337,12 +322,12 @@ namespace App
         // FIXME: Scene should be paused and resumed instead
         //realTicks = SDL_GetTicks();
 
-        SDL_WM_GrabInput(SDL_GRAB_ON);
-        SDL_ShowCursor(SDL_DISABLE);
+        SDL_SetRelativeMouseMode(SDL_TRUE);
+
         FlushMice();
 
-        SDL_EnableKeyRepeat(0, 0);
-        SDL_EnableUNICODE(0);
+        // Disabled when migrating to SDL 2.0
+        // SDL_EnableKeyRepeat(0, 0);
     }
 
     int DoFrame()
@@ -613,7 +598,7 @@ namespace App
         profiler.RememberTime("DrawGame()");
         DrawHUD();
 
-        SDL_GL_SwapBuffers();
+        SDL_GL_SwapWindow(window);
         App::FlushConsole();
     }
 
@@ -1005,8 +990,8 @@ namespace App
 
     void ReloadVideo()
     {
-        SDL_SetVideoMode(xRes, yRes, 0,
-                         (fullscreen ? SDL_FULLSCREEN : 0) | SDL_OPENGL /*| SDL_HWSURFACE | SDL_NOFRAME*/);
+        //SDL_SetVideoMode(xRes, yRes, 0,
+        //                 (fullscreen ? SDL_WINDOW_FULLSCREEN : 0) | SDL_WINDOW_OPENGL /*| SDL_HWSURFACE | SDL_NOFRAME*/);
 
         Texture::ReloadAll();
         Shader::ReloadAll();
@@ -1057,7 +1042,10 @@ namespace App
 
     void SaveScreenshot(const char filename[])
     {
-        SDL_Surface *temp = SDL_CreateRGBSurface(SDL_SWSURFACE, screen->w, screen->h, 24,
+        int width = 0;
+        int height = 0;
+        SDL_GetWindowSize(window, &width, &height);
+        SDL_Surface *temp = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 24,
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
             0x000000FF, 0x0000FF00, 0x00FF0000, 0
 #else
@@ -1070,7 +1058,7 @@ namespace App
             return;
         }
 
-        glReadPixels(0, 0, screen->w, screen->h, GL_RGB, GL_UNSIGNED_BYTE, temp->pixels);
+        glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, temp->pixels);
         FlipImageY(temp);
 
         // TODO: Save as png instead and use physfs

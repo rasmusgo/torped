@@ -1,43 +1,10 @@
 #include <assert.h>
-#include "physfsrwops.h"
 #include <memory>
+
+#include "physfsrwops.h"
 
 #include "logging.hpp"
 #include "texture.hpp"
-
-static SDL_PixelFormat RGBA8Format =
-{
-	NULL, //SDL_Palette *palette;
-	32, // Uint8  BitsPerPixel;
-	8, //Uint8  BytesPerPixel;
-	0, //Uint8  Rloss;
-	0, //Uint8  Gloss;
-	0, //Uint8  Bloss;
-	0, //Uint8  Aloss;
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-	0,//Uint8  Rshift;
-	8,//Uint8  Gshift;
-	16,//Uint8  Bshift;
-	24,//Uint8  Ashift;
-	0x000000FF,//Uint32 Rmask;
-	0x0000FF00,//Uint32 Gmask;
-	0x00FF0000,//Uint32 Bmask;
-	0xFF000000,//Uint32 Amask;
-#else
-	24,//Uint8  Rshift;
-	16,//Uint8  Gshift;
-	8,//Uint8  Bshift;
-	0,//Uint8  Ashift;
-	0xFF000000,//Uint32 Rmask;
-	0x00FF0000,//Uint32 Gmask;
-	0x0000FF00,//Uint32 Bmask;
-	0x000000FF,//Uint32 Amask;
-#endif
-	/* RGB color key information */
-	0,//Uint32 colorkey;
-	/* Alpha value information (per-surface alpha) */
-	0 //Uint8  alpha;
-};
 
 void FlipImageY(SDL_Surface *image)
 {
@@ -114,7 +81,7 @@ void Texture::New(const char p_filename[])
 
     if (image->format->BitsPerPixel != 32)
     {
-        SDL_Surface *convert = SDL_ConvertSurface(image, &RGBA8Format, SDL_SWSURFACE);
+        SDL_Surface *convert = SDL_ConvertSurfaceFormat(image, SDL_PIXELFORMAT_RGBA8888, 0);
         SDL_FreeSurface(image);
         image = convert;
     }
@@ -145,9 +112,7 @@ void Texture::New(const int width, const int height)
         return;
     }
 
-    image = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
-                                 RGBA8Format.Rmask, RGBA8Format.Gmask,
-                                 RGBA8Format.Bmask, RGBA8Format.Amask);
+    image = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA8888);
 
     if (!image)
     {
@@ -288,7 +253,7 @@ void Texture::LoadTexture(const char *p_filename)
         break;
     case 8:
     {
-        SDL_Surface *convert = SDL_ConvertSurface(image, &RGBA8Format, SDL_SWSURFACE);
+        SDL_Surface *convert = SDL_ConvertSurfaceFormat(image, SDL_PIXELFORMAT_RGBA8888, 0);
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, convert->w, convert->h, GL_RGBA, GL_UNSIGNED_BYTE, convert->pixels);
@@ -315,6 +280,7 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
         LOG_S(ERROR) << "LoadCubeMap failed: image == NULL";
         return;
     }
+    CHECK_EQ_F(image->format->BitsPerPixel, 24);
 
     int width = image->w / 3;
     int height = image->h / 2;
@@ -336,9 +302,8 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
     glBindTexture(GL_TEXTURE_CUBE_MAP, id_ref.id);
     LOG_IF_ERROR("glBindTexture");
 
-    SDL_Surface *tmp = SDL_CreateRGBSurface( SDL_SWSURFACE, width, height, 32,
-                                             RGBA8Format.Rmask, RGBA8Format.Gmask,
-                                             RGBA8Format.Bmask, RGBA8Format.Amask );
+    // TODO(Severin): The pixel format here is wrong, it should be RGB, but it makes it work.
+    SDL_Surface *tmp = SDL_CreateRGBSurfaceWithFormat(0, width, height, 24, SDL_PIXELFORMAT_BGR888);
     if (tmp == NULL)
     {
         LOG_S(ERROR) << "SDL_CreateRGBSurface failed: " << SDL_GetError();
@@ -348,20 +313,24 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
     SDL_Rect srcrect{0, (Sint16)height, (Uint16)width, (Uint16)height};
     SDL_Rect dstrect{0, 0, (Uint16)width, (Uint16)height};
 
+    const GLint internal_format = GL_RGB8;
+    const GLenum format         = GL_RGBA;
+    const GLenum type           = GL_UNSIGNED_BYTE;
+
     SDL_BlitSurface(image, &srcrect, tmp, &dstrect);
-    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, internal_format, width, height, format, type, tmp->pixels);
     LOG_IF_ERROR("glTexSubImage2D 1");
 
     srcrect.x += width;
     dstrect.x = 0; dstrect.y = 0;
     SDL_BlitSurface(image, &srcrect, tmp, &dstrect);
-    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, internal_format, width, height, format, type, tmp->pixels);
     LOG_IF_ERROR("glTexSubImage2D 2");
 
     srcrect.x += width;
     dstrect.x = 0; dstrect.y = 0;
     SDL_BlitSurface(image, &srcrect, tmp, &dstrect);
-    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_POSITIVE_X, internal_format, width, height, format, type, tmp->pixels);
     LOG_IF_ERROR("glTexSubImage2D 3");
 
     srcrect.x = 0;
@@ -369,19 +338,19 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
 
     dstrect.x = 0; dstrect.y = 0;
     SDL_BlitSurface(image, &srcrect, tmp, &dstrect);
-    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, internal_format, width, height, format, type, tmp->pixels);
     LOG_IF_ERROR("glTexSubImage2D 4");
 
     srcrect.x += width;
     dstrect.x = 0; dstrect.y = 0;
     SDL_BlitSurface(image, &srcrect, tmp, &dstrect);
-    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, internal_format, width, height, format, type, tmp->pixels);
     LOG_IF_ERROR("glTexSubImage2D 5");
 
     srcrect.x += width;
     dstrect.x = 0; dstrect.y = 0;
     SDL_BlitSurface(image, &srcrect, tmp, &dstrect);
-    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+    gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, internal_format, width, height, format, type, tmp->pixels);
     LOG_IF_ERROR("glTexSubImage2D 6");
 
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

@@ -10,10 +10,11 @@ target_link_libraries(torped LINK_PRIVATE
     ${OPENAL_LIBRARY}
     ${OPENGL_LIBRARIES}
     ${PHYSFS_LIBRARY}
-    ${SDL_IMAGE_LIBRARIES}
-    ${SDL_LIBRARY}
+    ${SDL2_IMAGE_LIBRARIES}
+    ${SDL2_LIBRARY}
     ${TINYXML_LIBRARY}
     ${VORBIS_LIBRARY}
     ${VORBISFILE_LIBRARY}
     manymouse
 )
+target_compile_options(torped PRIVATE -Wno-deprecated)
