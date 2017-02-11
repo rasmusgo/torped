@@ -6,6 +6,30 @@
 #include "logging.hpp"
 #include "texture.hpp"
 
+// SDL_CreateRGBSurfaceWithFormat is introduced in SDL 2.0.5 which is not available on the
+// build system.
+SDL_Surface* createRGBSurfaceWithFormat(
+    Uint32 flags,
+    int width,
+    int height,
+    int depth,
+    Uint32 format)
+{
+    SDL_PixelFormat* format_struct = SDL_AllocFormat(format);
+    SDL_Surface* surface = SDL_CreateRGBSurface(
+        flags,
+        width,
+        height,
+        depth,
+        format_struct->Rmask,
+        format_struct->Gmask,
+        format_struct->Bmask,
+        format_struct->Amask);
+
+    SDL_FreeFormat(format_struct);
+    return surface;
+}
+
 void FlipImageY(SDL_Surface *image)
 {
     char *row = new char[image->pitch];
@@ -112,7 +136,7 @@ void Texture::New(const int width, const int height)
         return;
     }
 
-    image = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA8888);
+    image = createRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA8888);
 
     if (!image)
     {
@@ -303,7 +327,7 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
     LOG_IF_ERROR("glBindTexture");
 
     // TODO(Severin): The pixel format here is wrong, it should be RGB, but it makes it work.
-    SDL_Surface *tmp = SDL_CreateRGBSurfaceWithFormat(0, width, height, 24, SDL_PIXELFORMAT_BGR888);
+    SDL_Surface *tmp = createRGBSurfaceWithFormat(0, width, height, 24, SDL_PIXELFORMAT_BGR888);
     if (tmp == NULL)
     {
         LOG_S(ERROR) << "SDL_CreateRGBSurface failed: " << SDL_GetError();

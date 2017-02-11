@@ -1,5 +1,6 @@
-#include <utility>
+#include <algorithm>
 #include <string>
+#include <utility>
 
 #include <SDL.h>
 #include <manymouse.h>
