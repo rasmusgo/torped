@@ -15,10 +15,13 @@
 # git lfs install
 # git lfs fetch
 # git lfs checkout
-# sudo port install glew physfs libsdl libsdl_image lua51 tinyxml libvorbis libogg
+# sudo port install glew physfs libsdl2 libsdl2_image lua51 tinyxml libvorbis libogg
+# brew install glew physfs sdl2 sdl2_image lua51 tinyxml libvorbis libogg
 
 cmake_minimum_required(VERSION 3.0.2)
 project(TORPED_PROJECT)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -38,11 +41,11 @@ include_directories(${OPENGL_INCLUDE_DIR})
 find_package(PhysFS REQUIRED)
 include_directories(${PHYSFS_INCLUDE_DIR})
 
-find_package(SDL REQUIRED)
-include_directories(${SDL_INCLUDE_DIR})
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIR})
 
-find_package(SDL_image REQUIRED)
-include_directories(${SDL_IMAGE_INCLUDE_DIR})
+find_package(SDL2_image REQUIRED)
+include_directories(${SDL2_IMAGE_INCLUDE_DIR})
 
 find_package(Lua51 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})

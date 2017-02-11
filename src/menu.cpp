@@ -1,7 +1,6 @@
 #include <deque>
 #include <mutex>
 
-#include "SDL_getenv.h"
 #include <GL/glew.h>
 #ifdef __APPLE__
 #include <glut.h>
@@ -34,6 +33,7 @@ namespace App
     Texture consoleBackground;
     Texture luaIcon;
     extern lua_State* lua_console;
+    extern SDL_Window* window;
 
     inline void DrawString(void *font, const char string[])
     {
@@ -68,11 +68,8 @@ namespace App
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        SDL_WM_GrabInput(SDL_GRAB_OFF);
-        SDL_ShowCursor(SDL_ENABLE);
+        SDL_SetRelativeMouseMode(SDL_FALSE);
 
-        SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-        SDL_EnableUNICODE(1);
         DrawMenu();
     }
 
@@ -129,7 +126,7 @@ namespace App
         //DrawString(GLUT_BITMAP_HELVETICA_18, "Torped");
         //glRasterPos2f( -0.5, 0.5);
         //glMatrixMode(GL_MODELVIEW);
-        SDL_GL_SwapBuffers();
+        SDL_GL_SwapWindow(window);
     }
 
     void FlushConsole()
@@ -164,9 +161,6 @@ namespace App
         {
             switch (event.type)
             {
-            case SDL_VIDEOEXPOSE:
-                redraw = true;
-                break;
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_ESCAPE)
                 {
@@ -187,9 +181,9 @@ namespace App
                 if ( event.key.keysym.sym == SDLK_BACKSPACE )
                 {
                     int len = commands.back().length();
-                    if ( len > 0 )
+                    if (len > 0)
                     {
-                        commands.back().erase(len-1, 1);
+                        commands.back().pop_back();
                         redraw = true;
                     }
                     break;
@@ -252,9 +246,9 @@ namespace App
                     break;
                 }
 
-                if ( event.key.keysym.unicode > 0 && event.key.keysym.unicode < 256 )
+                if ( event.key.keysym.sym > 0 && event.key.keysym.sym < 256 )
                 {
-                    commands.back() += static_cast<char>(event.key.keysym.unicode);
+                    commands.back() += static_cast<char>(event.key.keysym.sym);
                     redraw = true;
                     break;
                 }
