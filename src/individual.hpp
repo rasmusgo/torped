@@ -13,13 +13,15 @@ extern "C"
 #include "physics.hpp"
 #include "physstruct.hpp"
 
+class GameApp;
+
 class Individual: public Actor
 {
 public:
     Individual(const char *filename);
     virtual ~Individual();
     virtual void Update(unsigned int ticks);
-    virtual void Draw();
+    virtual void Draw(GameApp& gameapp);
     virtual void SetupLua();
 
 private:

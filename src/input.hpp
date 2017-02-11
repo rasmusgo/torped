@@ -6,39 +6,26 @@
 #include <map>
 
 #include "profiler.hpp"
-#include "action.hpp"
 
-namespace App
+class GameApp;
+
+class AppInput
 {
-    // From input.cpp
-    void InitInput();
-	int HandleGameEvents();
-	void UpdateMice();
-    void FlushMice();
-	void ParseEvent(std::string event, float value, bool silent);
-	void Bind(std::string event, Action *action);
-	void UnBind(std::string event);
+public:
+    AppInput();
+    ~AppInput();
+    int HandleGameEvents(GameApp& gameapp);
+    void UpdateMice(GameApp& gameapp);
+    void FlushMice(GameApp& gameapp);
+    int GetLastActiveDevice() { return last_active_device; }
 
-    extern bool discard_mouse_event;
-    extern int num_mice;
-    extern int last_active_device;
-    extern std::vector<float> mouse_sens;
-    extern std::vector<SDL_Joystick *> joysticks;
-    extern std::map<std::string, Action*> actions_table;
+private:
+    bool discard_mouse_event = false;
+    int num_mice;
+    int last_active_device = -1;
+    std::vector<float> mouse_sens;
+    std::vector<SDL_Joystick *> joysticks;
 
-    // From gameapp.cpp
-    #ifndef APPMODE
-    #define APPMODE
-    enum AppMode
-    {
-        MENU = 1,
-        GAME
-    };
-    #endif
-
-	void SwitchMode(AppMode mode);
-
-    extern bool fatal_error;
-    extern Profiler profiler;
-
-} // namespace App
+    bool fatal_error;
+    Profiler profiler;
+};

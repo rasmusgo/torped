@@ -11,10 +11,6 @@
 
 using namespace std;
 
-namespace App
-{
-	AlStruct al;
-}
 /*
 static bool LoadSound(const char filename[])
 {

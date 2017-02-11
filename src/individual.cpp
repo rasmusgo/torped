@@ -52,12 +52,12 @@ void Individual::Update(unsigned int ticks)
     lua_settop(L, top);
 }
 
-void Individual::Draw()
+void Individual::Draw(GameApp& gameapp)
 {
     if (inst)
     {
         std::lock_guard<std::mutex> lock(phyInstances_lock);
-        App::DrawPhysics(*inst);
+        gameapp.DrawPhysics(*inst);
     }
 }
 
