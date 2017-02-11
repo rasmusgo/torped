@@ -165,8 +165,10 @@ World::~World()
     delete [] heights;
     heights = NULL;
 
-    if ( sky_displaylist != 0 );
+    if ( sky_displaylist != 0 )
+    {
         glDeleteLists(sky_displaylist, 1);
+    }
 }
 
 void World::SaveTo(const char p_filename[])
