@@ -8,6 +8,15 @@
 #include "physstruct.hpp"
 #include "texture.hpp"
 
+namespace {
+    AlStruct* alstruct_ptr = nullptr;
+}
+
+void PhyInstance::SetAlStructPtr(AlStruct* alstruct)
+{
+    alstruct_ptr = alstruct;
+}
+
 // lock mutex before access to phyInstances
 std::mutex phyInstances_lock;
 std::vector<std::unique_ptr<PhyInstance>> phyInstances;
@@ -1000,12 +1009,13 @@ void PhyInstance::ParsePhysXML(TiXmlHandle *hRoot)
     }
 
 	// Init sounds
+    CHECK_NOTNULL_F(alstruct_ptr);
 	PhySound *sound = phys->sounds;
     pElem = hRoot->FirstChild("sound").Element();
     for (; pElem; pElem = pElem->NextSiblingElement("sound"))
     {
         sound->p1 = FindPoint(pElem->Attribute("p1"));
-        sound->source = App::al.AddSound(pElem->Attribute("sound"), Vec3r(0, 0, 0));
+        sound->source = alstruct_ptr->AddSound(pElem->Attribute("sound"), Vec3r(0, 0, 0));
         alSourcei(sound->source, AL_LOOPING, AL_TRUE);
         alSourcef(sound->source, AL_GAIN, 0);
         alSourcePlay(sound->source);

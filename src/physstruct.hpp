@@ -21,6 +21,8 @@
 // lock mutex before access to phyInstances
 extern std::mutex phyInstances_lock;
 
+class AlStruct;
+
 struct RenderPass
 {
     unsigned int triangles_count;
@@ -56,17 +58,19 @@ private:
     PhyInstance& operator=(const PhyInstance& other) = delete; // Copy assignment operator
 
 public:
+    static void SetAlStructPtr(AlStruct* alstruct);
+
     PhyInstance() = default;
     ~PhyInstance();
 
-	std::map<TypeName, int> namesIndex;
-	std::map<std::string, int> typeCount;
-	std::map<std::string, Pose> poses;
+    std::map<TypeName, int> namesIndex;
+    std::map<std::string, int> typeCount;
+    std::map<std::string, Pose> poses;
     std::map<std::string, Camera> cameras;
     std::vector<Profiler> profilers;
     std::vector<Profiler>::iterator profiler_it;
 
-	Physics *phys = nullptr;
+    Physics *phys = nullptr;
 
     Vec3r **gltriangle_verts = nullptr;
     Vec3r **gltriangle_normals = nullptr;
@@ -98,6 +102,7 @@ public:
     static PhyInstance* InsertPhysXML(const char *filename);
     int UpdatePhys(const char name[]);
     int UpdatePhysBlend(const char name[], float a, float b);
+
 private:
     PhyPoint* FindPoint(std::string name);
     int FindPointIndex(std::string name);
