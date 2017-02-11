@@ -2,6 +2,8 @@ os: linux
 dist: trusty
 group: stable
 language: cpp
+install:
+- ./install_sdl2.sh
 addons:
   apt:
     sources:
@@ -17,9 +19,6 @@ addons:
       - liblua5.1-dev
       - libopenal-dev
       - libphysfs-dev
-      - libsdl-image1.2-dev
-      - libsdl-net1.2-dev
-      - libsdl-ttf2.0-dev
       - libtinyxml-dev
       - libvorbis-dev
       - libxi-dev
