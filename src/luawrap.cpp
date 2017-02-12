@@ -14,7 +14,16 @@ extern "C"
 #include "player.hpp"
 #include "scene.hpp"
 
-void LuaReportErrors(lua_State *L, int status)
+namespace {
+    GameApp* gameapp_ptr = nullptr;
+}
+
+void LuaSetGameAppPtr(GameApp* gameapp)
+{
+    gameapp_ptr = gameapp;
+}
+
+void LuaReportErrors(lua_State* L, int status)
 {
     if ( status != 0 )
     {
@@ -23,12 +32,12 @@ void LuaReportErrors(lua_State *L, int status)
     }
 }
 
-void LuaRunString(lua_State *L, const char *buffer)
+void LuaRunString(lua_State* L, const char* buffer)
 {
     LuaReportErrors( L, luaL_loadstring(L, buffer) || lua_pcall(L, 0, 0, 0) );
 }
 
-void LuaRunFile(lua_State *L, const char *filename)
+void LuaRunFile(lua_State* L, const char* filename)
 {
     char *buffer; // TODO(Rasmus): Replace with RAII
     PhysFSLoadFile(filename, buffer);
@@ -47,7 +56,7 @@ void LuaRunFile(lua_State *L, const char *filename)
 class LuaAction: public Action
 {
 public:
-    LuaAction(lua_State *L, const char *s)
+    LuaAction(lua_State* L, const char* s)
     {
         this->L = L;
         this->s = s;
@@ -72,7 +81,7 @@ private:
     std::string s;
 };
 
-LuaActor::LuaActor(const char *filename)
+LuaActor::LuaActor(const char* filename)
 {
     L = luaL_newstate();
     LuaRunFile(L, filename);
@@ -110,28 +119,40 @@ void LuaWrapConsoleCmds(lua_State* L)
 
 int LuaCmdClear(lua_State* L)
 {
-    App::ClearWorld();
+    CHECK_NOTNULL_F(gameapp_ptr);
+    gameapp_ptr->ClearWorld();
     return 0; // number of return values
 }
 
 int LuaCmdLoad(lua_State* L)
 {
+    CHECK_NOTNULL_F(gameapp_ptr);
     int n = lua_gettop(L); // number of arguments
-    App::LoadWorld(lua_tostring(L, -n));
+    gameapp_ptr->LoadWorld(lua_tostring(L, -n));
     return 0; // number of return values
 }
 
 int LuaCmdSave(lua_State* L)
 {
+    CHECK_NOTNULL_F(gameapp_ptr);
     int n = lua_gettop(L); // number of arguments
-    App::SaveWorld(lua_tostring(L, -n));
+    gameapp_ptr->SaveWorld(lua_tostring(L, -n));
     return 0; // number of return values
 }
 
 int LuaCmdSpawn(lua_State* L)
 {
+    CHECK_NOTNULL_F(gameapp_ptr);
     int n = lua_gettop(L); // number of arguments
-    App::scene->Spawn(lua_tostring(L, -n));
+    const char* str = lua_tostring(L, -n);
+    if (Scene* scene = gameapp_ptr->GetScene())
+    {
+        scene->Spawn(str);
+    }
+    else
+    {
+        LOG_F(WARNING, "Failed to spawn '%s': scene is NULL", str);
+    }
     return 0;
     //lua_Number ret = int(PhyInstance::InsertPhysXML(lua_tostring(L, -n)) != NULL);
     //lua_pushnumber(L, ret);
@@ -140,40 +161,46 @@ int LuaCmdSpawn(lua_State* L)
 
 int LuaCmdReloadVideo(lua_State* L)
 {
-    App::ReloadVideo();
+    CHECK_NOTNULL_F(gameapp_ptr);
+    gameapp_ptr->ReloadVideo();
     return 0; // number of return values
 }
 
 int LuaCmdScreenshot(lua_State* L)
 {
+    CHECK_NOTNULL_F(gameapp_ptr);
     int n = lua_gettop(L); // number of arguments
-    App::SaveScreenshot(lua_tostring(L, -n));
+    gameapp_ptr->SaveScreenshot(lua_tostring(L, -n));
     return 0; // number of return values
 }
 
 int LuaCmdBind(lua_State* L)
 {
+    CHECK_NOTNULL_F(gameapp_ptr);
     int n = lua_gettop(L); // number of arguments
     if (n == 2)
-        App::Bind( lua_tostring(L, -n), new LuaAction(L, lua_tostring(L, -n+1)) );
+        gameapp_ptr->Bind( lua_tostring(L, -n), new LuaAction(L, lua_tostring(L, -n+1)) );
     return 0; // number of return values
 }
 
 int LuaCmdUnBind(lua_State* L)
 {
+    CHECK_NOTNULL_F(gameapp_ptr);
     int n = lua_gettop(L); // number of arguments
-    App::UnBind(lua_tostring(L, -n));
+    gameapp_ptr->UnBind(lua_tostring(L, -n));
     return 0; // number of return values
 }
 
 int LuaCmdQuit(lua_State* L)
 {
-    App::Quit();
+    CHECK_NOTNULL_F(gameapp_ptr);
+    gameapp_ptr->Quit();
     return 0; // number of return values
 }
 
 int LuaCmdPlayer(lua_State* L)
 {
+    CHECK_NOTNULL_F(gameapp_ptr);
     int n = lua_gettop(L); // number of arguments
     App::player.Do(lua_tostring(L, -n));
     return 0; // number of return values

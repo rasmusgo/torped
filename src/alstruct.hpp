@@ -30,8 +30,3 @@ private:
     std::map<std::string, ALuint> buffers;
     std::vector<ALuint> sources;
 };
-
-namespace App
-{
-	extern AlStruct al;
-}

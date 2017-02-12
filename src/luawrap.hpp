@@ -7,9 +7,12 @@ extern "C"
 
 #include "actor.hpp"
 
-void LuaReportErrors(lua_State *L, int status);
-void LuaRunString(lua_State *L, const char *buffer);
-void LuaRunFile(lua_State *L, const char *filename);
+class GameApp;
+
+void LuaSetGameAppPtr(GameApp* gameapp);
+void LuaReportErrors(lua_State* L, int status);
+void LuaRunString(lua_State* L, const char* buffer);
+void LuaRunFile(lua_State* L, const char* filename);
 void LuaWrapConsoleCmds(lua_State* L);
 int LuaCmdClear(lua_State* L);
 int LuaCmdLoad(lua_State* L);

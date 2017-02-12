@@ -15,7 +15,7 @@ void Actor::Update(unsigned int ticks)
 
 }
 
-void Actor::Draw()
+void Actor::Draw(GameApp& gameapp)
 {
 
 }

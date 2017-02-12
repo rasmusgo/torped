@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <mutex>
 
 #include <GL/glew.h>
@@ -19,6 +20,8 @@
 
 // lock mutex before access to phyInstances
 extern std::mutex phyInstances_lock;
+
+class AlStruct;
 
 struct RenderPass
 {
@@ -48,40 +51,47 @@ public:
 class PhyInstance
 {
 private:
-	char *memPool;
-	char *memPool2;
-	unsigned int memPool_size;
+    std::vector<char> memPool;
+    std::vector<char> memPool2;
+
+    PhyInstance(const PhyInstance& other) = delete; // Copy constructor
+    PhyInstance& operator=(const PhyInstance& other) = delete; // Copy assignment operator
 
 public:
-	std::map<TypeName, int> namesIndex;
-	std::map<std::string, int> typeCount;
-	std::map<std::string, Pose> poses;
+    static void SetAlStructPtr(AlStruct* alstruct);
+
+    PhyInstance() = default;
+    ~PhyInstance();
+
+    std::map<TypeName, int> namesIndex;
+    std::map<std::string, int> typeCount;
+    std::map<std::string, Pose> poses;
     std::map<std::string, Camera> cameras;
     std::vector<Profiler> profilers;
     std::vector<Profiler>::iterator profiler_it;
 
-	Physics *phys;
+    Physics *phys = nullptr;
 
-    Vec3r **gltriangle_verts;
-    Vec3r **gltriangle_normals;
-    GLuint gltriangle_verts_count;
+    Vec3r **gltriangle_verts = nullptr;
+    Vec3r **gltriangle_normals = nullptr;
+    GLuint gltriangle_verts_count = 0;
 
-    Vec3r **glquad_verts;
-    Vec3r **glquad_normals;
-    GLuint glquad_verts_count;
+    Vec3r **glquad_verts = nullptr;
+    Vec3r **glquad_normals = nullptr;
+    GLuint glquad_verts_count = 0;
 
     // normals can be shared between verts to allow smoothing
-    Vec3r *glnormals;
-    GLuint glnormals_count;
+    Vec3r *glnormals = nullptr;
+    GLuint glnormals_count = 0;
 
     // texcoords are not shared
-    GLfloat *gltexcoords;
+    GLfloat *gltexcoords = nullptr;
 
-    RenderPass *renderpasses;
-    unsigned int renderpasses_count;
+    RenderPass *renderpasses = nullptr;
+    unsigned int renderpasses_count = 0;
 
-    Texture *textures;
-    GLuint textures_count;
+    Texture *textures = nullptr;
+    GLuint textures_count = 0;
 
     void RecalculateNormals();
     std::vector<REAL> PollPhys(const char pollstring[]);
@@ -92,14 +102,15 @@ public:
     static PhyInstance* InsertPhysXML(const char *filename);
     int UpdatePhys(const char name[]);
     int UpdatePhysBlend(const char name[], float a, float b);
+
 private:
     PhyPoint* FindPoint(std::string name);
     int FindPointIndex(std::string name);
-    static PhyInstance LoadPhysXML(const char *filename);
+    static std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename);
     void ParsePhysXML(TiXmlHandle *hRoot);
 };
 
-extern std::vector<PhyInstance> phyInstances;
+extern std::vector<std::unique_ptr<PhyInstance>> phyInstances;
 
 bool InitPhys();
 void QuitPhys();

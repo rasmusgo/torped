@@ -143,11 +143,11 @@ void Player::Do(const char cmd[])
 
         bool fail;
         if (b == b)
-            fail = !phyInstances.back().UpdatePhysBlend(str.c_str(), a, b);
+            fail = !phyInstances.back()->UpdatePhysBlend(str.c_str(), a, b);
         else if (a == a)
-            fail = !phyInstances.back().UpdatePhysBlend(str.c_str(), 1.0f-a, a);
+            fail = !phyInstances.back()->UpdatePhysBlend(str.c_str(), 1.0f-a, a);
         else
-            fail = !phyInstances.back().UpdatePhys(str.c_str());
+            fail = !phyInstances.back()->UpdatePhys(str.c_str());
 
         if (fail)
         {
@@ -170,7 +170,7 @@ void Player::Do(const char cmd[])
             return;
         }
 
-        PhyInstance *inst = &phyInstances.back();
+        PhyInstance *inst = phyInstances.back().get();
         TypeName tn;
         tn.type = "motor";
         tn.name = str;
