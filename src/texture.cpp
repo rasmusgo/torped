@@ -304,7 +304,7 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
         LOG_S(ERROR) << "LoadCubeMap failed: image == NULL";
         return;
     }
-    CHECK_EQ_F(image->format->BitsPerPixel, 24);
+    CHECK_EQ_F(static_cast<int>(image->format->BitsPerPixel), 24);
 
     int width = image->w / 3;
     int height = image->h / 2;
