@@ -338,7 +338,7 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
     SDL_Rect dstrect{0, 0, (Uint16)width, (Uint16)height};
 
     const GLint internal_format = GL_RGB8;
-    const GLenum format         = GL_RGBA;
+    const GLenum format         = GL_RGB;
     const GLenum type           = GL_UNSIGNED_BYTE;
 
     SDL_BlitSurface(image, &srcrect, tmp, &dstrect);
