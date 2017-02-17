@@ -1,0 +1,37 @@
+resource management
+* Release on exit
+* Reuse already loaded data
+
+For:
+* Shaders (GLuint)
+    - Vertex
+    - Fragment
+    - Program
+* Textures (GLuint)
+    - Shared
+    - Unique
+* Audio (ALuint)
+    - Buffers
+    - Sources
+
+But not:
+* Scripts
+* Physics files(?)
+
+
+
+Framework layer
+* logging
+* file access
+
+Simulation layer
+* Physics
+
+Presentation layer
+* Window (SDL)
+* OpenGL
+  - shaders
+  - textures
+* OpenAL
+* Input (manymouse, SDL)
+* Events

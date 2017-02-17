@@ -1,0 +1,5 @@
+SDL2 fixes:
+* PHYS_FS RWOPS return 0 thingy
+* https://wiki.libsdl.org/Tutorials/TextInput
+* Color format when loading cubemaps
+* Color format of lua icon
