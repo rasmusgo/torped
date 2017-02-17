@@ -1,0 +1,817 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "Collision detection by plane intersections\n\nIf two 3D solids intersect, the intersection will be enclosed by a combination of the surfaces (2D shape in 3D space) of the two solids. Unless one solid is completely inside the other solid, the surfaces of the two solids will intersect. The intersection of the surfaces is a curve (1D shape in 3D space).\n\nIf two closed polygonal shapes intesect each other the intersection will also be a closed polygonal shape enclosed by a polygonal surface that is a combination of the two polygonal surfaces. Unless one is completely inside the other, the two polygonal surfaces will intersect. The intersection of the surfaces is a series of line segments. \n\nTriangle-triangle intersection test from moller1997b:\n\n1. Compute plane equation of triangle 2.\n2. Reject as trivial if all points of triangle 1 are on same side.\n3. Compute plane equation of triangle 1.\n4. Reject as trivial if all points of triangle 2 are on same side.\n5. Compute intersection line and project onto largest axis.\n6. Compute the intervals for each triangle.\n7. Intersect the intervals.\n\n\nCollision detection by TSDF\n\nSuitable for rigid bodies\n\n128*128*128 bytes = 2097152 bytes = 2MB",
+			"file": "docs/collision_detection.md",
+			"file_size": 1098,
+			"file_write_time": 131289487400000000,
+			"settings":
+			{
+				"buffer_size": 1194,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "Collision detection by plane intersections"
+			}
+		},
+		{
+			"file": "src/alstruct.h",
+			"settings":
+			{
+				"buffer_size": 867,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/alstruct.cpp",
+			"settings":
+			{
+				"buffer_size": 7658,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "# sudo apt install        \\\n#     freeglut3-dev       \\\n#     libglew-dev         \\\n#     libglut-dev         \\\n#     liblua5.1-dev       \\\n#     libopenal-dev       \\\n#     libphysfs-dev       \\\n#     libsdl-image1.2-dev \\\n#     libsdl-net1.2-dev   \\\n#     libsdl-ttf2.0-dev   \\\n#     libtinyxml-dev      \\\n#     libvorbis-dev       \\\n#     python2.7-dev\n\n# sudo port install git-lfs\n# git lfs install\n# git lfs fetch\n# git lfs checkout\n# sudo port install glew physfs libsdl libsdl_image lua51 tinyxml libvorbis libogg\n\ncmake_minimum_required(VERSION 3.0.2)\nproject(TORPED_PROJECT)\n\nset(CMAKE_CXX_STANDARD 11)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)\n\nfind_package(GLEW REQUIRED)\ninclude_directories(${GLEW_INCLUDE_DIR})\n\nfind_package(GLUT REQUIRED)\ninclude_directories(${GLUT_INCLUDE_DIR})\n\nfind_package(OpenAL REQUIRED)\ninclude_directories(${OPENAL_INCLUDE_DIR})\n\nfind_package(OpenGL REQUIRED)\ninclude_directories(${OPENGL_INCLUDE_DIR})\n\nfind_package(PhysFS REQUIRED)\ninclude_directories(${PHYSFS_INCLUDE_DIR})\n\nfind_package(SDL REQUIRED)\ninclude_directories(${SDL_INCLUDE_DIR})\n\nfind_package(SDL_image REQUIRED)\ninclude_directories(${SDL_IMAGE_INCLUDE_DIR})\n\nfind_package(Lua51 REQUIRED)\ninclude_directories(${LUA_INCLUDE_DIR})\n\nfind_package(PythonLibs 2.7 REQUIRED)\ninclude_directories(${PYTHON_INCLUDE_DIRS})\n\nfind_library(OGG_LIBRARY ogg)\nfind_library(VORBIS_LIBRARY vorbis)\nfind_library(VORBISFILE_LIBRARY vorbisfile)\nfind_library(TINYXML_LIBRARY tinyxml)\n\nadd_subdirectory(thirdparty)\n\ninclude_directories(\n    \"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/manymouse\"\n    \"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/loguru\"\n)\n\nset(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)\nset(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})\n\nadd_subdirectory(src)\n",
+			"file": "CMakeLists.txt",
+			"file_size": 1827,
+			"file_write_time": 131294156750000000,
+			"settings":
+			{
+				"buffer_size": 1746,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": ".travis.yml",
+			"settings":
+			{
+				"buffer_size": 595,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "build.sh",
+			"settings":
+			{
+				"buffer_size": 302,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/shader.cpp",
+			"settings":
+			{
+				"buffer_size": 6530,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/menu.cpp",
+			"settings":
+			{
+				"buffer_size": 8924,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/luawrap.cpp",
+			"settings":
+			{
+				"buffer_size": 4488,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/gameapp.cpp",
+			"settings":
+			{
+				"buffer_size": 36731,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "README.md",
+			"settings":
+			{
+				"buffer_size": 1616,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "docs/spec.md",
+			"settings":
+			{
+				"buffer_size": 3104,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"upper",
+				"Convert Case: Upper Case"
+			],
+			[
+				"lowe",
+				"Convert Case: Lower Case"
+			],
+			[
+				"instal",
+				"Install Package Control"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/rasmusgo/src/torped"
+	],
+	"file_history":
+	[
+		"/Users/rasmusgo/src/torped/.git/config",
+		"/Users/rasmusgo/.gitconfig",
+		"/Library/Developer/CommandLineTools/usr/share/git-core/gitconfig",
+		"/Applications/Xcode.app/Contents/Developer/usr/share/git-core/gitconfig",
+		"/Users/rasmusgo/src/torped/src/CMakeLists.txt",
+		"/Users/rasmusgo/src/torped/.travis.yml",
+		"/Users/rasmusgo/src/torped/CMakeLists.txt",
+		"/Users/rasmusgo/src/torped/src/individual.cpp",
+		"/Users/rasmusgo/src/torped/src/alstruct.h",
+		"/Users/rasmusgo/src/torped/src/gameapp.cpp",
+		"/Users/rasmusgo/src/torped/src/menu.cpp",
+		"/Users/rasmusgo/src/torped/src/scene.cpp",
+		"/Users/rasmusgo/src/torped/src/gameapp.h",
+		"/Users/rasmusgo/src/torped/thirdparty/CMakeLists.txt",
+		"/opt/local/include/lua-5.1/lua.h",
+		"/opt/local/share/cmake-3.7/Modules/FindLua51.cmake",
+		"/Users/rasmusgo/src/torped/src/pythonstruct.h",
+		"/Users/rasmusgo/src/torped/src/pythonstruct.cpp",
+		"/Users/rasmusgo/src/torped/cmake/FindOgg.cmake",
+		"/Users/rasmusgo/src/torped/cmake/FindTinyXML.cmake",
+		"/Users/rasmusgo/src/torped/src/player.cpp",
+		"/Users/rasmusgo/src/torped/src/alstruct.cpp",
+		"/Users/rasmusgo/src/torped/src/texture.cpp",
+		"/Users/rasmusgo/src/torped/src/texture.h",
+		"/Users/rasmusgo/src/torped/LICENSE",
+		"/Users/rasmusgo/src/torped/build.sh",
+		"/Users/rasmusgo/src/torped/src/physstruct.h",
+		"/Users/rasmusgo/src/torped/src/shader.cpp",
+		"/Users/rasmusgo/src/torped/src/shader.h",
+		"/Users/rasmusgo/src/torped/src/world.cpp",
+		"/Users/rasmusgo/src/torped/src/world.h",
+		"/opt/local/include/lua-5.1/lua.hpp",
+		"/Users/rasmusgo/src/torped/build/CMakeCache.txt",
+		"/Users/rasmusgo/src/torped/src/action.h",
+		"/Users/rasmusgo/src/torped/thirdparty/angelscript/sdk/angelscript/projects/BCBuilder/AngelScriptBCC_Static_CB2006.bdsproj"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"*.cpp,*.h,*.txt",
+			"*",
+			"*.cpp, *.h, *.yml",
+			"*.cpp, *.h",
+			".cpp, .h",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"angelscript",
+			"python",
+			";\n",
+			"python",
+			"addtosearch",
+			"python",
+			"vert_it",
+			"frag_it",
+			"prog_it",
+			"prog->",
+			"it",
+			"frag",
+			"vert",
+			"ogg",
+			"InitPython",
+			"allistener",
+			"float",
+			"alfloat",
+			"if (err = alGetError())",
+			"err ",
+			"<AL/",
+			"<glew.h>",
+			"GL/",
+			"width",
+			")\n",
+			"library",
+			"LUA_RELEASE",
+			"LUA_VERSION"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"if ((err = alGetError()))",
+			"<",
+			"<GL/glew.h>",
+			""
+		],
+		"reverse": false,
+		"show_context": false,
+		"use_buffer2": false,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "docs/collision_detection.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1194,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1154,
+								1154
+							]
+						],
+						"settings":
+						{
+							"auto_name": "Collision detection by plane intersections",
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/alstruct.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 867,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/alstruct.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7658,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								597,
+								597
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 73.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1746,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1512,
+								1512
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 307.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": ".travis.yml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 595,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								509,
+								509
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/YAML/YAML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "build.sh",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 302,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								153,
+								153
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/shader.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6530,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								364,
+								364
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/menu.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8924,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2409,
+								2409
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1138.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/luawrap.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4488,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2368,
+								2368
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1035.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "src/gameapp.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 36731,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2384,
+								2384
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1312.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "README.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1616,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "docs/spec.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3104,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 100.0
+	},
+	"pinned_build_system": "",
+	"project": "torped.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"lu",
+				"src/luawrap.cpp"
+			],
+			[
+				"menu",
+				"src/menu.cpp"
+			],
+			[
+				"cmak",
+				"CMakeLists.txt"
+			],
+			[
+				"alstr",
+				"src/alstruct.h"
+			],
+			[
+				"travis",
+				".travis.yml"
+			],
+			[
+				"men",
+				"src/menu.cpp"
+			],
+			[
+				"shader",
+				"src/shader.cpp"
+			],
+			[
+				"cmake",
+				"CMakeLists.txt"
+			],
+			[
+				"read",
+				"README.md"
+			],
+			[
+				"spe",
+				"docs/spec.md"
+			],
+			[
+				"scene",
+				"src/scene.cpp"
+			],
+			[
+				"game",
+				"src/gameapp.h"
+			],
+			[
+				"tex",
+				"src/texture.cpp"
+			],
+			[
+				"thirdpar/",
+				"thirdparty/CMakeLists.txt"
+			],
+			[
+				"findogg",
+				"cmake/FindOgg.cmake"
+			],
+			[
+				".cmake",
+				"cmake/FindOgg.cmake"
+			],
+			[
+				"pystr",
+				"src/pythonstruct.cpp"
+			],
+			[
+				"ga",
+				"src/gameapp.cpp"
+			],
+			[
+				"alstruc",
+				"src/alstruct.cpp"
+			],
+			[
+				"alstruct",
+				"src/alstruct.h"
+			],
+			[
+				"als",
+				"src/alstruct.cpp"
+			],
+			[
+				"text",
+				"src/texture.cpp"
+			],
+			[
+				"bui",
+				"build.sh"
+			],
+			[
+				"",
+				"build/CMakeCache.txt"
+			],
+			[
+				"ac",
+				"thirdparty/angelscript/sdk/angelscript/projects/BCBuilder/AngelScriptBCC_Static_CB2006.bdsproj"
+			],
+			[
+				"act",
+				"src/action.h"
+			],
+			[
+				".tr",
+				".travis.yml"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
