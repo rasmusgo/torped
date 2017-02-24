@@ -1,17 +1,15 @@
 #pragma once
 
-#include <memory>
-#include <mutex>
-
-#include <GL/glew.h>
-#include <sstream>
-#include <memory>
-#include <string>
-#include <vector>
 #include <deque>
+#include <GL/glew.h>
 #include <map>
 #include <math.h>
+#include <memory>
+#include <mutex>
+#include <sstream>
+#include <string>
 #include <tinyxml.h>
+#include <vector>
 
 #include "physics.hpp"
 #include "parser.hpp"
@@ -51,13 +49,13 @@ public:
 class PhyInstance
 {
 private:
-    std::vector<char> memPool;
-    std::vector<char> memPool2;
-
     PhyInstance(const PhyInstance& other) = delete; // Copy constructor
     PhyInstance& operator=(const PhyInstance& other) = delete; // Copy assignment operator
 
 public:
+    std::vector<char> memPool;
+    std::vector<char> memPool2;
+
     static void SetAlStructPtr(AlStruct* alstruct);
 
     PhyInstance() = default;
@@ -103,16 +101,11 @@ public:
     int UpdatePhys(const char name[]);
     int UpdatePhysBlend(const char name[], float a, float b);
 
-private:
     PhyPoint* FindPoint(std::string name);
     int FindPointIndex(std::string name);
-    static std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename);
-    void ParsePhysXML(TiXmlHandle *hRoot);
 };
 
 extern std::vector<std::unique_ptr<PhyInstance>> phyInstances;
 
 bool InitPhys();
 void QuitPhys();
-
-void ParsePhysBlend(PhyInstance *inst, std::vector<std::string> *lines, float blend);
