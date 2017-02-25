@@ -16,7 +16,7 @@
 # git lfs fetch
 # git lfs checkout
 # sudo port install glew physfs libsdl2 libsdl2_image lua51 tinyxml libvorbis libogg
-# brew install glew physfs sdl2 sdl2_image lua51 tinyxml libvorbis libogg
+# brew install cmake git-lfs glew physfs sdl2 sdl2_image lua51 tinyxml libvorbis libogg
 
 cmake_minimum_required(VERSION 3.0.2)
 project(TORPED_PROJECT)
