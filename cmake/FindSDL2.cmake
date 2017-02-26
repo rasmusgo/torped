@@ -65,8 +65,6 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-message("<FindSDL2.cmake>")
-
 SET(SDL2_SEARCH_PATHS
 	~/Library/Frameworks
 	/Library/Frameworks
@@ -86,11 +84,11 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
 	PATHS ${SDL2_SEARCH_PATHS}
 )
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 8) 
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	set(PATH_SUFFIXES lib64 lib/x64 lib)
-else() 
+else()
 	set(PATH_SUFFIXES lib/x86 lib)
-endif() 
+endif()
 
 FIND_LIBRARY(SDL2_LIBRARY_TEMP
 	NAMES SDL2
@@ -165,8 +163,6 @@ IF(SDL2_LIBRARY_TEMP)
 	# Set the temp variable to INTERNAL so it is not seen in the CMake GUI
 	SET(SDL2_LIBRARY_TEMP "${SDL2_LIBRARY_TEMP}" CACHE INTERNAL "")
 ENDIF(SDL2_LIBRARY_TEMP)
-
-message("</FindSDL2.cmake>")
 
 INCLUDE(FindPackageHandleStandardArgs)
 
