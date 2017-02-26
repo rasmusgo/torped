@@ -98,6 +98,7 @@ public:
     static void DeleteAll();
 
     static PhyInstance* InsertPhysXML(const char *filename);
+    static PhyInstance* InsertPhysJSON(const char *filename);
     int UpdatePhys(const char name[]);
     int UpdatePhysBlend(const char name[], float a, float b);
 

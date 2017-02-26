@@ -167,6 +167,23 @@ PhyInstance* PhyInstance::InsertPhysXML(const char *filename)
     return phyInstances.back().get();
 }
 
+// TODO: separate more to allow a service thread
+PhyInstance* PhyInstance::InsertPhysJSON(const char *filename)
+{
+    LOG_SCOPE_F(2, "InsertPhysJSON");
+    std::unique_ptr<PhyInstance> inst = LoadPhysJSON(filename);
+    if (inst == nullptr || inst->phys == nullptr)
+    {
+        LOG_S(ERROR) << "LoadPhysJSON failed";
+        return nullptr;
+    }
+    // keep track of the physics instance
+    // lock mutex before access to phyInstances
+    std::lock_guard<std::mutex> lock(phyInstances_lock);
+    phyInstances.push_back(std::move(inst));
+    return phyInstances.back().get();
+}
+
 int PhyInstance::UpdatePhys(const char name[])
 {
     if ( poses.find(name) == poses.end() )

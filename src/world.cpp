@@ -114,7 +114,10 @@ World::World(const char filename[])
         else if (typeName.type == "dynamic")
         {
             ss >> typeName.name;
-            PhyInstance *inst = PhyInstance::InsertPhysXML(typeName.name.c_str());
+            // TODO(Rasmus): Make a more proper text of filename extension.
+            PhyInstance *inst = ( typeName.name.back() == 'l' ?
+                PhyInstance::InsertPhysXML(typeName.name.c_str()) :
+                PhyInstance::InsertPhysJSON(typeName.name.c_str()) );
             if (inst == NULL)
             {
                 LOG_S(ERROR) << "World::World(): failed to load \"" << typeName.name << "\"";
