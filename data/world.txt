@@ -10,6 +10,9 @@ pos -50 -50 -11
 #dynamic car2.phy rot 90 0 0 pos 4 0 1
 #dynamic tetra.phy pos 2 -2 0.001
 #dynamic testcube.phy pos 0 0 0
-dynamic monster4.xml pos 0 0 0
+
+#dynamic monster4.xml pos 0 0 0
+dynamic monster4.json pos 0 0 0
+
 player_pos 0 -4 2
 player_rot 0 0 90
