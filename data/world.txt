@@ -11,8 +11,8 @@ pos -50 -50 -11
 #dynamic tetra.phy pos 2 -2 0.001
 #dynamic testcube.phy pos 0 0 0
 
-#dynamic monster4.xml pos 0 0 0
-dynamic monster4.json pos 0 0 0
+#dynamic monster4.xml pos 0 0 0.21
+dynamic monster4.json pos 0 0 0.21
 
 player_pos 0 -4 2
 player_rot 0 0 90
