@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document>
-<point name="0" pos="0 0 0" mass="1"/>
-<point name="1" pos="1 0 0" mass="1"/>
-<point name="2" pos="1 1 0" mass="1"/>
-<point name="3" pos="0 1 0" mass="1"/>
-
+<document gravity="0 0 0">
+<mesh name="Box">
+    <point name="0" pos="0 0 0" mass="1"/>
+    <point name="1" pos="1 0 0" mass="1"/>
+    <point name="2" pos="1 1 0" mass="1"/>
+    <point name="3" pos="0 1 0" mass="1"/>
+</mesh>
 <texture name="tex1" image="car.png"/>
 <render texture="tex1">
     <glquad name="0" p1="0" uv1="0 0" p2="1" uv2="1 0" p3="2" uv3="1 1" p4="3" uv4="0 1"/>
