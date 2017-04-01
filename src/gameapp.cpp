@@ -453,14 +453,6 @@ void GameApp::DrawGame()
 
         glTranslatef( -player.pos.x, -player.pos.y, -player.pos.z);
 
-        //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 2.0 / 3.0 );
-        DrawPlayer(player);
-        //SDL_LockMutex(phyInstances_lock);
-        for (const auto& it : phyInstances)
-            DrawPhysics(*it);
-        //SDL_UnlockMutex(phyInstances_lock);
-        glColor3f(1, 1, 1);
-
         if (stereo3dmode == 1) // cross-eyed
         {
             glViewport(0, 0, xRes/2, yRes);
