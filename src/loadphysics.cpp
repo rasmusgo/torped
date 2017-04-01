@@ -337,13 +337,14 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
 
 void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
 {
-	CHECK_NOTNULL_F(inst);
-	CHECK_NOTNULL_F(inst->phys);
-	Physics *phys = inst->phys;
+    CHECK_NOTNULL_F(inst);
+    CHECK_NOTNULL_F(inst->phys);
+    Physics *phys = inst->phys;
+    if (auto gravity = hRoot->Element()->Attribute("gravity"))
     {
         std::stringstream ss;
         Vec3r tmp = phys->gravity / phys->time * phys->time;
-        ss << hRoot->Element()->Attribute("gravity");
+        ss << gravity;
         ss >> tmp;
         tmp *= phys->time * phys->time;
         phys->gravity = tmp;
