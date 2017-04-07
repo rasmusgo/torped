@@ -1,4 +1,4 @@
-vec4 post_adjustments = vec4(0.0, 0.0, 1.0, 4.0 / 3.0);
+uniform vec4 post_adjustments; // = vec4(0.0, 0.0, 1.0, 4.0 / 3.0);
 
 void main()
 {
