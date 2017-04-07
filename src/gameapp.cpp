@@ -453,110 +453,93 @@ void GameApp::DrawGame()
 
         glTranslatef( -player.pos.x, -player.pos.y, -player.pos.z);
 
-        if (stereo3dmode == 1) // cross-eyed
+        const auto draw_scene = [&](int shift, float aspect)
         {
-            glViewport(0, 0, xRes/2, yRes);
-            for (float a=0; a<2; ++a)
-            {
-                if (world)
-                    world->Draw();
-
-                //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 2.0 / 3.0 );
-                DrawPlayer(player);
-                //SDL_LockMutex(phyInstances_lock);
-                for (const auto& it : phyInstances)
-                    DrawPhysics(*it);
-                //SDL_UnlockMutex(phyInstances_lock);
-
-                glViewport(xRes/2, 0, xRes/2, yRes);
-            }
-            glViewport(0, 0, xRes, yRes);
-        }
-        else if (stereo3dmode == 2) // horizontally interlaced
-        {
-#define X 0xff
-            GLubyte stripple[]={X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
-                                X,X,X,X};
-#undef X
-            glEnable(GL_POLYGON_STIPPLE);
-            glPolygonStipple( stripple );
-            for (float a=0; a<2; ++a)
-            {
-                if (world)
-                    world->Draw();
-
-                //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 4.0 / 3.0 );
-                DrawPlayer(player);
-                //SDL_LockMutex(phyInstances_lock);
-                for (const auto& it : phyInstances)
-                    DrawPhysics(*it);
-                //SDL_UnlockMutex(phyInstances_lock);
-
-                glPolygonStipple( stripple+4 );
-            }
-            glDisable(GL_POLYGON_STIPPLE);
-        }
-        else if (stereo3dmode == 3) // vertically interlaced
-        {
-#define X 0x55
-            GLubyte stripple[]={X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-#undef X
-#define X 0xaa
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
-                                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X};
-#undef X
-            glEnable(GL_POLYGON_STIPPLE);
-            glPolygonStipple( stripple );
-            for (float a=0; a<2; ++a)
-            {
-                if (world)
-                    world->Draw();
-
-                //cgGLSetParameter4f( cg.param_PostAdjustments, (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth), (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth), 1.0, 4.0 / 3.0 );
-                DrawPlayer(player);
-                //SDL_LockMutex(phyInstances_lock);
-                for (const auto& it : phyInstances)
-                    DrawPhysics(*it);
-                //SDL_UnlockMutex(phyInstances_lock);
-
-                glPolygonStipple( stripple+128 );
-            }
-            glDisable(GL_POLYGON_STIPPLE);
-        }
-        else // no stereo3d
-        {
+            shader.SetUniform("post_adjustments",
+                shift * stereo3d_depth * view_depth,
+                shift * stereo3d_focus / view_depth,
+                1.0f, aspect);
             if (world)
                 world->Draw();
 
+            /*cgGLSetParameter4f( cg.param_PostAdjustments,
+                (a==0? -stereo3d_depth*view_depth: stereo3d_depth*view_depth),
+                (a==0? -stereo3d_focus/view_depth: stereo3d_focus/view_depth),
+                1.0, 2.0 / 3.0 );
+            */
             DrawPlayer(player);
             //SDL_LockMutex(phyInstances_lock);
             for (const auto& it : phyInstances)
                 DrawPhysics(*it);
             //SDL_UnlockMutex(phyInstances_lock);
+        };
+
+        const float window_aspect = float(xRes) / yRes;
+        if (stereo3dmode == 1) // cross-eyed
+        {
+            glViewport(0, 0, xRes / 2, yRes);
+            draw_scene(-1, float(xRes / 2) / yRes); // Left
+            glViewport(xRes / 2, 0, xRes / 2, yRes);
+            draw_scene(1, float(xRes / 2) / yRes); // Right
+            glViewport(0, 0, xRes, yRes);
+        }
+        else if (stereo3dmode == 2) // horizontally interlaced
+        {
+            const GLubyte X = 0xff;
+            GLubyte stripple[]={
+                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                X,X,X,X, 0,0,0,0, X,X,X,X, 0,0,0,0,
+                X,X,X,X
+            };
+            glEnable(GL_POLYGON_STIPPLE);
+            glPolygonStipple( stripple );
+            draw_scene(-1, window_aspect); // Left
+            glPolygonStipple( stripple+4 );
+            draw_scene(1, window_aspect); // Right
+            glDisable(GL_POLYGON_STIPPLE);
+        }
+        else if (stereo3dmode == 3) // vertically interlaced
+        {
+            const GLubyte X = 0x55;
+            const GLubyte Y = 0xaa;
+            GLubyte stripple[]={
+                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                X,X,X,X, X,X,X,X, X,X,X,X, X,X,X,X,
+                Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y,
+                Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y,
+                Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y,
+                Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y,
+                Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y,
+                Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y,
+                Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y,
+                Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y, Y,Y,Y,Y
+            };
+            glEnable(GL_POLYGON_STIPPLE);
+            glPolygonStipple( stripple );
+            draw_scene(-1, window_aspect); // Left
+            glPolygonStipple( stripple+128 );
+            draw_scene(1, window_aspect); // Right
+            glDisable(GL_POLYGON_STIPPLE);
+        }
+        else // no stereo3d
+        {
+            draw_scene(0, window_aspect); // Center
         }
 
-            shader.Disable();
-            glDisable(GL_LIGHT0);
+        shader.Disable();
+        glDisable(GL_LIGHT0);
     }
 
     profiler.RememberTime("DrawGame()");

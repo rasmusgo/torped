@@ -97,6 +97,34 @@ void Shader::Disable()
     glUseProgramObjectARB(0);
 }
 
+void Shader::SetUniform(const std::string &name, float x, float y, float z, float w)
+{
+    LOG_IF_ERROR("");
+    auto program_it = programs.find(program);
+    if (program_it != programs.end())
+    {
+        const GLuint program_ref = program_it->second.id;
+        const GLint uniform_location = glGetUniformLocation(program_ref, name.c_str());
+        LOG_IF_ERROR("");
+        if (uniform_location != -1)
+        {
+            glUniform4f(uniform_location, x, y, z, w);
+            //glProgramUniform4f(program_ref, uniform_location, x, y, z, w);
+            LOG_IF_ERROR("");
+        }
+        else
+        {
+            LOG_F(WARNING, "Could not set uniform '%s' for program '%s' + '%s': glGetUniformLocation failed.",
+                name.c_str(), program.vertex_name.c_str(), program.fragment_name.c_str());
+        }
+    }
+    else
+    {
+        LOG_F(WARNING, "Could not set uniform '%s', program '%s' + '%s' is invalid.",
+            name.c_str(), program.vertex_name.c_str(), program.fragment_name.c_str());
+    }
+}
+
 void Shader::ReloadAll()
 {
     LOG_IF_ERROR("");
@@ -190,7 +218,6 @@ void Shader::LoadShader(const GLuint type, const std::string &filename)
         vertex_shaders[filename] = id_ref;
     else
         fragment_shaders[filename] = id_ref;
-
 }
 
 void Shader::LoadProgram(const ProgramName &prog)

@@ -13,6 +13,7 @@ public:
     void Release();
     void Enable();
     void Disable();
+    void SetUniform(const std::string &name, float x, float y, float z, float w);
     static void ReloadAll();
 
 private:
