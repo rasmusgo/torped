@@ -31,13 +31,22 @@ function frame(value)
     player("velz " .. (f - v))
     player("motor Kaross_Axis_F 0 " .. (forward - back)*2000 .. " 0")
     player("motor Kaross_Axis_B 0 " .. (forward - back)*2000 .. " 0")
-    player("motor engine 0 0 " .. (left - right)*10)
+    player("motor engine1 0 " .. (forward - back)*200 .. " 0")
+    player("motor engine2 0 " .. (forward - back)*200 .. " 0")
     player("pose pose1 1")
     if (forward - back) > 0 then
         player("pose pose2 " .. (forward - back))
     else
         player("pose pose3 " .. (back - forward))
     end
+
+    player("pose forward 1")
+    if (left - right) > 0 then
+        player("pose left " .. (left - right))
+    else
+        player("pose right " .. (right - left))
+    end
+
     --player("vely " .. (left - right))
 
     --[[
