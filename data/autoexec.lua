@@ -14,18 +14,21 @@ bind("w", "w=value")
 bind("s", "s=value")
 bind("a", "a=value")
 bind("d", "d=value")
+bind("f", "f=value")
+bind("v", "v=value")
 bind("up",   "forward=value")
 bind("down", "back=value")
 bind("left", "left=value")
 bind("right","right=value")
 bind("frame", "frame(value)")
 
-w, s, a, d = 0, 0, 0, 0
+w, s, a, d, f, v = 0, 0, 0, 0, 0, 0
 forward, back, left, right = 0, 0, 0, 0
 
 function frame(value)
     player("velx " .. (w - s))
     player("vely " .. (a - d))
+    player("velz " .. (f - v))
     player("motor Kaross_Axis_F 0 " .. (forward - back)*2000 .. " 0")
     player("motor Kaross_Axis_B 0 " .. (forward - back)*2000 .. " 0")
     player("motor engine 0 0 " .. (left - right)*10)
