@@ -1,14 +1,11 @@
 os:
   - linux
   - osx
-dist: trusty
+dist: bionic
 group: stable
 language: cpp
 addons:
   apt:
-    sources:
-      - george-edison55-precise-backports # cmake 3.2.3 / doxygen 1.8.3
-      - ubuntu-toolchain-r-test
     packages:
       - cmake
       - cmake-data
