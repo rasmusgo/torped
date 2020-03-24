@@ -28,6 +28,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIR})
+if(NOT DEFINED GLEW_LIBRARIES)
+    set(GLEW_LIBRARIES GLEW::GLEW)
+endif()
 
 find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIR})
