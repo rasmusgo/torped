@@ -25,6 +25,7 @@ addons:
       - libvorbis-dev
       - libxi-dev
   homebrew:
+    update: true
     packages:
       - glew
       - physfs
