@@ -396,7 +396,6 @@ inline void Physics::DoFrame0(PhyRigid &rigid)
 
 inline void Physics::DoFrame1(PhyRigid &rigid)
 {
-    Mat3x3r orientationMatrix(rigid.orient);
     PhyPoint *point = rigid.points;
     PhyPoint *end = point + rigid.nodes_count;
     while (point != end)
@@ -416,14 +415,10 @@ inline void Physics::DoFrame1(PhyRigid &rigid)
     //rigid.vel += (rigid.force/rigid.mass + gravity) * time;
     rigid.vel += rigid.force * rigid.inv_mass + gravity;
 
-    //rigid.spin += rigid.torque * (time / rigid.inertia);
-    /*
-    rigid.spin += rigid.torque;
-    /*/
-    rigid.spin += Vec3r(rigid.torque.x * rigid.inv_inertia.x,
-                        rigid.torque.y * rigid.inv_inertia.y,
-                        rigid.torque.z * rigid.inv_inertia.z);
-    //*/
+    //rigid.angular_momentum += rigid.torque * time;
+    rigid.angular_momentum += rigid.torque;
+    rigid.spin = Mat3x3r(rigid.orient).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
+
     rigid.force.SetToZero();
     rigid.torque.SetToZero();
 }
@@ -449,13 +444,10 @@ inline void Physics::DoFrame2(PhyRigid &rigid)
 
     rigid.vel += rigid.force * rigid.inv_mass;
 
-    /*
-    rigid.spin += rigid.torque;
-    /*/
-    rigid.spin += Vec3r(rigid.torque.x * rigid.inv_inertia.x,
-                        rigid.torque.y * rigid.inv_inertia.y,
-                        rigid.torque.z * rigid.inv_inertia.z);
-    //*/
+    //rigid.angular_momentum += rigid.torque * time;
+    rigid.angular_momentum += rigid.torque;
+    rigid.spin = Mat3x3r(rigid.orient).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
+
     rigid.force.SetToZero();
     rigid.torque.SetToZero();
 }
