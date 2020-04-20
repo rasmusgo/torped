@@ -429,6 +429,20 @@ public:
 		vec2 = mat.vec2;
 		vec3 = mat.vec3;
 	};
+
+	Mat3x3<T> sandwich(const Vec3<T> &diag) // A*B*A'
+	{
+		const T out_11 = vec1.ElemMult(vec1).Dot(diag);
+		const T out_22 = vec2.ElemMult(vec2).Dot(diag);
+		const T out_33 = vec3.ElemMult(vec3).Dot(diag);
+		const T out_12 = vec1.ElemMult(vec2).Dot(diag);
+		const T out_13 = vec1.ElemMult(vec3).Dot(diag);
+		const T out_23 = vec2.ElemMult(vec3).Dot(diag);
+		return Mat3x3<T>(
+			out_11, out_12, out_13,
+			out_12, out_22, out_23,
+			out_13, out_23, out_33);
+	}
 };
 
 typedef Vec3<REAL> Vec3r;
