@@ -26,6 +26,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/installdir")
+
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIR})
 if(NOT DEFINED GLEW_LIBRARIES)
@@ -63,6 +65,7 @@ add_subdirectory(thirdparty)
 include_directories(
     "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/manymouse"
     "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/loguru"
+    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/installdir/include"
 )
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})
