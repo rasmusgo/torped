@@ -55,8 +55,8 @@ public:
     void AddTime(std::string name)
     {
         // Find the previous record (traverse backwards)
-        typeof(names.end()) it = names.end();
-        typeof(times.end()) it2 = times.end();
+        auto it = names.end();
+        auto it2 = times.end();
         while (it != names.begin())
         {
             --it;

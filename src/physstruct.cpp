@@ -360,11 +360,9 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
 PhyPoint* PhyInstance::FindPoint(std::string name)
 {
     TypeName tn;
-    typeof(namesIndex.end()) it;
-
     tn.name = name;
     tn.type = "point";
-    it = namesIndex.find(tn);
+    auto it = namesIndex.find(tn);
     if (it != namesIndex.end())
         return phys->points + it->second;
 
@@ -380,11 +378,9 @@ PhyPoint* PhyInstance::FindPoint(std::string name)
 int PhyInstance::FindPointIndex(std::string name)
 {
     TypeName tn;
-    typeof(namesIndex.end()) it;
-
     tn.name = name;
     tn.type = "point";
-    it = namesIndex.find(tn);
+    auto it = namesIndex.find(tn);
     if (it != namesIndex.end())
         return it->second;
 
@@ -404,9 +400,9 @@ void PhyInstance::RecalculateNormals()
 
     Vec3r normal;
 
-    typeof(gltriangle_verts) it = gltriangle_verts;
-    typeof(gltriangle_verts) end = gltriangle_verts + gltriangle_verts_count;
-    typeof(gltriangle_normals) it2 = gltriangle_normals;
+    decltype(gltriangle_verts) it = gltriangle_verts;
+    decltype(gltriangle_verts) end = gltriangle_verts + gltriangle_verts_count;
+    decltype(gltriangle_normals) it2 = gltriangle_normals;
 
     while (it != end)
     {

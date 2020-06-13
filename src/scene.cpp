@@ -267,6 +267,6 @@ void Scene::UpdatePhysics()
 void Scene::UpdateActors()
 {
     std::lock_guard<std::mutex> lock(actors_mutex);
-    for (typeof(actors.begin()) it = actors.begin(); it != actors.end(); ++it)
+    for (auto it = actors.begin(); it != actors.end(); ++it)
         (*it)->Update(physicsTicks);
 }

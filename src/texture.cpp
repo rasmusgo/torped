@@ -45,8 +45,8 @@ void FlipImageY(SDL_Surface *image)
 }
 
 // THE instance of Texture::textures (declared static in class)
-typeof(Texture::textures) Texture::textures;
-typeof(Texture::unique_textures) Texture::unique_textures;
+decltype(Texture::textures) Texture::textures;
+decltype(Texture::unique_textures) Texture::unique_textures;
 
 Texture::Texture()
 {
@@ -223,7 +223,7 @@ void Texture::Release()
     }
     else
     {
-        typeof(textures.begin()) it = textures.find(filename);
+        auto it = textures.find(filename);
 
         if (it != textures.end())
         {
@@ -393,36 +393,34 @@ void Texture::LoadCubeMap(const char *p_filename, SDL_Surface *image)
 // problem: texture instances doesn't pick up changes in reference ids
 void Texture::ReloadAll()
 {
-    typeof(textures.begin()) it;
-    typeof(unique_textures.begin()) it2;
     GLuint ref;
 
-    for (it = textures.begin(); it != textures.end(); ++it)
+    for (auto it = textures.begin(); it != textures.end(); ++it)
     {
         if ( glIsTexture(it->second.id) )
             glDeleteTextures(1 , &it->second.id);
     }
 
-    for (it2 = unique_textures.begin(); it2 != unique_textures.end(); ++it2)
+    for (auto it2 = unique_textures.begin(); it2 != unique_textures.end(); ++it2)
     {
         if ( glIsTexture((*it2)->id) )
             glDeleteTextures(1 , &(*it2)->id);
     }
 
-    for (it = textures.begin(); it != textures.end(); ++it)
+    for (auto it = textures.begin(); it != textures.end(); ++it)
     {
     	ref = it->second.ref;
     	LoadTexture(it->first.c_str());
     	it->second.ref = ref;
     }
 
-    for (it2 = unique_textures.begin(); it2 != unique_textures.end(); ++it2)
+    for (auto it2 = unique_textures.begin(); it2 != unique_textures.end(); ++it2)
     {
         glGenTextures(1, &(*it2)->id);
         (*it2)->Update();
     }
 
-    for (it = textures.begin(); it != textures.end(); ++it)
+    for (auto it = textures.begin(); it != textures.end(); ++it)
     {
         LOG_S(INFO) << "name: \"" << it->first.c_str() << "\" id: " << it->second.id;
     }
@@ -437,7 +435,7 @@ void Texture::Bind()
     }
 
     // iterator
-    typeof(textures.begin()) i = textures.find(filename);
+    auto i = textures.find(filename);
 
     if (i == textures.end())
     {
@@ -457,7 +455,7 @@ void Texture::Enable()
     }
 
     // iterator
-    typeof(textures.begin()) i = textures.find(filename);
+    auto i = textures.find(filename);
 
     if (i == textures.end())
     {
@@ -477,7 +475,7 @@ void Texture::Disable()
     }
 
     // iterator
-    typeof(textures.begin()) i = textures.find(filename);
+    auto i = textures.find(filename);
 
     if (i == textures.end())
     {
@@ -491,7 +489,7 @@ void Texture::Disable()
 GLuint Texture::GetID()
 {
     // iterator
-    typeof(textures.begin()) i = textures.find(filename);
+    auto i = textures.find(filename);
 
     if (i == textures.end())
         return 0;
