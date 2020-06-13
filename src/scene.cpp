@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(WIN32)
 #include <al.h>
 #include <alc.h>
 #else
