@@ -654,7 +654,7 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
             const char *tmp = pElem->Attribute("image");
             if (tmp != NULL)
             {
-                inst->textures[inst->namesIndex[tn]].Aquire(tmp);
+                inst->textures[inst->namesIndex[tn]].Acquire(tmp);
                 continue;
             }
             /*
@@ -665,7 +665,7 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
                 continue;
             }
             */
-            inst->textures[inst->namesIndex[tn]].Aquire(NULL);
+            inst->textures[inst->namesIndex[tn]].Acquire(NULL);
         }
     }
 

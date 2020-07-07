@@ -53,20 +53,20 @@ World::World(const char filename[])
         if (typeName.type == "texture")
         {
             if (ss >> typeName.name)
-                texture.Aquire( typeName.name.c_str() );
+                texture.Acquire( typeName.name.c_str() );
         }
         else if (typeName.type == "heightmap")
         {
             // TODO: Avoid loading the image twice
             if (ss >> typeName.name)
-                heightmap.Aquire( typeName.name.c_str() );
+                heightmap.Acquire( typeName.name.c_str() );
             BuildHeightMap(typeName.name.c_str());
             LOG_IF_ERROR("heightmap");
         }
         else if (typeName.type == "normalmap")
         {
             if (ss >> typeName.name)
-                normalmap.Aquire( typeName.name.c_str() );
+                normalmap.Acquire( typeName.name.c_str() );
             LOG_IF_ERROR("normalmap");
         }
         else if (typeName.type == "decalmap")
@@ -79,7 +79,7 @@ World::World(const char filename[])
         {
             if (ss >> typeName.name)
             {
-                sky.Aquire( typeName.name.c_str() );
+                sky.Acquire( typeName.name.c_str() );
                 BuildSky();
             }
             LOG_IF_ERROR("skybox");

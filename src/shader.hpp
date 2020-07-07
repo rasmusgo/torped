@@ -9,7 +9,7 @@ class Shader
 public:
     Shader();
     ~Shader();
-    void Aquire(const std::string &vertex_file, const std::string &fragment_file);
+    void Acquire(const std::string &vertex_file, const std::string &fragment_file);
     void Release();
     void Enable();
     void Disable();

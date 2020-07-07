@@ -185,7 +185,7 @@ void Texture::Update()
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 }
 
-void Texture::Aquire(const char p_filename[])
+void Texture::Acquire(const char p_filename[])
 {
     if (p_filename == NULL)
         p_filename = "null.png";
@@ -200,12 +200,12 @@ void Texture::Aquire(const char p_filename[])
 
     if (textures.find(filename) == textures.end())
     {
-    	LOG_S(ERROR) << "Texture::Aquire failed for \"" << filename << "\".";
-    	return;
+        LOG_S(ERROR) << "Texture::Acquire failed for \"" << filename << "\".";
+        return;
     }
     //m_texture = textures[filename].id;
     textures[filename].ref++;
-    VLOG_S(3) << "Texture::Aquire succeded";
+    VLOG_S(3) << "Texture::Acquire succeeded";
 }
 
 void Texture::Release()
