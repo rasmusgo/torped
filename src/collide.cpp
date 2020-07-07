@@ -81,11 +81,10 @@ void Collide(const std::vector<PhyPoint*> &listA, const std::vector<PhyPoint*> &
     // Enkel typ av kollision mellan punkter
     REAL distance, k;
     Vec3r delta;
-    typeof(listA.begin()) itA, itB;
 
-    for (itA = listA.begin(); itA != listA.end(); ++itA)
+    for (auto itA = listA.begin(); itA != listA.end(); ++itA)
     {
-        for (itB = listB.begin(); itB != listB.end(); ++itB)
+        for (auto itB = listB.begin(); itB != listB.end(); ++itB)
         {
             delta = (*itA)->pos - (*itB)->pos;
             //delta += ((*itA)->vel - (*itB)->vel)*0.001;
@@ -105,10 +104,8 @@ inline void NarrowLists(const std::vector<PhyPoint*> &listA, const std::vector<P
                         const Vec3r &min, const Vec3r &max)
 {
     // List of points inside bounds given by min and max
-    typeof(listA.begin()) it, end;
-
-    it = listA.begin();
-    end = listA.end();
+    auto it = listA.begin();
+    auto end = listA.end();
     for (; it != end; ++it)
     {
         if ((*it)->pos.x < min.x || (*it)->pos.x > max.x)

@@ -75,7 +75,7 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     mesh = hRoot.FirstChild("mesh").Element();
     for (; mesh; mesh = mesh->NextSiblingElement("mesh"))
     {
-        pElem = TiXmlHandle(mesh).FirstChild(typeName.type).Element();
+        pElem = TiXmlHandle(mesh).FirstChild(typeName.type.c_str()).Element();
         for (; pElem; pElem = pElem->NextSiblingElement("point"))
         {
             typeName.name = pElem->Attribute("name");
@@ -112,7 +112,7 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     mesh = hRoot.FirstChild("mesh").Element();
     for (; mesh; mesh = mesh->NextSiblingElement("mesh"))
     {
-        pElem = TiXmlHandle(mesh).FirstChild(typeName.type).Element();
+        pElem = TiXmlHandle(mesh).FirstChild(typeName.type.c_str()).Element();
         for (; pElem; pElem = pElem->NextSiblingElement("spring"))
         {
             typeName.name = pElem->Attribute("name");
@@ -127,7 +127,7 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     mesh = hRoot.FirstChild("joints").Element();
     for (; mesh; mesh = mesh->NextSiblingElement("joints"))
     {
-        pElem = TiXmlHandle(mesh).FirstChild(typeName.type).Element();
+        pElem = TiXmlHandle(mesh).FirstChild(typeName.type.c_str()).Element();
         for (; pElem; pElem = pElem->NextSiblingElement("joint"))
         {
             typeName.name = pElem->Attribute("name");

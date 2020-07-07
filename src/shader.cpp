@@ -5,9 +5,9 @@
 #include "shader.hpp"
 
 // Definition of Shader static variables
-typeof(Shader::vertex_shaders) Shader::vertex_shaders;
-typeof(Shader::fragment_shaders) Shader::fragment_shaders;
-typeof(Shader::programs) Shader::programs;
+decltype(Shader::vertex_shaders) Shader::vertex_shaders;
+decltype(Shader::fragment_shaders) Shader::fragment_shaders;
+decltype(Shader::programs) Shader::programs;
 
 Shader::Shader()
 {
@@ -224,8 +224,8 @@ void Shader::LoadProgram(const ProgramName &prog)
 {
     LOG_IF_ERROR("LoadProgram start");
 
-    typeof(vertex_shaders.end()) vert = vertex_shaders.find(prog.vertex_name);
-    typeof(fragment_shaders.end()) frag = fragment_shaders.find(prog.fragment_name);
+    auto vert = vertex_shaders.find(prog.vertex_name);
+    auto frag = fragment_shaders.find(prog.fragment_name);
 
     if ( vert == vertex_shaders.end() )
     {

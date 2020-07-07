@@ -42,8 +42,7 @@ World::World(const char filename[])
 
     TypeName typeName;
 
-    typeof(parser.lines.end()) it;
-    for (it = parser.lines.begin(); it != parser.lines.end(); ++it)
+    for (auto it = parser.lines.begin(); it != parser.lines.end(); ++it)
     {
         stringstream ss;
         ss << *it;

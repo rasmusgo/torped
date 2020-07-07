@@ -36,8 +36,8 @@ Physics::Physics(): gravity(0,0,0), time(0.001), break_limit(0.05), insane(0)
 #define DO(func,param,from,to) \
     { \
         DEBUGPRINT("before " << #func << "(" << #param << ")" << std::endl) \
-        typeof(param) it = (param)+(from); \
-        typeof(param) end = (param)+(to); \
+        decltype(param) it = (param)+(from); \
+        decltype(param) end = (param)+(to); \
         while (it != end) \
         { \
             (func)( *it ); \
@@ -377,7 +377,7 @@ inline void Physics::DoFrame1(PhySound &sound)
     sound.i = (sound.i+1) % PHY_SOUND_SAMPLES;
 }
 
-inline void Physics::DoFrame0(PhyRigid &rigid)
+void Physics::DoFrame0(PhyRigid &rigid)
 {
     Mat3x3r orientationMatrix(rigid.orient);
     PhyNode *node = rigid.nodes;

@@ -17,4 +17,9 @@ target_link_libraries(torped LINK_PRIVATE
     ${VORBISFILE_LIBRARY}
     manymouse
 )
-target_compile_options(torped PRIVATE -Wno-deprecated)
+
+if(WIN32)
+    target_link_libraries(torped PRIVATE legacy_stdio_definitions.lib)
+else()
+    target_compile_options(torped PRIVATE -Wno-deprecated)
+endif()

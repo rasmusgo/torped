@@ -29,7 +29,7 @@ template <class T> inline T Clamp(T value, T a, T b)
     return value;
 }
 
-/*
+//*
 #define FastSqrt sqrt
 /*/
 inline float FastSqrt(float square)

@@ -18,6 +18,9 @@
 # sudo port install glew physfs libsdl2 libsdl2_image lua51 tinyxml libvorbis libogg
 # brew install cmake git-lfs glew physfs sdl2 sdl2_image lua51 tinyxml libvorbis libogg
 
+# Ogg from https://github.com/xiph/ogg/releases
+# Vorbis from https://github.com/xiph/vorbis/releases
+
 cmake_minimum_required(VERSION 3.0.2)
 project(TORPED_PROJECT)
 
@@ -25,6 +28,14 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/glew-2.1.0")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/freeglut")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/physfs-3.0.2/installdir")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/SDL2-2.0.12")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/SDL2_image-2.0.5")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/installdir")
+list(APPEND CMAKE_PREFIX_PATH "C:/Program Files (x86)/OpenAL 1.1 SDK")
 
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIR})
@@ -63,6 +74,7 @@ add_subdirectory(thirdparty)
 include_directories(
     "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/manymouse"
     "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/loguru"
+    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/installdir/include"
 )
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})

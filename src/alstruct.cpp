@@ -137,7 +137,7 @@ bool AlStruct::InitAl()
 
 void AlStruct::QuitAl()
 {
-    for (__typeof(sources.begin()) iter=sources.begin(); iter != sources.end(); ++iter)
+    for (auto iter = sources.begin(); iter != sources.end(); ++iter)
     {
         if ( !alIsSource(*iter) )
             continue;
@@ -146,7 +146,7 @@ void AlStruct::QuitAl()
     }
     sources.clear();
 
-    for (__typeof(buffers.begin()) iter=buffers.begin(); iter != buffers.end(); ++iter)
+    for (auto iter = buffers.begin(); iter != buffers.end(); ++iter)
     {
         if ( !alIsBuffer(iter->second) )
             continue;

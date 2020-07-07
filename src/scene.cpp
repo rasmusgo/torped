@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(WIN32)
 #include <al.h>
 #include <alc.h>
 #else
@@ -267,6 +267,6 @@ void Scene::UpdatePhysics()
 void Scene::UpdateActors()
 {
     std::lock_guard<std::mutex> lock(actors_mutex);
-    for (typeof(actors.begin()) it = actors.begin(); it != actors.end(); ++it)
+    for (auto it = actors.begin(); it != actors.end(); ++it)
         (*it)->Update(physicsTicks);
 }

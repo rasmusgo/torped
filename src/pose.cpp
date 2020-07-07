@@ -69,8 +69,7 @@ static inline void BlendFunc(T &dest, T arg, float a, float b)
 
 void Pose::Apply(PhyInstance *inst)
 {
-    typeof(springStates.end()) it;
-    for (it = springStates.begin(); it != springStates.end(); ++it)
+    for (auto it = springStates.begin(); it != springStates.end(); ++it)
     {
         PhySpring *spring = &inst->phys->springs[it->first];
         BlendFunc(spring->l, it->second.l, 0, 1);
@@ -82,8 +81,7 @@ void Pose::Apply(PhyInstance *inst)
 
 void Pose::Blend(PhyInstance *inst, float a, float b)
 {
-    typeof(springStates.end()) it;
-    for (it = springStates.begin(); it != springStates.end(); ++it)
+    for (auto it = springStates.begin(); it != springStates.end(); ++it)
     {
         PhySpring *spring = &inst->phys->springs[it->first];
         BlendFunc(spring->l, it->second.l, a, b);

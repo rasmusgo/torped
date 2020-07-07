@@ -779,9 +779,9 @@ void GameApp::DrawHUD()
     if ( times.size() > 0 )
     {
         double inv_freq = 1.0e-9;
-        typeof(times.back()) total = 0;
+        size_t total = 0;
 
-        for ( typeof(times.begin()) it = times.begin(); it != times.end(); ++it )
+        for ( auto it = times.begin(); it != times.end(); ++it )
             total += *it;
 
         {
@@ -826,9 +826,9 @@ void GameApp::DrawHUD()
             if ( times.size() > 0 )
             {
                 double inv_freq = 1.0e-9;
-                typeof(times.back()) total = 0;
+                size_t total = 0;
 
-                for ( typeof(times.begin()) it2 = times.begin(); it2 != times.end(); ++it2 )
+                for ( auto it2 = times.begin(); it2 != times.end(); ++it2 )
                     total += *it2;
 
                 for ( unsigned int j = 0; j < names.size(); ++j )
