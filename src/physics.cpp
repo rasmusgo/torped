@@ -377,7 +377,7 @@ inline void Physics::DoFrame1(PhySound &sound)
     sound.i = (sound.i+1) % PHY_SOUND_SAMPLES;
 }
 
-inline void Physics::DoFrame0(PhyRigid &rigid)
+void Physics::DoFrame0(PhyRigid &rigid)
 {
     Mat3x3r orientationMatrix(rigid.orient);
     PhyNode *node = rigid.nodes;
