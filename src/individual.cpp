@@ -18,15 +18,16 @@ std::map<lua_State*, Individual*> Individual::lua_state_to_individual;
 
 Individual::Individual(const char *filename): inst(NULL)
 {
-    std::string fname = filename;
+    const std::string filename_lua = std::string(filename) + ".lua";
+    const std::string filename_xml = std::string(filename) + ".xml";
 
     L = luaL_newstate();
     lua_state_to_individual[L] = this;
 
-    if ( PHYSFS_exists((fname + ".lua").c_str()) )
-        LuaRunFile(L, (fname + ".lua").c_str());
+    if ( PHYSFS_exists(filename_lua.c_str()) )
+        LuaRunFile(L, filename_lua.c_str());
 
-    inst = PhyInstance::InsertPhysXML((fname + ".xml").c_str());
+    inst = PhyInstance::InsertPhysXML(filename_xml.c_str());
 }
 
 Individual::~Individual()
