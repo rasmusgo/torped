@@ -337,13 +337,14 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
 
 void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
 {
-	CHECK_NOTNULL_F(inst);
-	CHECK_NOTNULL_F(inst->phys);
-	Physics *phys = inst->phys;
+    CHECK_NOTNULL_F(inst);
+    CHECK_NOTNULL_F(inst->phys);
+    Physics *phys = inst->phys;
+    if (auto gravity = hRoot->Element()->Attribute("gravity"))
     {
         std::stringstream ss;
         Vec3r tmp = phys->gravity / phys->time * phys->time;
-        ss << hRoot->Element()->Attribute("gravity");
+        ss << gravity;
         ss >> tmp;
         tmp *= phys->time * phys->time;
         phys->gravity = tmp;
@@ -460,9 +461,7 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
         if (auto inertia = pElem->Attribute("inertia"))
         {
             ss << inertia;
-            ss >> rigid->inv_inertia;
-            if (rigid->inv_inertia != Vec3r(0,0,0))
-                rigid->inv_inertia = Vec3r(1.0/rigid->inv_inertia.x, 1.0/rigid->inv_inertia.y, 1.0/rigid->inv_inertia.z);
+            ss >> rigid->inv_inertia; // Inverted below.
         }
 
         pElem2 = TiXmlHandle(pElem).FirstChild("node").Element();
@@ -476,6 +475,11 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
             ++point;
             rigid->nodes_count++;
         }
+
+        // Compute angular momentum
+        rigid->angular_momentum = Mat3x3r(rigid->orient).sandwich(rigid->inv_inertia) * rigid->spin; // inv_inertia is not inverted yet.
+        if (rigid->inv_inertia != Vec3r(0,0,0))
+            rigid->inv_inertia = Vec3r(1.0/rigid->inv_inertia.x, 1.0/rigid->inv_inertia.y, 1.0/rigid->inv_inertia.z);
 
         // Transform points positions
         phys->DoFrame0(*rigid);
