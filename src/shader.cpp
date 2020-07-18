@@ -19,7 +19,7 @@ Shader::~Shader()
     Release();
 }
 
-void Shader::Aquire(const std::string &vertex_file, const std::string &fragment_file)
+void Shader::Acquire(const std::string &vertex_file, const std::string &fragment_file)
 {
     Release();
 

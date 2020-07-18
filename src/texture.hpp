@@ -15,7 +15,7 @@ class Texture
 public:
     Texture();
     ~Texture();
-    void Aquire(const char p_filename[]);
+    void Acquire(const char p_filename[]);
     void New(const char p_filename[]);
     void New(const int width, const int height);
     void Update();

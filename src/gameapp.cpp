@@ -141,7 +141,7 @@ GameApp::GameApp(int argc, char *argv[])
 
     //glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 
-    shader.Aquire("fisheye.vert", "");
+    shader.Acquire("fisheye.vert", "");
     LOG_IF_ERROR("end of video init");
 
     LOG_S(INFO) << "Initializing input...";

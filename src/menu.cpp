@@ -29,10 +29,10 @@ namespace
 void AppMenu::SetupMenu(GameApp& gameapp)
 {
     if (consoleBackground.GetID() == 0)
-        consoleBackground.Aquire("consoleback.png");
+        consoleBackground.Acquire("consoleback.png");
 
     if (luaIcon.GetID() == 0)
-        luaIcon.Aquire("icon_lua.png");
+        luaIcon.Acquire("icon_lua.png");
 
     const int xRes = gameapp.GetXRes();
     const int yRes = gameapp.GetYRes();

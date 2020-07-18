@@ -18,20 +18,55 @@ void PhyInstance::SetAlStructPtr(AlStruct* alstruct)
 }
 
 template <class T>
-inline T* AddAndIncrement(char * &place, const int count)
+inline T* CreateAndIncrement(char * &place, const int count)
 {
     if (count == 0)
         return NULL;
-    //    return (T*)(place);
 
-    T *ret;
-    ret = new (place) T[count];
+    // Skip ahead to next aligned position
+    static_assert(sizeof(size_t) == sizeof(char*), "");
+    const size_t remainder = reinterpret_cast<size_t>(place) % alignof(T);
+    if (remainder != 0)
+        place += alignof(T) - remainder;
 
-    //App::console << __FILE__ << ":" << __LINE__ << " in function " << __FUNCTION__
-    //    << " place: " << hex << int((void*)place) << " ret: " << int(ret) << dec << std::endl;
+    CHECK_EQ_F(reinterpret_cast<size_t>(place) % alignof(T), 0);
 
-    place += sizeof(T) * count;
+    // Create objects
+    // Run placement new on each object separately to avoid issues related to
+    // __STDCPP_DEFAULT_NEW_ALIGNMENT__ which a bitch in visual studio.
+    // T *ret = new (place) T[count]; // <- This causes problems!
+    T *ret = reinterpret_cast<T*>(place);
+    CHECK_EQ_F(reinterpret_cast<size_t>(place), reinterpret_cast<size_t>(ret));
+    for (int i = 0; i < count; ++i)
+    {
+        CHECK_F(new (&ret[i]) T == &ret[i]);
+    }
+
+    // Account for all elements
+    const size_t stride =
+        (sizeof(T) + alignof(T) - 1) / alignof(T) * alignof(T);
+    CHECK_GE_F(stride, sizeof(T));
+    place += stride * (count - 1) + sizeof(T);
+
     return ret;
+}
+
+template <class T>
+inline void IncrementAlignedSpace(size_t &offset, const int count)
+{
+    if (count == 0)
+        return;
+
+    // Skip ahead to next aligned position
+    const size_t remainder = offset % alignof(T);
+    if (remainder != 0)
+        offset += alignof(T) - remainder;
+
+    // Account for all elements
+    const size_t stride =
+        (sizeof(T) + alignof(T) - 1) / alignof(T) * alignof(T);
+    CHECK_GE_F(stride, sizeof(T));
+    offset += stride * (count - 1) + sizeof(T);
 }
 
 std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
@@ -256,29 +291,25 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     }
 
     // calculate required storage size
-    unsigned int size;
-    size = sizeof(Physics) +
-           sizeof(PhyPoint)    * inst->typeCount["point"]      +
-           sizeof(PhyPoint)    * inst->typeCount["node"]       +
-           sizeof(PhyNode)     * inst->typeCount["node"]       +
-           sizeof(PhySpring)   * inst->typeCount["spring"]     +
-           sizeof(PhyJoint)    * inst->typeCount["joint"]      +
-           sizeof(PhyRigid)    * inst->typeCount["rigid"]      +
-           sizeof(PhyBalloon)  * inst->typeCount["balloon"]    +
-           sizeof(PhyPoint*)   * inst->typeCount["ppoint"]     +
-           sizeof(PhyMotor)    * inst->typeCount["motor"]      +
-           sizeof(PhySound)    * inst->typeCount["sound"]      +
-           // vertex and normal pointers
-           sizeof(Vec3r*) * 6  * inst->typeCount["gltriangle"] +
-           sizeof(Vec3r*) * 8  * inst->typeCount["glquad"]     +
-           // gltexcoords
-           sizeof(GLfloat) * 6 * inst->typeCount["gltriangle"] +
-           sizeof(GLfloat) * 8 * inst->typeCount["glquad"]     +
-           // glnormals
-           sizeof(Vec3r)       * inst->typeCount["glnormal"]   +
-           sizeof(Texture)     * inst->typeCount["texture"]    +
-           sizeof(RenderPass)  * inst->typeCount["render"]     +
-           0;
+    size_t size = alignof(Physics) - 1;
+    IncrementAlignedSpace<Physics    >(size, 1);
+    IncrementAlignedSpace<PhyPoint   >(size, inst->typeCount["point"]+inst->typeCount["node"]);
+    IncrementAlignedSpace<PhyNode    >(size, inst->typeCount["node"]);
+    IncrementAlignedSpace<PhySpring  >(size, inst->typeCount["spring"]);
+    IncrementAlignedSpace<PhyJoint   >(size, inst->typeCount["joint"]);
+    IncrementAlignedSpace<PhyRigid   >(size, inst->typeCount["rigid"]);
+    IncrementAlignedSpace<PhyBalloon >(size, inst->typeCount["balloon"]);
+    IncrementAlignedSpace<PhyPoint*  >(size, inst->typeCount["ppoint"]);
+    IncrementAlignedSpace<PhyMotor   >(size, inst->typeCount["motor"]);
+    IncrementAlignedSpace<PhySound   >(size, inst->typeCount["sound"]);
+    IncrementAlignedSpace<Vec3r*     >(size, inst->typeCount["gltriangle"]*3);
+    IncrementAlignedSpace<Vec3r*     >(size, inst->typeCount["gltriangle"]*3);
+    IncrementAlignedSpace<Vec3r*     >(size, inst->typeCount["glquad"]*4);
+    IncrementAlignedSpace<Vec3r*     >(size, inst->typeCount["glquad"]*4);
+    IncrementAlignedSpace<GLfloat    >(size, inst->typeCount["gltriangle"]*6+inst->typeCount["glquad"]*8);
+    IncrementAlignedSpace<Vec3r      >(size, inst->typeCount["glnormal"]);
+    IncrementAlignedSpace<Texture    >(size, inst->typeCount["texture"]);
+    IncrementAlignedSpace<RenderPass >(size, inst->typeCount["render"]);
 
     // allocate memory for all the physics stuff
     // double the size to keep a copy of memPool to allow crash replay
@@ -289,27 +320,29 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     char * place = inst->memPool.data();
 
     // create the physics instance
-    inst->phys = AddAndIncrement<Physics>(place, 1);
+    inst->phys = CreateAndIncrement<Physics>(place, 1);
 
     // create points and stuff
     // add points controlled by nodes after regular points
-    inst->phys->points           = AddAndIncrement<PhyPoint   >(place, inst->typeCount["point"]+inst->typeCount["node"]);
-    inst->phys->nodes            = AddAndIncrement<PhyNode    >(place, inst->typeCount["node"]);
-    inst->phys->springs          = AddAndIncrement<PhySpring  >(place, inst->typeCount["spring"]);
-    inst->phys->joints           = AddAndIncrement<PhyJoint   >(place, inst->typeCount["joint"]);
-    inst->phys->rigids           = AddAndIncrement<PhyRigid   >(place, inst->typeCount["rigid"]);
-    inst->phys->balloons         = AddAndIncrement<PhyBalloon >(place, inst->typeCount["balloon"]);
-    inst->phys->ppoints          = AddAndIncrement<PhyPoint*  >(place, inst->typeCount["ppoint"]);
-    inst->phys->motors           = AddAndIncrement<PhyMotor   >(place, inst->typeCount["motor"]);
-    inst->phys->sounds           = AddAndIncrement<PhySound   >(place, inst->typeCount["sound"]);
-    inst->gltriangle_verts       = AddAndIncrement<Vec3r*     >(place, inst->typeCount["gltriangle"]*3);
-    inst->gltriangle_normals     = AddAndIncrement<Vec3r*     >(place, inst->typeCount["gltriangle"]*3);
-    inst->glquad_verts           = AddAndIncrement<Vec3r*     >(place, inst->typeCount["glquad"]*4);
-    inst->glquad_normals         = AddAndIncrement<Vec3r*     >(place, inst->typeCount["glquad"]*4);
-    inst->gltexcoords            = AddAndIncrement<GLfloat    >(place, inst->typeCount["gltriangle"]*6+inst->typeCount["glquad"]*8);
-    inst->glnormals              = AddAndIncrement<Vec3r      >(place, inst->typeCount["glnormal"]);
-    inst->textures               = AddAndIncrement<Texture    >(place, inst->typeCount["texture"]);
-    inst->renderpasses           = AddAndIncrement<RenderPass >(place, inst->typeCount["render"]);
+    inst->phys->points           = CreateAndIncrement<PhyPoint   >(place, inst->typeCount["point"]+inst->typeCount["node"]);
+    inst->phys->nodes            = CreateAndIncrement<PhyNode    >(place, inst->typeCount["node"]);
+    inst->phys->springs          = CreateAndIncrement<PhySpring  >(place, inst->typeCount["spring"]);
+    inst->phys->joints           = CreateAndIncrement<PhyJoint   >(place, inst->typeCount["joint"]);
+    inst->phys->rigids           = CreateAndIncrement<PhyRigid   >(place, inst->typeCount["rigid"]);
+    inst->phys->balloons         = CreateAndIncrement<PhyBalloon >(place, inst->typeCount["balloon"]);
+    inst->phys->ppoints          = CreateAndIncrement<PhyPoint*  >(place, inst->typeCount["ppoint"]);
+    inst->phys->motors           = CreateAndIncrement<PhyMotor   >(place, inst->typeCount["motor"]);
+    inst->phys->sounds           = CreateAndIncrement<PhySound   >(place, inst->typeCount["sound"]);
+    inst->gltriangle_verts       = CreateAndIncrement<Vec3r*     >(place, inst->typeCount["gltriangle"]*3);
+    inst->gltriangle_normals     = CreateAndIncrement<Vec3r*     >(place, inst->typeCount["gltriangle"]*3);
+    inst->glquad_verts           = CreateAndIncrement<Vec3r*     >(place, inst->typeCount["glquad"]*4);
+    inst->glquad_normals         = CreateAndIncrement<Vec3r*     >(place, inst->typeCount["glquad"]*4);
+    inst->gltexcoords            = CreateAndIncrement<GLfloat    >(place, inst->typeCount["gltriangle"]*6+inst->typeCount["glquad"]*8);
+    inst->glnormals              = CreateAndIncrement<Vec3r      >(place, inst->typeCount["glnormal"]);
+    inst->textures               = CreateAndIncrement<Texture    >(place, inst->typeCount["texture"]);
+    inst->renderpasses           = CreateAndIncrement<RenderPass >(place, inst->typeCount["render"]);
+
+    CHECK_LE_F(place - inst->memPool.data(), size);
 
     // remember count
     inst->phys->points_count     = inst->typeCount["point"];
@@ -654,7 +687,7 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
             const char *tmp = pElem->Attribute("image");
             if (tmp != NULL)
             {
-                inst->textures[inst->namesIndex[tn]].Aquire(tmp);
+                inst->textures[inst->namesIndex[tn]].Acquire(tmp);
                 continue;
             }
             /*
@@ -665,7 +698,7 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
                 continue;
             }
             */
-            inst->textures[inst->namesIndex[tn]].Aquire(NULL);
+            inst->textures[inst->namesIndex[tn]].Acquire(NULL);
         }
     }
 
