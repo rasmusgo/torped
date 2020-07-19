@@ -342,7 +342,7 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     inst->textures               = CreateAndIncrement<Texture    >(place, inst->typeCount["texture"]);
     inst->renderpasses           = CreateAndIncrement<RenderPass >(place, inst->typeCount["render"]);
 
-    CHECK_LE_F(place - inst->memPool.data(), size);
+    CHECK_LE_F(place - inst->memPool.data(), static_cast<ptrdiff_t>(size));
 
     // remember count
     inst->phys->points_count     = inst->typeCount["point"];
