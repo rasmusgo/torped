@@ -115,7 +115,8 @@ public:
 
     // gravity, dimension L NOT L/T^2
     Vec3r gravity;
-    double time;
+    double timestep;
+    double timestep_squared;
     REAL break_limit;
     Vec3r bounds_max, bounds_min;
 

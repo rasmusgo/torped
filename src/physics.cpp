@@ -5,7 +5,12 @@
 //#include "logging.hpp"
 
 
-Physics::Physics(): gravity(0,0,0), time(0.001), break_limit(0.05), insane(0)
+Physics::Physics():
+    gravity(0,0,0),
+    timestep(0.001),
+    timestep_squared(timestep * timestep),
+    break_limit(0.05),
+    insane(0)
 {
 /*
     REAL infinity = std::numeric_limits<REAL>::infinity();

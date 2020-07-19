@@ -376,11 +376,10 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
     if (auto gravity = hRoot->Element()->Attribute("gravity"))
     {
         std::stringstream ss;
-        Vec3r tmp = phys->gravity / phys->time * phys->time;
+        Vec3r tmp = phys->gravity / phys->timestep_squared;
         ss << gravity;
         ss >> tmp;
-        tmp *= phys->time * phys->time;
-        phys->gravity = tmp;
+        phys->gravity = tmp * phys->timestep_squared;
     }
 
 	TiXmlElement *pElem, *pElem2, *mesh;
@@ -533,21 +532,21 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
             {
                 ss << k;
                 ss >> spring->k;
-                spring->k *= phys->time * phys->time;
+                spring->k *= phys->timestep_squared;
                 ss.clear();
             }
             if (auto d = pElem->Attribute("d"))
             {
                 ss << d;
                 ss >> spring->d;
-                spring->d *= phys->time;
+                spring->d *= phys->timestep;
                 ss.clear();
             }
             if (auto s = pElem->Attribute("s"))
             {
                 ss << s;
                 ss >> spring->s;
-                spring->s *= phys->time * phys->time;
+                spring->s *= phys->timestep_squared;
                 ss.clear();
             }
             if (auto length = pElem->Attribute("length"))
@@ -576,21 +575,21 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
             {
                 ss << k;
                 ss >> joint->k;
-                joint->k *= phys->time * phys->time;
+                joint->k *= phys->timestep_squared;
                 ss.clear();
             }
             if (auto d = pElem->Attribute("d"))
             {
                 ss << d;
                 ss >> joint->d;
-                joint->d *= phys->time;
+                joint->d *= phys->timestep;
                 ss.clear();
             }
             if (auto s = pElem->Attribute("s"))
             {
                 ss << s;
                 ss >> joint->s;
-                joint->s *= phys->time * phys->time;
+                joint->s *= phys->timestep_squared;
             }
 
             joint->p1 = inst->FindPoint(pElem->Attribute("p1"));
@@ -613,7 +612,7 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
         ss >> balloon->pressure;
 
         // this is to avoid a multiplication each frame from the cross-product
-        balloon->pressure *= 1.0/(2.0*3.0) * phys->time*phys->time;
+        balloon->pressure *= 1.0/(2.0*3.0) * phys->timestep_squared;
 
         pElem2 = TiXmlHandle(pElem).FirstChild("point").Element();
         for (; pElem2; pElem2 = pElem2->NextSiblingElement("point"))

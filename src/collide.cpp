@@ -344,7 +344,7 @@ void Physics::DoCollideTriangles()
 void Physics::DoCollidePoints()
 {
     // Enkel typ av kollision mellan punkter
-    REAL k = 1000*time*time;
+    REAL k = 1000*timestep_squared;
 
     for(unsigned int i=0; i < points_count; i++)
     {
@@ -395,18 +395,18 @@ void Physics::CollideFloor()
         while (it > rigid->points + rigid->nodes_count)
             ++rigid;
 
-        //REAL z2 = point.pos.z + point.vel.z*time;
+        //REAL z2 = point.pos.z + point.vel.z*timestep;
         REAL z2 = it->pos.z + it->vel.z;
         if ( z2 < 0 )
         {
             Vec3r force(0,0,0);
-            force.z -= z2*100*time*time; // spring k
+            force.z -= z2*100*timestep_squared; // spring k
 /*
             if (it->vel.z < 0)
-                force.z -= it->vel.z*10*time; // spring d
+                force.z -= it->vel.z*10*timestep; // spring d
 */
             // tangential friction
-            Vec3r vec = it->vel/time;
+            Vec3r vec = it->vel/timestep;
             vec.z=0;
 #if 0
             if (vec.SqrLength() < 1)

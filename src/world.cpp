@@ -592,13 +592,13 @@ void World::CollideWorld(Physics &phys)
             Vec3r normal = GetNormal(it->pos.x, it->pos.y, 0.1);
 
             REAL force;
-            force = -z2*1000*phys.time*phys.time; // spring k
+            force = -z2*1000*phys.timestep_squared; // spring k
 
             //if (it->vel.z < 0)
-            //    force -= it->vel.z*10*phys.time; // spring d
+            //    force -= it->vel.z*10*phys.timestep; // spring d
 
             // tangential friction
-            Vec3r vec = it->vel/phys.time;
+            Vec3r vec = it->vel/phys.timestep;
             vec -= normal * (vec * normal);
             //vec += Normalize(vec)*2.0;
 

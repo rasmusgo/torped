@@ -127,7 +127,7 @@ int LuaMethodMotor(lua_State* L)
         {
             std::lock_guard<std::mutex> lock(phyInstances_lock);
             if ( inst->namesIndex.find(tn) != inst->namesIndex.end() )
-                inst->phys->motors[inst->namesIndex[tn]].torque = torque * (inst->phys->time * inst->phys->time);
+                inst->phys->motors[inst->namesIndex[tn]].torque = torque * inst->phys->timestep_squared;
         }
     }
 
