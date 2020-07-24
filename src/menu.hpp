@@ -1,9 +1,6 @@
 #pragma once
 
-#include <map>
-#include <cmath>
-#include <sstream>
-#include <string>
+#include "pch.hpp"
 
 #include "console.hpp"
 #include "gameapp.hpp"

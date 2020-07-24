@@ -1,6 +1,4 @@
-#include <algorithm>
-#include <string>
-#include <utility>
+#include "pch.hpp"
 
 #include <SDL.h>
 #include <manymouse.h>
@@ -262,4 +260,3 @@ int AppInput::HandleGameEvents(GameApp& gameapp)
 
     return -1;
 }
-

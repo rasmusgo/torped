@@ -1,12 +1,11 @@
 #pragma once
 
+#include "pch.hpp"
+
 #include <GL/glew.h>
 #include <SDL.h>
 #include "SDL_image.h"
 //#include "SDL_opengl.h"
-#include <string>
-#include <map>
-#include <set>
 
 void FlipImageY(SDL_Surface *image);
 

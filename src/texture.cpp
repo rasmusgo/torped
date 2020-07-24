@@ -1,5 +1,4 @@
-#include <assert.h>
-#include <memory>
+#include "pch.hpp"
 
 #include "physfsrwops.h"
 

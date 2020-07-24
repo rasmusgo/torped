@@ -1,6 +1,6 @@
 #include "physstruct.hpp"
 
-#include <memory>
+#include "pch.hpp"
 
 #include "alstruct.hpp"
 #include "gameapp.hpp"

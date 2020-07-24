@@ -1,8 +1,6 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <map>
+#include "pch.hpp"
 
 struct TypeName
 {

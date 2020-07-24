@@ -1,5 +1,4 @@
-#include <mutex>
-#include <thread>
+#include "pch.hpp"
 
 #include <GL/glew.h>
 #include <SDL.h>
