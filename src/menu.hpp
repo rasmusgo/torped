@@ -1,9 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <manymouse.h>
 #include <map>
-#include <math.h>
+#include <cmath>
 #include <sstream>
 #include <string>
 

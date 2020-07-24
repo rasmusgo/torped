@@ -1,8 +1,7 @@
 #pragma once
 
-#include <iostream>
 #include <map>
-#include <math.h>
+#include <cmath>
 #include <memory>
 #include <sstream>
 #include <string>

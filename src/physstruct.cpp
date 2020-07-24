@@ -1,6 +1,5 @@
 #include "physstruct.hpp"
 
-#include <fstream>
 #include <memory>
 
 #include "alstruct.hpp"

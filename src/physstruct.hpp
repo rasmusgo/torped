@@ -3,7 +3,7 @@
 #include <deque>
 #include <GL/glew.h>
 #include <map>
-#include <math.h>
+#include <cmath>
 #include <memory>
 #include <mutex>
 #include <sstream>

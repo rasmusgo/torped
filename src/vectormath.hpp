@@ -1,8 +1,9 @@
 #pragma once
 
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <limits>
-#include <math.h>
+#include <cmath>
 
 /*
 #ifndef min
