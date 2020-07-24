@@ -1,5 +1,4 @@
 #include <sstream>
-#include <iostream>
 
 #include "physics.hpp"
 //#include "logging.hpp"

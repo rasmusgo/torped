@@ -1,6 +1,5 @@
 #pragma once
 
-#include <list>
 #include <mutex>
 #include <string>
 #include <vector>
@@ -36,8 +35,8 @@ private:
     void UpdateActors();
     void DumpGraphics();
 
-    std::list<Actor*> actors;
-    std::list<Physics*> physics;
+    std::vector<Actor*> actors;
+    std::vector<Physics*> physics;
     int flags;
     Uint32 realTicks;
     Uint32 physicsTicks;
