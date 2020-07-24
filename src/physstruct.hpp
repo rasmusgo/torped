@@ -1,13 +1,6 @@
 #pragma once
 
-#include <cmath>
-#include <deque>
-#include <map>
-#include <memory>
-#include <mutex>
-#include <sstream>
-#include <string>
-#include <vector>
+#include "pch.hpp"
 
 #include <GL/glew.h>
 #include <tinyxml.h>

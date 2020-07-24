@@ -1,5 +1,7 @@
 #pragma once
 
+#include "pch.hpp"
+
 #if defined(WIN32) || defined(__APPLE__)
 #include <al.h>
 #include <alc.h>
@@ -8,9 +10,6 @@
 #include <AL/alc.h>
 #endif
 //#include <alut/alut.h>
-#include <vector>
-#include <string>
-#include <map>
 
 #include "vectormath.hpp"
 

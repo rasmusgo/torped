@@ -1,13 +1,13 @@
 #pragma once
 
+#include "pch.hpp"
+
 extern "C"
 {
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 }
-
-#include <map>
 
 #include "actor.hpp"
 #include "physics.hpp"

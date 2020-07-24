@@ -1,13 +1,8 @@
 #pragma once
 
-#include <map>
-#include <cmath>
-#include <memory>
-#include <sstream>
-#include <string>
-#include <thread>
+#include "pch.hpp"
 
-#include <manymouse.h>
+#include <manymouse.h> // move to cpp
 
 #include "action.hpp"
 #include "appmode.hpp"
