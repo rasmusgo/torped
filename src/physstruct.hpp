@@ -1,15 +1,16 @@
 #pragma once
 
-#include <deque>
-#include <GL/glew.h>
-#include <map>
 #include <cmath>
+#include <deque>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <sstream>
 #include <string>
-#include <tinyxml.h>
 #include <vector>
+
+#include <GL/glew.h>
+#include <tinyxml.h>
 
 #include "physics.hpp"
 #include "parser.hpp"
