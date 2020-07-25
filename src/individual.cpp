@@ -79,9 +79,9 @@ int LuaMethodPose(lua_State* L)
         a = b = std::numeric_limits<float>::quiet_NaN();
 
         if (n >= 2)
-            a = lua_tonumber(L, -n+1);
+            a = static_cast<float>(lua_tonumber(L, -n+1));
         if (n >= 3)
-            b = lua_tonumber(L, -n+2);
+            b = static_cast<float>(lua_tonumber(L, -n+2));
 
         if (inst)
         {

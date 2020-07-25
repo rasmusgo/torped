@@ -283,7 +283,7 @@ void GameApp::SetupGame()
     //glOrtho(-100, 100, -100, 100, -100, 100);
 
     //glScalef(0.01, (0.01*xRes) / yRes, -0.01);
-    glScalef(1.0/view_depth, 1.0/view_depth, -1.0/view_depth);
+    glScalef(1.0f/view_depth, 1.0f/view_depth, -1.0f/view_depth);
 
     //glTranslatef(0,0,-5);
     glMatrixMode(GL_MODELVIEW);
@@ -326,8 +326,8 @@ int GameApp::DoFrame()
 
 inline void DrawString(void *font, const char string[])
 {
-    int len = strlen(string);
-    for (int i=0; i<len; i++)
+    const size_t len = strlen(string);
+    for (size_t i=0; i<len; i++)
         glutBitmapCharacter(font, (unsigned char)string[i]);
 }
 
@@ -406,7 +406,7 @@ void GameApp::DrawGame()
             q.Normalize();
             REAL a = acos( Clamp<REAL>(q.w, -1.0, 1.0) );
             Vec3r vec = Normalize(q.vec);
-            glRotatef( a/M_PI*180.0*-2.0, vec.x, vec.y, vec.z );
+            glRotated( a/M_PI*180.0*-2.0, vec.x, vec.y, vec.z );
         }
 
         GLfloat lightpos[4];
@@ -769,7 +769,7 @@ void GameApp::DrawHUD()
     glLoadIdentity();
     gluOrtho2D(0, xRes, 0, yRes);
 
-    glColor3f(0.8, 0.8, 0.8);
+    glColor3f(0.8f, 0.8f, 0.8f);
     int height = 15; //glutBitmapHeight(GLUT_BITMAP_HELVETICA_18);
     int y = yRes;
 
