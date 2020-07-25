@@ -17,7 +17,7 @@
 #include "profiler.hpp"
 #include "shader.hpp"
 
-class lua_State;
+struct lua_State;
 class Scene;
 class AppMenu;
 class AppInput;
