@@ -70,8 +70,8 @@ GameApp::GameApp(int argc, char *argv[])
     developermode = 0;
     wireframemode = 0;
     stereo3dmode = 0;
-    stereo3d_depth = 0.003;
-    stereo3d_focus = 1.0;
+    stereo3d_depth = 0.003f;
+    stereo3d_focus = 1.0f;
     view_depth = 100;
     profilermode = 0;
 
@@ -451,7 +451,11 @@ void GameApp::DrawGame()
         }
         //SDL_UnlockMutex(phyInstances_lock);
 
-        glTranslatef( -player.pos.x, -player.pos.y, -player.pos.z);
+#ifdef REAL_DOUBLE
+        glTranslated( -player.pos.x, -player.pos.y, -player.pos.z );
+#else
+        glTranslatef( -player.pos.x, -player.pos.y, -player.pos.z );
+#endif
 
         const auto draw_scene = [&](int shift, float aspect)
         {

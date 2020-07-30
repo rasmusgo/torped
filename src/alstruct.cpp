@@ -96,7 +96,7 @@ static int close_func(void *datasource)
 
 static long tell_func(void *datasource)
 {
-    return PHYSFS_tell( (PHYSFS_file*)datasource );
+    return static_cast<long>(PHYSFS_tell( (PHYSFS_file*)datasource ));
 }
 
 static ov_callbacks callbacks = {read_func, seek_func, close_func, tell_func};
