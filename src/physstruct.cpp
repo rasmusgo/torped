@@ -1,6 +1,5 @@
 #include "physstruct.hpp"
 
-#include <fstream>
 #include <memory>
 
 #include "alstruct.hpp"
@@ -195,12 +194,12 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
     // stuff without names
     if (typeName.type=="gravity")
     {
-        ret.push_back(phys->gravity.x / (phys->time * phys->time));
-        ret.push_back(phys->gravity.y / (phys->time * phys->time));
-        ret.push_back(phys->gravity.z / (phys->time * phys->time));
+        ret.push_back(phys->gravity.x / phys->timestep_squared);
+        ret.push_back(phys->gravity.y / phys->timestep_squared);
+        ret.push_back(phys->gravity.z / phys->timestep_squared);
     }
     else if (typeName.type=="timestep")
-        ret.push_back(phys->time);
+        ret.push_back(phys->timestep);
     else if(!(translator >> typeName.name))
     {
         LOG_S(WARNING) << "warning: invalid nameless poll";

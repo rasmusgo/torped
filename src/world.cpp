@@ -236,7 +236,7 @@ T Lerp(const T &a, const T &b, float f)
 
 void DrawQuads(float x,float xu,float xv, float y,float yu,float yv, float z,float zu,float zv,float skyres)
 {
-    float scale = 1.0 / skyres;
+    float scale = 1.0f / skyres;
 
     float X,Y,Z,u,v;
     for (unsigned int i=1; i<=skyres; ++i)
@@ -375,8 +375,8 @@ void World::Draw()
     if (!heights)
         return;
 
-    float scale_x = 1.0 / (res_x-1);
-    float scale_y = 1.0 / (res_y-1);
+    const float scale_x = 1.0f / (res_x-1);
+    const float scale_y = 1.0f / (res_y-1);
 
     glPushMatrix();
 
@@ -396,7 +396,7 @@ void World::Draw()
 
     if (decalmap.GetID() != 0)
     {
-        // Instuct opengl to mix texture and decal layer
+        // Instruct opengl to mix texture and decal layer
         glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_COMBINE);
         glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB, GL_INTERPOLATE);
         glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB, GL_TEXTURE1);
@@ -505,7 +505,7 @@ void World::BuildHeightMap(const char *filename)
         for (unsigned int j=0; j<res_x; ++j)
         {
             unsigned int pos = (res_y-1-i)*image->pitch + j*size;
-            heights[i*res_x + j] = ((unsigned char*)image->pixels)[pos]*(1.0/255);
+            heights[i*res_x + j] = ((unsigned char*)image->pixels)[pos]*(1.0f/255);
         }
 
     SDL_FreeSurface(image);
@@ -592,13 +592,13 @@ void World::CollideWorld(Physics &phys)
             Vec3r normal = GetNormal(it->pos.x, it->pos.y, 0.1);
 
             REAL force;
-            force = -z2*1000*phys.time*phys.time; // spring k
+            force = -z2*1000*phys.timestep_squared; // spring k
 
             //if (it->vel.z < 0)
-            //    force -= it->vel.z*10*phys.time; // spring d
+            //    force -= it->vel.z*10*phys.timestep; // spring d
 
             // tangential friction
-            Vec3r vec = it->vel/phys.time;
+            Vec3r vec = it->vel/phys.timestep;
             vec -= normal * (vec * normal);
             //vec += Normalize(vec)*2.0;
 

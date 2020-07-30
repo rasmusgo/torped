@@ -79,9 +79,9 @@ int LuaMethodPose(lua_State* L)
         a = b = std::numeric_limits<float>::quiet_NaN();
 
         if (n >= 2)
-            a = lua_tonumber(L, -n+1);
+            a = static_cast<float>(lua_tonumber(L, -n+1));
         if (n >= 3)
-            b = lua_tonumber(L, -n+2);
+            b = static_cast<float>(lua_tonumber(L, -n+2));
 
         if (inst)
         {
@@ -127,7 +127,7 @@ int LuaMethodMotor(lua_State* L)
         {
             std::lock_guard<std::mutex> lock(phyInstances_lock);
             if ( inst->namesIndex.find(tn) != inst->namesIndex.end() )
-                inst->phys->motors[inst->namesIndex[tn]].torque = torque * (inst->phys->time * inst->phys->time);
+                inst->phys->motors[inst->namesIndex[tn]].torque = torque * inst->phys->timestep_squared;
         }
     }
 

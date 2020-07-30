@@ -1,8 +1,7 @@
 #pragma once
 
-#include <iostream>
 #include <map>
-#include <math.h>
+#include <cmath>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -18,7 +17,7 @@
 #include "profiler.hpp"
 #include "shader.hpp"
 
-class lua_State;
+struct lua_State;
 class Scene;
 class AppMenu;
 class AppInput;

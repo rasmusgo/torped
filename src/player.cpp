@@ -175,6 +175,6 @@ void Player::Do(const char cmd[])
         tn.type = "motor";
         tn.name = str;
         if ( inst->namesIndex.find(tn) != inst->namesIndex.end() )
-            inst->phys->motors[inst->namesIndex[tn]].torque = Vec3r(x,y,z) * (inst->phys->time * inst->phys->time);
+            inst->phys->motors[inst->namesIndex[tn]].torque = Vec3r(x,y,z) * inst->phys->timestep_squared;
     }
 }

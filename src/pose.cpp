@@ -51,9 +51,9 @@ void Pose::Load(const TiXmlHandle &hPose, PhyInstance *inst)
                 ss.clear();
             }
 
-            spring.k *= inst->phys->time*inst->phys->time;
-            spring.d *= inst->phys->time;
-            spring.s *= inst->phys->time*inst->phys->time;
+            spring.k *= inst->phys->timestep_squared;
+            spring.d *= inst->phys->timestep;
+            spring.s *= inst->phys->timestep_squared;
 
             springStates[ inst->namesIndex[tn] ] = spring;
         }

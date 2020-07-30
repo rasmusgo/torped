@@ -111,11 +111,11 @@ void AppInput::UpdateMice(GameApp& gameapp)
             break;
         case MANYMOUSE_EVENT_BUTTON:
             event_name << "_button" << event.item;
-            value = event.value;
+            value = static_cast<float>(event.value);
             break;
         case MANYMOUSE_EVENT_SCROLL:
             event_name << "_wheel" << event.item;
-            value = event.value;
+            value = static_cast<float>(event.value);
             break;
         case MANYMOUSE_EVENT_DISCONNECT:
             event_name << "_disconnect";
@@ -153,9 +153,9 @@ int AppInput::HandleGameEvents(GameApp& gameapp)
                 name << "joy" << (int)event.jaxis.which;
                 name << "_axis" << (int)event.jaxis.axis;
                 if (event.jaxis.value < 0)
-                    gameapp.ParseEvent( name.str(), event.jaxis.value/32768.0, true);
+                    gameapp.ParseEvent( name.str(), static_cast<float>(event.jaxis.value/32768.0), true);
                 else
-                    gameapp.ParseEvent( name.str(), event.jaxis.value/32767.0, true);
+                    gameapp.ParseEvent( name.str(), static_cast<float>(event.jaxis.value/32767.0), true);
             }
             break;
         case SDL_JOYBALLMOTION:
@@ -194,14 +194,14 @@ int AppInput::HandleGameEvents(GameApp& gameapp)
                 discard_mouse_event = false;
                 break;
             }
-            gameapp.ParseEvent("mouse_relx", event.motion.xrel, true);
-            gameapp.ParseEvent("mouse_rely", event.motion.yrel, true);
+            gameapp.ParseEvent("mouse_relx", static_cast<float>(event.motion.xrel), true);
+            gameapp.ParseEvent("mouse_rely", static_cast<float>(event.motion.yrel), true);
             //player.MoveMouse(event.motion.xrel, event.motion.yrel);
             break;
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
             {
-                int value = (event.button.state == SDL_PRESSED) ? 1: 0;
+                const float value = (event.button.state == SDL_PRESSED) ? 1.f: 0.f;
                 switch (event.button.button)
                 {
                 case SDL_BUTTON_LEFT:
@@ -218,7 +218,7 @@ int AppInput::HandleGameEvents(GameApp& gameapp)
             break;
         case SDL_MOUSEWHEEL:
             {
-                int value = event.wheel.y;
+                const float value = static_cast<float>(event.wheel.y);
                 gameapp.ParseEvent("mouse_wheel0", value, !value);
                 break;
             }
@@ -262,4 +262,3 @@ int AppInput::HandleGameEvents(GameApp& gameapp)
 
     return -1;
 }
-

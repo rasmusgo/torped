@@ -59,7 +59,7 @@ static bool LoadSound(const char filename[])
 */
 static size_t read_func(void *ptr, size_t size, size_t nmemb, void *datasource)
 {
-    int a = PHYSFS_read( (PHYSFS_file*)datasource, ptr, size, nmemb );
+    const auto a = PHYSFS_read( (PHYSFS_file*)datasource, ptr, size, nmemb );
     if (a == -1)
     {
         // set errorcode
@@ -96,7 +96,7 @@ static int close_func(void *datasource)
 
 static long tell_func(void *datasource)
 {
-    return PHYSFS_tell( (PHYSFS_file*)datasource );
+    return static_cast<long>(PHYSFS_tell( (PHYSFS_file*)datasource ));
 }
 
 static ov_callbacks callbacks = {read_func, seek_func, close_func, tell_func};

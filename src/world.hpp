@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 #include <string>
-#include <math.h>
+#include <cmath>
 #include <SDL.h>
 #include "SDL_image.h"
 //#include "SDL_opengl.h"
