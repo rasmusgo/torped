@@ -62,7 +62,7 @@ inline bool IsSane(const Vec3r &a)
     return false;
 }
 
-void Physics::DoFrame1()
+void Physics::UpdateForces()
 {
     profiler.Reset();
 
@@ -81,39 +81,31 @@ void Physics::DoFrame1()
         return;
     }
 
-    DO(DoFrame1, sounds, 0, sounds_count)
+    DO(UpdateSound, sounds, 0, sounds_count)
 
     // uppdatera noderna
     //DO(DoFrame0, rigids, 0, rigids_count)
 
     // räkna ut linjernas krafter på deras punkter
     //assert(springs != 0 || springs_count == 0);
-    DO(DoFrame1, springs, 0, springs_count)
+    DO(UpdateForces, springs, 0, springs_count)
 
     // Räkna ut ballongernas kraft på deras punkter
-    DO(DoFrame1, balloons, 0, balloons_count)
+    DO(UpdateForces, balloons, 0, balloons_count)
 
     // Låt motorerna arbeta
-    DO(DoFrame1, motors, 0, motors_count)
+    DO(UpdateForces, motors, 0, motors_count)
 
     // håll ihop saker
-    DO(DoFrame1, joints, 0, joints_count)
-    DO(DoFrame1, joints, 0, joints_count)
+    DO(UpdateForces, joints, 0, joints_count)
+    //DO(DoFrame1, joints, 0, joints_count)
 
     // räkna ut acceleration och hastighet (och gravitation)
-    DO(DoFrame1, points, 0, points_count)
-    DO(DoFrame1, rigids, 0, rigids_count)
-
-    // håll ihop saker
-    DO(DoFrame2, springs, 0, springs_count)
-    DO(DoFrame2, joints, 0, joints_count)
-
-    // räkna ut acceleration och hastighet (ej gravitation)
-    DO(DoFrame2, points, 0, points_count)
-    DO(DoFrame2, rigids, 0, rigids_count)
+    DO(UpdateVelocity, points, 0, points_count)
+    DO(UpdateVelocity, rigids, 0, rigids_count)
 }
 
-void Physics::DoFrame2()
+void Physics::UpdateVelocitiesAndPositions()
 {
     profiler.SkipTime();
 
@@ -121,15 +113,15 @@ void Physics::DoFrame2()
         return;
 
     // räkna ut acceleration och hastighet (ej gravitation)
-    DO(DoFrame2, points, 0, points_count)
-    DO(DoFrame2, rigids, 0, rigids_count)
+    DO(UpdateVelocity, points, 0, points_count)
+    DO(UpdateVelocity, rigids, 0, rigids_count)
 
     // räkna ut position
-    DO(DoFrame3, points, 0, points_count)
-    DO(DoFrame3, rigids, 0, rigids_count)
+    DO(UpdatePosition, points, 0, points_count)
+    DO(UpdatePositionAndOrientation, rigids, 0, rigids_count)
 
     // uppdatera noderna
-    DO(DoFrame0, rigids, 0, rigids_count)
+    DO(UpdatePointsFromRigid, rigids, 0, rigids_count)
 
     REAL infinity = std::numeric_limits<REAL>::infinity();
     bounds_max = Vec3r(-infinity, -infinity, -infinity);
@@ -141,7 +133,7 @@ void Physics::DoFrame2()
 #undef REMEMBER_TIME
 #undef DO
 
-inline void Physics::DoFrame1(PhyPoint &point)
+inline void Physics::UpdateVelocity(PhyPoint &point)
 {
     // uppdatera hastighet
     if (point.inv_mass == 0)
@@ -163,30 +155,7 @@ inline void Physics::DoFrame1(PhyPoint &point)
     point.force.SetToZero();
 }
 
-// same as above except gravity and damping
-inline void Physics::DoFrame2(PhyPoint &point)
-{
-    // uppdatera hastighet
-    if (point.inv_mass == 0)
-    {
-        point.force.SetToZero();
-        return;
-    }
-
-    if (!IsSane(point.force))
-    {
-        insane = 3;
-        point.force.SetToZero();
-    }
-
-    point.acc = point.force * point.inv_mass;
-    point.vel += point.acc;
-
-    // nollställ krafter
-    point.force.SetToZero();
-}
-
-inline void Physics::DoFrame3(PhyPoint &point)
+inline void Physics::UpdatePosition(PhyPoint &point)
 {
     // uppdatera position
     //point.pos += time * point.vel;
@@ -224,7 +193,7 @@ inline void Physics::UpdateBounds(const PhyPoint &point)
     UpdateBounds(point.pos);
 }
 
-inline void Physics::DoFrame1(PhySpring &spring)
+inline void Physics::UpdateForces(PhySpring &spring)
 {
     if (spring.broken)
         return;
@@ -234,6 +203,15 @@ inline void Physics::DoFrame1(PhySpring &spring)
 
     // avståndet mellan punkterna
     spring.rl = AB2.FastLength();
+
+    // undvik division med 0
+    if ( 0 == spring.rl )
+    {
+        //App::console << "premature return DoFrame1(spring)" << std::endl;
+        return;
+    }
+
+    AB2 /= spring.rl;
 
     REAL deviation = spring.rl - spring.l;
 
@@ -250,59 +228,20 @@ inline void Physics::DoFrame1(PhySpring &spring)
     }
 
     // lägg till kraften efter normaliserad riktning
-    // undvik division med 0
-    if ( 0 == spring.rl )
-    {
-        //App::console << "premature return DoFrame1(spring)" << std::endl;
-        return;
-    }
-
-    //AB2 /= spring.rl;
-    //Vec3r forceVec = AB2 * ( force + AB2*velAB * spring.d ));
-    //Vec3r forceVec = AB2 * ( (force + AB2*velAB * spring.d / spring.rl) / spring.rl );
-
-    Vec3r forceVec = AB2 * ( force / spring.rl );
-
-    spring.p1->force += forceVec;
-    spring.p2->force -= forceVec;
-}
-
-inline void Physics::DoFrame2(PhySpring &spring)
-{
-    if (spring.broken)
-        return;
-
     Vec3r velAB(spring.p2->vel - spring.p1->vel);
-    // NOTE: vel har inte dimensionen L/T utan bara L så time ska inte vara med
-    Vec3r AB2(spring.p2->pos - spring.p1->pos);// + velAB);
-
-    // lägg till kraften efter normaliserad riktning
-    // undvik division med 0
-    Vec3r forceVec;
-    if ( 0 == spring.rl )
-        forceVec = velAB * spring.d;
-    else
-        forceVec = AB2 * ( (AB2*velAB) * spring.d / (spring.rl*spring.rl) );
+    Vec3r forceVec = AB2 * ( force + AB2*velAB * spring.d );
 
     spring.p1->force += forceVec;
     spring.p2->force -= forceVec;
-
-    /*
-    if (spring.broken)
-        return;
-    Vec3r fAB(spring.p2->force - spring.p1->force);
-    Vec3r forceVec = fAB * 0.5;
-    spring.p1->force += forceVec;
-    spring.p2->force -= forceVec;
-    */
 }
 
-inline void Physics::DoFrame1(PhyJoint &joint)
+inline void Physics::UpdateForces(PhyJoint &joint)
 {
     if (joint.broken)
         return;
 
     Vec3r AB(joint.p2->pos - joint.p1->pos);// + joint.p2->vel - joint.p1->vel);
+    Vec3r velAB(joint.p2->vel - joint.p1->vel);
 
     REAL length = AB.FastLength();
     /*
@@ -312,7 +251,7 @@ inline void Physics::DoFrame1(PhyJoint &joint)
         return;
     }
     */
-    Vec3r forceVec(AB * joint.k);
+    Vec3r forceVec(AB * joint.k + velAB * joint.d);
     if (length > 0.0001)
         forceVec += AB * (joint.s / length);
 
@@ -320,27 +259,7 @@ inline void Physics::DoFrame1(PhyJoint &joint)
     joint.p2->force -= forceVec;
 }
 
-inline void Physics::DoFrame2(PhyJoint &joint)
-{
-    if (joint.broken)
-        return;
-    Vec3r velAB(joint.p2->vel - joint.p1->vel);
-    Vec3r forceVec = velAB * joint.d;
-    joint.p1->force += forceVec;
-    joint.p2->force -= forceVec;
-}
-
-inline void Physics::DoFrame3(PhyJoint &joint)
-{
-    if (joint.broken)
-        return;
-    Vec3r fAB(joint.p2->force - joint.p1->force);
-    Vec3r forceVec = fAB * 0.5;
-    joint.p1->force += forceVec;
-    joint.p2->force -= forceVec;
-}
-
-inline void Physics::DoFrame1(PhyBalloon &balloon)
+inline void Physics::UpdateForces(PhyBalloon &balloon)
 {
     PhyPoint **points = balloon.points;
     PhyPoint **end = points + balloon.points_count;
@@ -366,7 +285,7 @@ inline void Physics::DoFrame1(PhyBalloon &balloon)
     }
 }
 
-inline void Physics::DoFrame1(PhyMotor &motor)
+inline void Physics::UpdateForces(PhyMotor &motor)
 {
     Mat3x3r orientationMatrix(motor.r1->orient);
     Vec3r torque = orientationMatrix * motor.torque;
@@ -374,18 +293,18 @@ inline void Physics::DoFrame1(PhyMotor &motor)
     motor.r2->torque += torque;
 }
 
-inline void Physics::DoFrame1(PhySound &sound)
+inline void Physics::UpdateSound(PhySound &sound)
 {
     sound.buffer[sound.i] = sound.p1->vel;
     sound.i = (sound.i+1) % PHY_SOUND_SAMPLES;
 }
 
-void Physics::DoFrame0(PhyRigid &rigid)
+void Physics::UpdatePointsFromRigid(PhyRigid &rigid)
 {
-    Mat3x3r orientationMatrix(rigid.orient);
-    PhyNode *node = rigid.nodes;
+    const Mat3x3r orientationMatrix(rigid.orient);
+    const PhyNode *node = rigid.nodes;
     PhyPoint *point = rigid.points;
-    PhyPoint *end = point + rigid.nodes_count;
+    const PhyPoint *end = point + rigid.nodes_count;
 
     while (point != end)
     {
@@ -397,10 +316,10 @@ void Physics::DoFrame0(PhyRigid &rigid)
     }
 }
 
-inline void Physics::DoFrame1(PhyRigid &rigid)
+inline void Physics::UpdateVelocity(PhyRigid &rigid)
 {
     PhyPoint *point = rigid.points;
-    PhyPoint *end = point + rigid.nodes_count;
+    const PhyPoint *end = point + rigid.nodes_count;
     while (point != end)
     {
         if (!IsSane(point->force))
@@ -426,36 +345,7 @@ inline void Physics::DoFrame1(PhyRigid &rigid)
     rigid.torque.SetToZero();
 }
 
-// same as above except this has no gravity
-inline void Physics::DoFrame2(PhyRigid &rigid)
-{
-    PhyPoint *point = rigid.points;
-    PhyPoint *end = point + rigid.nodes_count;
-    while (point != end)
-    {
-        if (!IsSane(point->force))
-        {
-            insane = 5;
-            point->force.SetToZero();
-        }
-
-        rigid.force += point->force;
-        rigid.torque += (point->pos-rigid.pos).Cross(point->force);
-        point->force.SetToZero();
-        point++;
-    }
-
-    rigid.vel += rigid.force * rigid.inv_mass;
-
-    //rigid.angular_momentum += rigid.torque * time;
-    rigid.angular_momentum += rigid.torque;
-    rigid.spin = Mat3x3r(rigid.orient).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
-
-    rigid.force.SetToZero();
-    rigid.torque.SetToZero();
-}
-
-inline void Physics::DoFrame3(PhyRigid &rigid)
+inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
 {
     if (!IsSane(rigid.vel))
     {
