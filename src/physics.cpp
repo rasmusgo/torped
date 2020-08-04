@@ -221,7 +221,7 @@ inline void Physics::UpdateBounds(const Vec3r &a)
 
 inline void Physics::UpdateBounds(const PhyPoint &point)
 {
-    UpdateBounds(point.pos + point.vel);
+    UpdateBounds(point.pos);
 }
 
 inline void Physics::DoFrame1(PhySpring &spring)
@@ -229,9 +229,8 @@ inline void Physics::DoFrame1(PhySpring &spring)
     if (spring.broken)
         return;
 
-    //Vec3r velAB(spring.p2->vel - spring.p1->vel);
     // NOTE: vel har inte dimensionen L/T utan bara L så time ska inte vara med
-    Vec3r AB2(spring.p2->pos - spring.p1->pos);// + velAB);
+    Vec3r AB2(spring.p2->pos - spring.p1->pos);
 
     // avståndet mellan punkterna
     spring.rl = AB2.FastLength();

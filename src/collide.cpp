@@ -370,7 +370,7 @@ void Physics::CollideFloor()
     PhyPoint *end = points + points_count;
     while (it != end)
     {
-        REAL z2 = it->pos.z + it->vel.z;
+        REAL z2 = it->pos.z;
         if ( z2 < 0 )
         {
             // tangential friction
@@ -396,7 +396,7 @@ void Physics::CollideFloor()
             ++rigid;
 
         //REAL z2 = point.pos.z + point.vel.z*timestep;
-        REAL z2 = it->pos.z + it->vel.z;
+        REAL z2 = it->pos.z;
         if ( z2 < 0 )
         {
             Vec3r force(0,0,0);

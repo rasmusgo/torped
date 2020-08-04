@@ -549,7 +549,7 @@ void World::CollideWorld(Physics &phys)
     PhyPoint *end = phys.points + phys.points_count;
     for (;it != end; ++it)
     {
-        Vec3r pos2 = it->pos + it->vel;
+        Vec3r pos2 = it->pos;
 
         if (pos2.z > max_height)
             continue;
@@ -579,7 +579,7 @@ void World::CollideWorld(Physics &phys)
     end = phys.points + (phys.points_count + phys.nodes_count);
     for (;it != end; ++it)
     {
-        REAL z2 = it->pos.z + it->vel.z;
+        REAL z2 = it->pos.z;
 
         if (z2 > max_height)
             continue;
