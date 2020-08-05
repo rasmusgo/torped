@@ -6,14 +6,14 @@
 struct PhyPoint
 {
     // position, dimension: L
-	Vec3r pos;
-	// velocity, dimension L NOT L/T
-	Vec3r vel; // delta pos
-	// acceleration, dimension L NOT L/T^2
-	Vec3r acc;
-	// force, dimension L*M NOT L*M/T^2
-	Vec3r force; // delta delta pos * mass
-	// mass, dimension M^-1
+    Vec3r pos;
+    // velocity, dimension L NOT L/T
+    Vec3r vel; // delta pos
+    // acceleration, dimension L NOT L/T^2
+    Vec3r acc;
+    // force, dimension L*M NOT L*M/T^2
+    Vec3r force; // delta delta pos * mass
+    // mass, dimension M^-1
     REAL inv_mass; // 1 / mass
 };
 
@@ -40,7 +40,7 @@ struct PhyJoint
 struct PhyNode
 {
     //PhyPoint point;
-	Vec3r pos;
+    Vec3r pos;
 };
 
 struct PhyRigid
@@ -129,7 +129,7 @@ public:
     void UpdateVelocitiesAndPositions();
     void TestBounds(Physics &a, const REAL r);
     void DoCollidePoints();
-	void DoCollideTriangles();
+    void DoCollideTriangles();
     int CollideLineLine(PhyPoint &p1, PhyPoint &p2, PhyPoint &p3, PhyPoint &p4);
     void Move(const Vec3r &offset);
     void Rotate(const Quat4r &offset);
