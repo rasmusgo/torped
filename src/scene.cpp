@@ -138,6 +138,8 @@ int Scene::Loop()
         while ((Sint32)(targetTicks - physicsTicks) > 0)
         {
             UpdatePhysics();
+            // FIXME: Player should be moved to Scene
+            App::player.Fly(App::player.vel.x*0.005, App::player.vel.y*0.005, App::player.vel.z*0.005);
             UpdateOpenAL();
             UpdateActors();
 
@@ -261,12 +263,12 @@ void Scene::UpdateOpenAL()
     }
 
     // Listener
-    // FIXME: Player should be moved to Scene
-    App::player.Fly(App::player.vel.x*0.005, App::player.vel.y*0.005, App::player.vel.z*0.005);
-
+    Mat3x3r mat(App::player.rot);
+    ALfloat orientation[] = { float(mat.vec1.x), float(mat.vec1.y), float(mat.vec1.z),
+                              float(mat.vec3.x), float(mat.vec3.y), float(mat.vec3.z) };
+    alListenerfv(AL_ORIENTATION, orientation);
     alListener3f(AL_POSITION, App::player.pos.x, App::player.pos.y, App::player.pos.z);
     alListener3f(AL_VELOCITY, App::player.vel.x, App::player.vel.y, App::player.vel.z);
-    // TODO: Set orientation!
 }
 
 void Scene::UpdateActors()

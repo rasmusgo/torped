@@ -1,4 +1,3 @@
-#include "alstruct.hpp"
 #include "logging.hpp"
 #include "physstruct.hpp"
 #include "player.hpp"
@@ -69,13 +68,6 @@ void Player::MoveMouse(float x, float y)
 
         rot.Normalize();
     }
-
-    Mat3x3r mat(rot);
-
-    ALfloat orientation[] = { float(mat.vec1.x), float(mat.vec1.y), float(mat.vec1.z),
-                              float(mat.vec3.x), float(mat.vec3.y), float(mat.vec3.z) };
-
-    alListenerfv(AL_ORIENTATION, orientation);
 }
 
 void Player::Fly(float x, float y, float z)
@@ -85,10 +77,6 @@ void Player::Fly(float x, float y, float z)
 	pos += x * mat.vec1;
 	pos += y * mat.vec2;
 	pos += z * mat.vec3;
-
-    alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
-    alListener3f(AL_VELOCITY, vel.x, vel.y, vel.z);
-	alGetError(); // ignore errors
 }
 
 void Player::Move(float x, float y, float z)
@@ -102,10 +90,6 @@ void Player::Move(float x, float y, float z)
 	pos += y * mat.vec2;
 
 	pos.z += z;
-
-    alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
-    alListener3f(AL_VELOCITY, vel.x, vel.y, vel.z);
-	alGetError(); // ignore errors
 }
 
 void Player::Do(const char cmd[])
