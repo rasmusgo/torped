@@ -55,6 +55,8 @@ struct PhyRigid
     Vec3r pos;
     // velocity, dimension L NOT L/T
     Vec3r vel; // delta pos
+    // acceleration, dimension L NOT L/T^2
+    Vec3r acc;
     // force, dimension L NOT L/T^2
     Vec3r force; // delta delta pos
     Quat4r orient;

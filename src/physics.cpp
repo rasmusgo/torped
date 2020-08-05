@@ -148,8 +148,9 @@ inline void Physics::UpdateVelocity(PhyPoint &point)
         point.force.SetToZero();
     }
 
-    point.acc = point.force * point.inv_mass + gravity;
-    point.vel += point.acc;
+    const Vec3r new_acc = point.force * point.inv_mass + gravity;
+    point.vel += point.acc * 0.5 + new_acc * 0.5;
+    point.acc = new_acc;
 
     // nollställ krafter
     point.force.SetToZero();
@@ -159,7 +160,7 @@ inline void Physics::UpdatePosition(PhyPoint &point)
 {
     // uppdatera position
     //point.pos += time * point.vel;
-    point.pos += point.vel;
+    point.pos += point.vel + point.acc * 0.5;
     //point.pos2 = point.pos + point.vel;
 }
 
@@ -335,7 +336,9 @@ inline void Physics::UpdateVelocity(PhyRigid &rigid)
     }
 
     //rigid.vel += (rigid.force/rigid.mass + gravity) * time;
-    rigid.vel += rigid.force * rigid.inv_mass + gravity;
+    const Vec3r new_acc = rigid.force * rigid.inv_mass + gravity;
+    rigid.vel += rigid.acc * 0.5 + new_acc * 0.5;
+    rigid.acc = new_acc;
 
     //rigid.angular_momentum += rigid.torque * time;
     rigid.angular_momentum += rigid.torque;
@@ -366,7 +369,7 @@ inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
         return;
     }
 
-    rigid.pos += rigid.vel;
+    rigid.pos += rigid.vel + rigid.acc * 0.5;
 
     /*
     Quat4r rotation = (0.5 * Quat4r(0, rigid.spin.x * rigid.inv_inertia.x,
