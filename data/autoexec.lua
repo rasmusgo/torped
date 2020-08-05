@@ -21,6 +21,8 @@ bind("down", "back=value")
 bind("left", "left=value")
 bind("right","right=value")
 bind("frame", "frame(value)")
+bind("mouse_relx", [[player("mousex " .. value)]])
+bind("mouse_rely", [[player("mousey " .. value)]])
 
 w, s, a, d, f, v = 0, 0, 0, 0, 0, 0
 forward, back, left, right = 0, 0, 0, 0

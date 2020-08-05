@@ -125,6 +125,25 @@ void Player::Do(const char cmd[])
         ss >> App::player.vel.z;
     else if (str == "stop")
         App::player.vel.SetToZero();
+    else if (str == "mouse")
+    {
+        float x = 0;
+        float y = 0;
+        ss >> x >> y;
+        App::player.MoveMouse(x, y);
+    }
+    else if (str == "mousex")
+    {
+        float x = 0;
+        ss >> x;
+        App::player.MoveMouse(x, 0);
+    }
+    else if (str == "mousey")
+    {
+        float y = 0;
+        ss >> y;
+        App::player.MoveMouse(0, y);
+    }
     else if (str == "pose")
     {
         float a,b;
