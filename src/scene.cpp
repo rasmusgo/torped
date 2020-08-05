@@ -138,6 +138,7 @@ int Scene::Loop()
         while ((Sint32)(targetTicks - physicsTicks) > 0)
         {
             UpdatePhysics();
+            UpdateOpenAL();
             UpdateActors();
 
             if (SDL_GetTicks()-realTicks > 100)
@@ -196,7 +197,10 @@ void Scene::UpdatePhysics()
             last_crashhandling = physicsTicks % 500;
         }
     }
+}
 
+void Scene::UpdateOpenAL()
+{
     // Sound emitters
     for (auto& it : phyInstances)
     {
@@ -256,11 +260,13 @@ void Scene::UpdatePhysics()
         }
     }
 
+    // Listener
     // FIXME: Player should be moved to Scene
     App::player.Fly(App::player.vel.x*0.005, App::player.vel.y*0.005, App::player.vel.z*0.005);
 
     alListener3f(AL_POSITION, App::player.pos.x, App::player.pos.y, App::player.pos.z);
     alListener3f(AL_VELOCITY, App::player.vel.x, App::player.vel.y, App::player.vel.z);
+    // TODO: Set orientation!
 }
 
 void Scene::UpdateActors()
