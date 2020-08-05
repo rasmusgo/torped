@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <sstream>
 #include <GL/glew.h>
 //#include "SDL_opengl.h"
@@ -536,75 +537,32 @@ void World::CollideWorld(Physics &phys)
         }
     }
 
-    // NOTE: HACK!!
-    max_height = size.z*max_height + pos.z + 0.25;
+    max_height = size.z*max_height + pos.z;
 
     // if phys bounds is above max terrain value, no collision can occur
-    //FIXME: is this true when the object is falling towards the terrain?
     if (phys.bounds_min.z > max_height)
         return;
 
     // Test all points agains the terrain
     PhyPoint *it = phys.points;
-    PhyPoint *end = phys.points + phys.points_count;
+    PhyPoint *end = phys.points + phys.points_count + phys.nodes_count;
     for (;it != end; ++it)
     {
-        Vec3r pos2 = it->pos;
-
-        if (pos2.z > max_height)
+        if (it->pos.z > max_height)
             continue;
 
-        // NOTE: HACK!!
+        Vec3r pos2 = it->pos;
         REAL height = GetHeight(pos2.x, pos2.y);
         pos2.z -= height;
         if ( pos2.z < 0 )
         {
-            Vec3r normal = GetNormal(pos2.x, pos2.y, 0.1);
+            const Vec3r normal = GetNormal(pos2.x, pos2.y, 0.1);
+            const REAL penetration = -normal * pos2;
+            const REAL normal_force = std::max<REAL>(0, penetration * phys.floor_k - it->vel.z * phys.floor_d);
+            it->force += normal * normal_force;
 
-            // tangential friction
-            Vec3r delta = it->vel - normal * (normal * it->vel);
-            REAL friction = it->vel * normal * -10;
-
-            if ( delta.SqrLength() > friction*friction )
-                delta = Normalize(delta) * fabs(friction);
-
-            it->vel -= delta;
-
-            // displacement
-            it->vel -= normal * (pos2.z / normal.z);
-        }
-    }
-
-    // Test rigids
-    end = phys.points + (phys.points_count + phys.nodes_count);
-    for (;it != end; ++it)
-    {
-        REAL z2 = it->pos.z;
-
-        if (z2 > max_height)
-            continue;
-
-        // NOTE: HACK!!
-        z2 -= GetHeight(it->pos.x, it->pos.y) + 0.25;
-
-        if ( z2 < 0 )
-        {
-            Vec3r normal = GetNormal(it->pos.x, it->pos.y, 0.1);
-
-            REAL force;
-            force = -z2*1000*phys.timestep_squared; // spring k
-
-            //if (it->vel.z < 0)
-            //    force -= it->vel.z*10*phys.timestep; // spring d
-
-            // tangential friction
-            Vec3r vec = it->vel/phys.timestep;
-            vec -= normal * (vec * normal);
-            //vec += Normalize(vec)*2.0;
-
-            it->force -= vec*0.3*force;
-
-            it->force += normal * force;
+            const Vec3r tangential_vel = it->vel - normal * (normal * it->vel);
+            it->force -= Normalize(tangential_vel) * normal_force * phys.floor_friction;
         }
     }
 }
