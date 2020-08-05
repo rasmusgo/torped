@@ -367,61 +367,17 @@ void Physics::DoCollidePoints()
 void Physics::CollideFloor()
 {
     PhyPoint *it = points;
-    PhyPoint *end = points + points_count;
+    PhyPoint *end = points + points_count + nodes_count;
     while (it != end)
     {
-        REAL z2 = it->pos.z;
-        if ( z2 < 0 )
+        REAL penetration = -it->pos.z;
+        if ( penetration > 0 )
         {
-            // tangential friction
-            Vec3r delta = Vec3r(it->vel.x, it->vel.y, 0);
-            REAL friction = it->vel.z * -10;
+            const REAL normal_force = std::max<REAL>(0, penetration * floor_k - it->vel.z * floor_d);
+            it->force.z += normal_force;
 
-            if ( delta.SqrLength() > friction*friction )
-                delta = Normalize(delta) * fabs(friction);
-
-            it->vel -= delta;
-
-            // Displacement
-            it->vel.z -= z2;
-        }
-        ++it;
-    }
-
-    end = points + (points_count + nodes_count);
-    PhyRigid *rigid = rigids;
-    while (it != end)
-    {
-        while (it > rigid->points + rigid->nodes_count)
-            ++rigid;
-
-        //REAL z2 = point.pos.z + point.vel.z*timestep;
-        REAL z2 = it->pos.z;
-        if ( z2 < 0 )
-        {
-            Vec3r force(0,0,0);
-            force.z -= z2*100*timestep_squared; // spring k
-/*
-            if (it->vel.z < 0)
-                force.z -= it->vel.z*10*timestep; // spring d
-*/
-            // tangential friction
-            Vec3r vec = it->vel/timestep;
-            vec.z=0;
-#if 0
-            if (vec.SqrLength() < 1)
-                force -= vec*120;//*z2;
-            else
-                force -= vec*8;//*z2;
-#else
-            force -= vec*0.3*force.z;
-#endif
-
-            Vec3r spin = (it->pos - rigid->pos).Cross(force).ElemMult(rigid->inv_inertia);
-            force /= it->inv_mass + spin.Length();
-
-            // * rigid->orient
-            it->force += force;
+            const Vec3r tangential_vel = Vec3r(it->vel.x, it->vel.y, 0);
+            it->force -= Normalize(tangential_vel) * normal_force * floor_friction;
         }
         ++it;
     }

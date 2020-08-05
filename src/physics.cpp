@@ -9,6 +9,9 @@ Physics::Physics():
     timestep(0.001),
     timestep_squared(timestep * timestep),
     break_limit(0.05),
+    floor_k(10000 * timestep_squared),
+    floor_d(10 * timestep),
+    floor_friction(1.0),
     insane(0)
 {
 /*

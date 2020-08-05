@@ -120,6 +120,9 @@ public:
     double timestep;
     double timestep_squared;
     REAL break_limit;
+    REAL floor_k;
+    REAL floor_d;
+    REAL floor_friction;
     Vec3r bounds_max, bounds_min;
 
     int insane;
