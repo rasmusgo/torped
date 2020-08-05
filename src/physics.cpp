@@ -99,10 +99,6 @@ void Physics::UpdateForces()
     // håll ihop saker
     DO(UpdateForces, joints, 0, joints_count)
     //DO(DoFrame1, joints, 0, joints_count)
-
-    // räkna ut acceleration och hastighet (och gravitation)
-    DO(UpdateVelocity, points, 0, points_count)
-    DO(UpdateVelocity, rigids, 0, rigids_count)
 }
 
 void Physics::UpdateVelocitiesAndPositions()
