@@ -287,8 +287,8 @@ inline void Physics::UpdateForces(PhyBalloon &balloon)
 
 inline void Physics::UpdateForces(PhyMotor &motor)
 {
-    Mat3x3r orientationMatrix(motor.r1->orient);
-    Vec3r torque = orientationMatrix * motor.torque;
+    const Mat3x3r R_world_from_local(motor.r1->R_world_from_local);
+    const Vec3r torque = R_world_from_local * motor.torque;
     motor.r1->torque -= torque;
     motor.r2->torque += torque;
 }
@@ -301,14 +301,14 @@ inline void Physics::UpdateSound(PhySound &sound)
 
 void Physics::UpdatePointsFromRigid(PhyRigid &rigid)
 {
-    const Mat3x3r orientationMatrix(rigid.orient);
+    const Mat3x3r R_world_from_local(rigid.R_world_from_local);
     const PhyNode *node = rigid.nodes;
     PhyPoint *point = rigid.points;
     const PhyPoint *end = point + rigid.nodes_count;
 
     while (point != end)
     {
-        point->pos = orientationMatrix * node->pos; // glöm inte  att addera pos
+        point->pos = R_world_from_local * node->pos; // glöm inte  att addera pos
         point->vel = rigid.vel + (rigid.spin).Cross(point->pos);
         point->pos += rigid.pos; // glöm inte  att addera pos
         point++;
@@ -341,7 +341,7 @@ inline void Physics::UpdateVelocity(PhyRigid &rigid)
 
     //rigid.angular_momentum += rigid.torque * time;
     rigid.angular_momentum += rigid.torque;
-    rigid.spin = Mat3x3r(rigid.orient).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
+    rigid.spin = Mat3x3r(rigid.R_world_from_local).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
 
     rigid.force.SetToZero();
     rigid.torque.SetToZero();
@@ -375,14 +375,14 @@ inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
                                        rigid.spin.y * rigid.inv_inertia.y,
                                        rigid.spin.z * rigid.inv_inertia.z)) * rigid.orient;
     /*/
-    Quat4r rotation = (0.5 * Quat4r(0, rigid.spin.x, rigid.spin.y, rigid.spin.z)) * rigid.orient;
+    Quat4r rotation = (0.5 * Quat4r(0, rigid.spin.x, rigid.spin.y, rigid.spin.z)) * rigid.R_world_from_local;
     //*/
-    rigid.orient += rotation;
+    rigid.R_world_from_local += rotation;
     //App::console << "DoFrame2(rigids)" << std::endl;
     //App::console << "  spin: " << rigid.spin << std::endl;
     //App::console << "  delta_rot: " << delta_rot << std::endl;
     //App::console << "  quat: " << rigid.rot << std::endl;
-    rigid.orient.Normalize();
+    rigid.R_world_from_local.Normalize();
     //App::console << "  quat: " << rigid.rot << std::endl;
 }
 
@@ -430,8 +430,8 @@ void Physics::Rotate(const Quat4r &offset)
     while (it != end)
     {
         it->pos = rot * it->pos;
-        it->orient = offset * it->orient;
-        it->orient.Normalize();
+        it->R_world_from_local = offset * it->R_world_from_local;
+        it->R_world_from_local.Normalize();
         ++it;
     }
 }

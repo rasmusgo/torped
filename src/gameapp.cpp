@@ -424,7 +424,7 @@ void GameApp::DrawGame()
             static Vec3r last_delta(0, 0, 0);
             if (cam->rigid != NULL)
             {
-                Vec3r campos = cam->rigid->pos + (cam->rigid->orient) * cam->pos;
+                Vec3r campos = cam->rigid->pos + cam->rigid->R_world_from_local * cam->pos;
                 Vec3r delta = player.pos - campos;
                 if (delta.Length() >= 5)
                     player.pos = campos + Normalize(last_delta)*5;

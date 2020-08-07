@@ -59,7 +59,7 @@ struct PhyRigid
     Vec3r acc;
     // force, dimension L NOT L/T^2
     Vec3r force; // delta delta pos
-    Quat4r orient;
+    Quat4r R_world_from_local;
     Vec3r angular_momentum;
     Vec3r spin; // angular velocity, accumulated torque / inertia, world space
     Vec3r torque; // world space
