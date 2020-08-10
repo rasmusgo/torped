@@ -6,14 +6,14 @@
 struct PhyPoint
 {
     // position, dimension: L
-	Vec3r pos;
-	// velocity, dimension L NOT L/T
-	Vec3r vel; // delta pos
-	// acceleration, dimension L NOT L/T^2
-	Vec3r acc;
-	// force, dimension L*M NOT L*M/T^2
-	Vec3r force; // delta delta pos * mass
-	// mass, dimension M^-1
+    Vec3r pos;
+    // velocity, dimension L NOT L/T
+    Vec3r vel; // delta pos
+    // acceleration, dimension L NOT L/T^2
+    Vec3r acc;
+    // force, dimension L*M NOT L*M/T^2
+    Vec3r force; // delta delta pos * mass
+    // mass, dimension M^-1
     REAL inv_mass; // 1 / mass
 };
 
@@ -40,7 +40,7 @@ struct PhyJoint
 struct PhyNode
 {
     //PhyPoint point;
-	Vec3r pos;
+    Vec3r pos;
 };
 
 struct PhyRigid
@@ -55,9 +55,11 @@ struct PhyRigid
     Vec3r pos;
     // velocity, dimension L NOT L/T
     Vec3r vel; // delta pos
+    // acceleration, dimension L NOT L/T^2
+    Vec3r acc;
     // force, dimension L NOT L/T^2
     Vec3r force; // delta delta pos
-    Quat4r orient;
+    Quat4r R_world_from_local;
     Vec3r angular_momentum;
     Vec3r spin; // angular velocity, accumulated torque / inertia, world space
     Vec3r torque; // world space
@@ -118,6 +120,9 @@ public:
     double timestep;
     double timestep_squared;
     REAL break_limit;
+    REAL floor_k;
+    REAL floor_d;
+    REAL floor_friction;
     Vec3r bounds_max, bounds_min;
 
     int insane;
@@ -125,33 +130,28 @@ public:
     Profiler profiler;
 
     Physics();
-    void DoFrame1();
-    void DoFrame2();
+    void UpdateForces();
+    void UpdateVelocitiesAndPositions();
     void TestBounds(Physics &a, const REAL r);
     void DoCollidePoints();
-	void DoCollideTriangles();
+    void DoCollideTriangles();
     int CollideLineLine(PhyPoint &p1, PhyPoint &p2, PhyPoint &p3, PhyPoint &p4);
     void Move(const Vec3r &offset);
     void Rotate(const Quat4r &offset);
     void CollideFloor();
 
-    void DoFrame0(PhyRigid &rigid);
+    void UpdatePointsFromRigid(PhyRigid &rigid);
 private:
-    inline void DoFrame1(PhyPoint &point);
-    inline void DoFrame2(PhyPoint &point);
-    inline void DoFrame3(PhyPoint &point);
-    inline void DoFrame1(PhySpring &spring);
-    inline void DoFrame2(PhySpring &spring);
-    inline void DoFrame1(PhyJoint &joint);
-    inline void DoFrame2(PhyJoint &joint);
-    inline void DoFrame3(PhyJoint &joint);
-    inline void DoFrame1(PhyBalloon &balloon);
-    inline void DoFrame1(PhyMotor &motor);
-    inline void DoFrame1(PhySound &sound);
+    inline void UpdateVelocity(PhyPoint &point);
+    inline void UpdatePosition(PhyPoint &point);
+    inline void UpdateForces(PhySpring &spring);
+    inline void UpdateForces(PhyJoint &joint);
+    inline void UpdateForces(PhyBalloon &balloon);
+    inline void UpdateForces(PhyMotor &motor);
+    inline void UpdateSound(PhySound &sound);
 
-    inline void DoFrame1(PhyRigid &rigid);
-    inline void DoFrame2(PhyRigid &rigid);
-    inline void DoFrame3(PhyRigid &rigid);
+    inline void UpdateVelocity(PhyRigid &rigid);
+    inline void UpdatePositionAndOrientation(PhyRigid &rigid);
 
     inline void UpdateBounds(const Vec3r &a);
     inline void UpdateBounds(const PhyPoint &point);

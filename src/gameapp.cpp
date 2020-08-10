@@ -348,7 +348,9 @@ inline void DrawPlayer(Player &player)
     //glVertex3rv( &((arm1x*arm1y*arm1y*arm1x) * Vec3r(0,0,-1)).x );
     //glVertex3rv(&(player.arm1*0.002).x);
     {
-        Vec3r v = Quat4r(player.arm1.Length()*0.002, Normalize(player.arm1.Cross(Vec3r(0,0,1)))) * Vec3r(0,0,-1);
+        Vec3r v = Quat4r::FromRotationAroundVector(
+            player.arm1.Length()*0.002,
+            Normalize(player.arm1.Cross(Vec3r(0,0,1)))) * Vec3r(0,0,-1);
         glVertex3rv( &v.x );
     }
 
@@ -360,7 +362,9 @@ inline void DrawPlayer(Player &player)
     //glVertex3rv( &((arm2x*arm2y*arm2y*arm2x) * Vec3r(0,0,-1)).x );
     //glVertex3rv(&(player.arm2*0.002).x);
     {
-        Vec3r v = Quat4r(player.arm2.Length()*0.002, Normalize(player.arm2.Cross(Vec3r(0,0,1)))) * Vec3r(0,0,-1);
+        Vec3r v = Quat4r::FromRotationAroundVector(
+            player.arm2.Length()*0.002,
+            Normalize(player.arm2.Cross(Vec3r(0,0,1)))) * Vec3r(0,0,-1);
         glVertex3rv( &v.x );
     }
 
@@ -424,7 +428,7 @@ void GameApp::DrawGame()
             static Vec3r last_delta(0, 0, 0);
             if (cam->rigid != NULL)
             {
-                Vec3r campos = cam->rigid->pos + (cam->rigid->orient) * cam->pos;
+                Vec3r campos = cam->rigid->pos + cam->rigid->R_world_from_local * cam->pos;
                 Vec3r delta = player.pos - campos;
                 if (delta.Length() >= 5)
                     player.pos = campos + Normalize(last_delta)*5;

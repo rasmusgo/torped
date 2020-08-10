@@ -32,6 +32,7 @@ public:
 private:
     int Loop();
     void UpdatePhysics();
+    void UpdateOpenAL();
     void UpdateActors();
     void DumpGraphics();
 

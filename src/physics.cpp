@@ -9,6 +9,9 @@ Physics::Physics():
     timestep(0.001),
     timestep_squared(timestep * timestep),
     break_limit(0.05),
+    floor_k(10000 * timestep_squared),
+    floor_d(10 * timestep),
+    floor_friction(1.0),
     insane(0)
 {
 /*
@@ -62,7 +65,7 @@ inline bool IsSane(const Vec3r &a)
     return false;
 }
 
-void Physics::DoFrame1()
+void Physics::UpdateForces()
 {
     profiler.Reset();
 
@@ -81,55 +84,43 @@ void Physics::DoFrame1()
         return;
     }
 
-    DO(DoFrame1, sounds, 0, sounds_count)
+    DO(UpdateSound, sounds, 0, sounds_count)
 
     // uppdatera noderna
     //DO(DoFrame0, rigids, 0, rigids_count)
 
     // räkna ut linjernas krafter på deras punkter
     //assert(springs != 0 || springs_count == 0);
-    DO(DoFrame1, springs, 0, springs_count)
+    DO(UpdateForces, springs, 0, springs_count)
 
     // Räkna ut ballongernas kraft på deras punkter
-    DO(DoFrame1, balloons, 0, balloons_count)
+    DO(UpdateForces, balloons, 0, balloons_count)
 
     // Låt motorerna arbeta
-    DO(DoFrame1, motors, 0, motors_count)
+    DO(UpdateForces, motors, 0, motors_count)
 
     // håll ihop saker
-    DO(DoFrame1, joints, 0, joints_count)
-    DO(DoFrame1, joints, 0, joints_count)
-
-    // räkna ut acceleration och hastighet (och gravitation)
-    DO(DoFrame1, points, 0, points_count)
-    DO(DoFrame1, rigids, 0, rigids_count)
-
-    // håll ihop saker
-    DO(DoFrame2, springs, 0, springs_count)
-    DO(DoFrame2, joints, 0, joints_count)
-
-    // räkna ut acceleration och hastighet (ej gravitation)
-    DO(DoFrame2, points, 0, points_count)
-    DO(DoFrame2, rigids, 0, rigids_count)
+    DO(UpdateForces, joints, 0, joints_count)
+    //DO(DoFrame1, joints, 0, joints_count)
 }
 
-void Physics::DoFrame2()
+void Physics::UpdateVelocitiesAndPositions()
 {
     profiler.SkipTime();
 
     if (insane)
         return;
 
-    // räkna ut acceleration och hastighet (ej gravitation)
-    DO(DoFrame2, points, 0, points_count)
-    DO(DoFrame2, rigids, 0, rigids_count)
+    // Compute new acceleration and velocity
+    DO(UpdateVelocity, points, 0, points_count)
+    DO(UpdateVelocity, rigids, 0, rigids_count)
 
-    // räkna ut position
-    DO(DoFrame3, points, 0, points_count)
-    DO(DoFrame3, rigids, 0, rigids_count)
+    // Compute new positions
+    DO(UpdatePosition, points, 0, points_count)
+    DO(UpdatePositionAndOrientation, rigids, 0, rigids_count)
 
     // uppdatera noderna
-    DO(DoFrame0, rigids, 0, rigids_count)
+    DO(UpdatePointsFromRigid, rigids, 0, rigids_count)
 
     REAL infinity = std::numeric_limits<REAL>::infinity();
     bounds_max = Vec3r(-infinity, -infinity, -infinity);
@@ -141,7 +132,7 @@ void Physics::DoFrame2()
 #undef REMEMBER_TIME
 #undef DO
 
-inline void Physics::DoFrame1(PhyPoint &point)
+inline void Physics::UpdateVelocity(PhyPoint &point)
 {
     // uppdatera hastighet
     if (point.inv_mass == 0)
@@ -156,41 +147,19 @@ inline void Physics::DoFrame1(PhyPoint &point)
         point.force.SetToZero();
     }
 
-    point.acc = point.force * point.inv_mass + gravity;
-    point.vel += point.acc;
+    const Vec3r new_acc = point.force * point.inv_mass + gravity;
+    point.vel += point.acc * 0.5 + new_acc * 0.5;
+    point.acc = new_acc;
 
     // nollställ krafter
     point.force.SetToZero();
 }
 
-// same as above except gravity and damping
-inline void Physics::DoFrame2(PhyPoint &point)
-{
-    // uppdatera hastighet
-    if (point.inv_mass == 0)
-    {
-        point.force.SetToZero();
-        return;
-    }
-
-    if (!IsSane(point.force))
-    {
-        insane = 3;
-        point.force.SetToZero();
-    }
-
-    point.acc = point.force * point.inv_mass;
-    point.vel += point.acc;
-
-    // nollställ krafter
-    point.force.SetToZero();
-}
-
-inline void Physics::DoFrame3(PhyPoint &point)
+inline void Physics::UpdatePosition(PhyPoint &point)
 {
     // uppdatera position
     //point.pos += time * point.vel;
-    point.pos += point.vel;
+    point.pos += point.vel + point.acc * 0.5;
     //point.pos2 = point.pos + point.vel;
 }
 
@@ -221,20 +190,28 @@ inline void Physics::UpdateBounds(const Vec3r &a)
 
 inline void Physics::UpdateBounds(const PhyPoint &point)
 {
-    UpdateBounds(point.pos + point.vel);
+    UpdateBounds(point.pos);
 }
 
-inline void Physics::DoFrame1(PhySpring &spring)
+inline void Physics::UpdateForces(PhySpring &spring)
 {
     if (spring.broken)
         return;
 
-    //Vec3r velAB(spring.p2->vel - spring.p1->vel);
     // NOTE: vel har inte dimensionen L/T utan bara L så time ska inte vara med
-    Vec3r AB2(spring.p2->pos - spring.p1->pos);// + velAB);
+    Vec3r AB2(spring.p2->pos - spring.p1->pos);
 
     // avståndet mellan punkterna
     spring.rl = AB2.FastLength();
+
+    // undvik division med 0
+    if ( 0 == spring.rl )
+    {
+        //App::console << "premature return DoFrame1(spring)" << std::endl;
+        return;
+    }
+
+    AB2 /= spring.rl;
 
     REAL deviation = spring.rl - spring.l;
 
@@ -251,59 +228,20 @@ inline void Physics::DoFrame1(PhySpring &spring)
     }
 
     // lägg till kraften efter normaliserad riktning
-    // undvik division med 0
-    if ( 0 == spring.rl )
-    {
-        //App::console << "premature return DoFrame1(spring)" << std::endl;
-        return;
-    }
-
-    //AB2 /= spring.rl;
-    //Vec3r forceVec = AB2 * ( force + AB2*velAB * spring.d ));
-    //Vec3r forceVec = AB2 * ( (force + AB2*velAB * spring.d / spring.rl) / spring.rl );
-
-    Vec3r forceVec = AB2 * ( force / spring.rl );
-
-    spring.p1->force += forceVec;
-    spring.p2->force -= forceVec;
-}
-
-inline void Physics::DoFrame2(PhySpring &spring)
-{
-    if (spring.broken)
-        return;
-
     Vec3r velAB(spring.p2->vel - spring.p1->vel);
-    // NOTE: vel har inte dimensionen L/T utan bara L så time ska inte vara med
-    Vec3r AB2(spring.p2->pos - spring.p1->pos);// + velAB);
-
-    // lägg till kraften efter normaliserad riktning
-    // undvik division med 0
-    Vec3r forceVec;
-    if ( 0 == spring.rl )
-        forceVec = velAB * spring.d;
-    else
-        forceVec = AB2 * ( (AB2*velAB) * spring.d / (spring.rl*spring.rl) );
+    Vec3r forceVec = AB2 * ( force + AB2*velAB * spring.d );
 
     spring.p1->force += forceVec;
     spring.p2->force -= forceVec;
-
-    /*
-    if (spring.broken)
-        return;
-    Vec3r fAB(spring.p2->force - spring.p1->force);
-    Vec3r forceVec = fAB * 0.5;
-    spring.p1->force += forceVec;
-    spring.p2->force -= forceVec;
-    */
 }
 
-inline void Physics::DoFrame1(PhyJoint &joint)
+inline void Physics::UpdateForces(PhyJoint &joint)
 {
     if (joint.broken)
         return;
 
     Vec3r AB(joint.p2->pos - joint.p1->pos);// + joint.p2->vel - joint.p1->vel);
+    Vec3r velAB(joint.p2->vel - joint.p1->vel);
 
     REAL length = AB.FastLength();
     /*
@@ -313,7 +251,7 @@ inline void Physics::DoFrame1(PhyJoint &joint)
         return;
     }
     */
-    Vec3r forceVec(AB * joint.k);
+    Vec3r forceVec(AB * joint.k + velAB * joint.d);
     if (length > 0.0001)
         forceVec += AB * (joint.s / length);
 
@@ -321,27 +259,7 @@ inline void Physics::DoFrame1(PhyJoint &joint)
     joint.p2->force -= forceVec;
 }
 
-inline void Physics::DoFrame2(PhyJoint &joint)
-{
-    if (joint.broken)
-        return;
-    Vec3r velAB(joint.p2->vel - joint.p1->vel);
-    Vec3r forceVec = velAB * joint.d;
-    joint.p1->force += forceVec;
-    joint.p2->force -= forceVec;
-}
-
-inline void Physics::DoFrame3(PhyJoint &joint)
-{
-    if (joint.broken)
-        return;
-    Vec3r fAB(joint.p2->force - joint.p1->force);
-    Vec3r forceVec = fAB * 0.5;
-    joint.p1->force += forceVec;
-    joint.p2->force -= forceVec;
-}
-
-inline void Physics::DoFrame1(PhyBalloon &balloon)
+inline void Physics::UpdateForces(PhyBalloon &balloon)
 {
     PhyPoint **points = balloon.points;
     PhyPoint **end = points + balloon.points_count;
@@ -367,30 +285,30 @@ inline void Physics::DoFrame1(PhyBalloon &balloon)
     }
 }
 
-inline void Physics::DoFrame1(PhyMotor &motor)
+inline void Physics::UpdateForces(PhyMotor &motor)
 {
-    Mat3x3r orientationMatrix(motor.r1->orient);
-    Vec3r torque = orientationMatrix * motor.torque;
+    const Mat3x3r R_world_from_local(motor.r1->R_world_from_local);
+    const Vec3r torque = R_world_from_local * motor.torque;
     motor.r1->torque -= torque;
     motor.r2->torque += torque;
 }
 
-inline void Physics::DoFrame1(PhySound &sound)
+inline void Physics::UpdateSound(PhySound &sound)
 {
     sound.buffer[sound.i] = sound.p1->vel;
     sound.i = (sound.i+1) % PHY_SOUND_SAMPLES;
 }
 
-void Physics::DoFrame0(PhyRigid &rigid)
+void Physics::UpdatePointsFromRigid(PhyRigid &rigid)
 {
-    Mat3x3r orientationMatrix(rigid.orient);
-    PhyNode *node = rigid.nodes;
+    const Mat3x3r R_world_from_local(rigid.R_world_from_local);
+    const PhyNode *node = rigid.nodes;
     PhyPoint *point = rigid.points;
-    PhyPoint *end = point + rigid.nodes_count;
+    const PhyPoint *end = point + rigid.nodes_count;
 
     while (point != end)
     {
-        point->pos = orientationMatrix * node->pos; // glöm inte  att addera pos
+        point->pos = R_world_from_local * node->pos; // glöm inte  att addera pos
         point->vel = rigid.vel + (rigid.spin).Cross(point->pos);
         point->pos += rigid.pos; // glöm inte  att addera pos
         point++;
@@ -398,10 +316,10 @@ void Physics::DoFrame0(PhyRigid &rigid)
     }
 }
 
-inline void Physics::DoFrame1(PhyRigid &rigid)
+inline void Physics::UpdateVelocity(PhyRigid &rigid)
 {
     PhyPoint *point = rigid.points;
-    PhyPoint *end = point + rigid.nodes_count;
+    const PhyPoint *end = point + rigid.nodes_count;
     while (point != end)
     {
         if (!IsSane(point->force))
@@ -417,46 +335,13 @@ inline void Physics::DoFrame1(PhyRigid &rigid)
     }
 
     //rigid.vel += (rigid.force/rigid.mass + gravity) * time;
-    rigid.vel += rigid.force * rigid.inv_mass + gravity;
-
-    //rigid.angular_momentum += rigid.torque * time;
-    rigid.angular_momentum += rigid.torque;
-    rigid.spin = Mat3x3r(rigid.orient).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
-
+    const Vec3r new_acc = rigid.force * rigid.inv_mass + gravity;
+    rigid.vel += rigid.acc * 0.5 + new_acc * 0.5;
+    rigid.acc = new_acc;
     rigid.force.SetToZero();
-    rigid.torque.SetToZero();
 }
 
-// same as above except this has no gravity
-inline void Physics::DoFrame2(PhyRigid &rigid)
-{
-    PhyPoint *point = rigid.points;
-    PhyPoint *end = point + rigid.nodes_count;
-    while (point != end)
-    {
-        if (!IsSane(point->force))
-        {
-            insane = 5;
-            point->force.SetToZero();
-        }
-
-        rigid.force += point->force;
-        rigid.torque += (point->pos-rigid.pos).Cross(point->force);
-        point->force.SetToZero();
-        point++;
-    }
-
-    rigid.vel += rigid.force * rigid.inv_mass;
-
-    //rigid.angular_momentum += rigid.torque * time;
-    rigid.angular_momentum += rigid.torque;
-    rigid.spin = Mat3x3r(rigid.orient).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
-
-    rigid.force.SetToZero();
-    rigid.torque.SetToZero();
-}
-
-inline void Physics::DoFrame3(PhyRigid &rigid)
+inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
 {
     if (!IsSane(rigid.vel))
     {
@@ -477,22 +362,74 @@ inline void Physics::DoFrame3(PhyRigid &rigid)
         return;
     }
 
-    rigid.pos += rigid.vel;
+    rigid.pos += rigid.vel + rigid.acc * 0.5;
 
-    /*
-    Quat4r rotation = (0.5 * Quat4r(0, rigid.spin.x * rigid.inv_inertia.x,
-                                       rigid.spin.y * rigid.inv_inertia.y,
-                                       rigid.spin.z * rigid.inv_inertia.z)) * rigid.orient;
-    /*/
-    Quat4r rotation = (0.5 * Quat4r(0, rigid.spin.x, rigid.spin.y, rigid.spin.z)) * rigid.orient;
-    //*/
-    rigid.orient += rotation;
-    //App::console << "DoFrame2(rigids)" << std::endl;
-    //App::console << "  spin: " << rigid.spin << std::endl;
-    //App::console << "  delta_rot: " << delta_rot << std::endl;
-    //App::console << "  quat: " << rigid.rot << std::endl;
-    rigid.orient.Normalize();
-    //App::console << "  quat: " << rigid.rot << std::endl;
+    // Computation of rotations are based on:
+    // Rozmanov, Dmitri & Kusalik, Peter. (2010).
+    // Robust rotational-velocity-Verlet integration methods.
+    // Physical review. E, Statistical, nonlinear, and soft matter physics.
+    // 81. 056706. 10.1103/PhysRevE.81.056706.
+
+    // 8) Perform the second half-step of rotation.
+    rigid.angular_momentum += 0.5 * rigid.torque;
+
+    // 1) Convert angular momentum and torque to local frame for t = 0
+
+    // TODO: Avoid redundant computations.
+    const Vec3r angular_momentum_in_local_t0 = Conjugate(rigid.R_world_from_local) * rigid.angular_momentum;
+    const Vec3r torque_in_local_t0           = Conjugate(rigid.R_world_from_local) * rigid.torque;
+
+    // 2) Estimate angular_momentum_in_local at t = Δt / 2
+
+    const Vec3r angular_velocity_in_local_t0 = rigid.inv_inertia.ElemMult(angular_momentum_in_local_t0);
+
+    const Vec3r d_dt_angular_momentum_in_local_t0 =
+        torque_in_local_t0 - angular_velocity_in_local_t0.Cross(angular_momentum_in_local_t0);
+
+    Vec3r angular_momentum_in_local_t_halfway =
+        angular_momentum_in_local_t0 + 0.5 * d_dt_angular_momentum_in_local_t0;
+
+    // 3) Zeroth approximation of time derivative of R_world_from_local at t = Δt/2
+
+    Quat4r d_dt_R_world_from_local_t_halfway =
+        Quat4r(0.0, 0.5 * rigid.R_world_from_local * rigid.inv_inertia.ElemMult(angular_momentum_in_local_t_halfway));
+
+    // 4) Zeroth approximation of R_world_from_local at t = Δt/2
+
+    Quat4r R_world_from_local_t_halfway = rigid.R_world_from_local + 0.5 * d_dt_R_world_from_local_t_halfway;
+    R_world_from_local_t_halfway.Normalize();
+
+    // 5) Propagate angular_momentum_in_world
+
+    rigid.angular_momentum += 0.5 * rigid.torque;
+
+    // 6) Iterate over k until |R_world_from_local[k+1](t=Δt/2) - R_world_from_local[k](t=Δt/2)| < epsilon, eg. epsilon = 10^-9
+
+    for(int i = 0; i < 8; ++i)
+    {
+        angular_momentum_in_local_t_halfway =
+            Conjugate(R_world_from_local_t_halfway) * rigid.angular_momentum;
+
+        const Vec3r angular_velocity_in_local_t_halfway =
+            rigid.inv_inertia.ElemMult(angular_momentum_in_local_t_halfway);
+
+        d_dt_R_world_from_local_t_halfway =
+            0.5 * R_world_from_local_t_halfway * Quat4r(0.0, angular_velocity_in_local_t_halfway);
+
+        R_world_from_local_t_halfway = rigid.R_world_from_local + 0.5 * d_dt_R_world_from_local_t_halfway;
+        R_world_from_local_t_halfway.Normalize();
+    }
+
+    // 7) When d/dt R_world_from_local(t=Δt/2) is found, we can compute R_world_from_local(t=Δt) and torque at t = Δt
+
+    rigid.R_world_from_local += d_dt_R_world_from_local_t_halfway;
+    rigid.R_world_from_local.Normalize();
+
+    rigid.torque.SetToZero();
+
+    const Vec3r angular_velocity_in_local_t_halfway =
+        rigid.inv_inertia.ElemMult(angular_momentum_in_local_t_halfway);
+    rigid.spin = R_world_from_local_t_halfway * angular_velocity_in_local_t_halfway;
 }
 
 void Physics::Move(const Vec3r &offset)
@@ -539,8 +476,8 @@ void Physics::Rotate(const Quat4r &offset)
     while (it != end)
     {
         it->pos = rot * it->pos;
-        it->orient = offset * it->orient;
-        it->orient.Normalize();
+        it->R_world_from_local = offset * it->R_world_from_local;
+        it->R_world_from_local.Normalize();
         ++it;
     }
 }

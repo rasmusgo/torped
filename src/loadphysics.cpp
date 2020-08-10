@@ -460,11 +460,11 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
             ss >> rigid->force;
             ss.clear();
         }
-        if (auto orient = pElem->Attribute("rot"))
+        if (auto rot = pElem->Attribute("rot"))
         {
-            rigid->orient = Quat4r(1,0,0,0);
-            ss << orient;
-            ss >> rigid->orient;
+            rigid->R_world_from_local = Quat4r(1,0,0,0);
+            ss << rot;
+            ss >> rigid->R_world_from_local;
             ss.clear();
         }
         // TODO: premultiply with timestep
@@ -509,12 +509,12 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
         }
 
         // Compute angular momentum
-        rigid->angular_momentum = Mat3x3r(rigid->orient).sandwich(rigid->inv_inertia) * rigid->spin; // inv_inertia is not inverted yet.
+        rigid->angular_momentum = Mat3x3r(rigid->R_world_from_local).sandwich(rigid->inv_inertia) * rigid->spin; // inv_inertia is not inverted yet.
         if (rigid->inv_inertia != Vec3r(0,0,0))
             rigid->inv_inertia = Vec3r(1.0/rigid->inv_inertia.x, 1.0/rigid->inv_inertia.y, 1.0/rigid->inv_inertia.z);
 
         // Transform points positions
-        phys->DoFrame0(*rigid);
+        phys->UpdatePointsFromRigid(*rigid);
 
         ++rigid;
     }
@@ -555,6 +555,11 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
                 ss >> spring->l;
             }
 
+            // HACK to compensate for simplified physics timestep.
+            spring->k *= 2;
+            spring->d *= 2;
+            spring->s *= 2;
+
             spring->p1 = inst->FindPoint(pElem->Attribute("p1"));
             spring->p2 = inst->FindPoint(pElem->Attribute("p2"));
 
@@ -591,6 +596,11 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
                 ss >> joint->s;
                 joint->s *= phys->timestep_squared;
             }
+
+            // HACK to compensate for simplified physics timestep.
+            joint->k *= 3;
+            joint->d *= 3;
+            joint->s *= 3;
 
             joint->p1 = inst->FindPoint(pElem->Attribute("p1"));
             joint->p2 = inst->FindPoint(pElem->Attribute("p2"));

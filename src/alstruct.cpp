@@ -132,6 +132,14 @@ bool AlStruct::InitAl()
 
     //Register extensions
     //*/
+
+    // Set default listener
+    ALfloat orientation[] = { 0, 1, 0,
+                              0, 0, 1 };
+    alListenerfv(AL_ORIENTATION, orientation);
+    alListener3f(AL_POSITION, 0, 0, 0);
+    alListener3f(AL_VELOCITY, 0, 0, 0);
+    alcGetError(device); // Clear error
     return true;
 }
 

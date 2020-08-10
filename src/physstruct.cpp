@@ -49,7 +49,7 @@ void PrintPhys(PhyInstance *inst, std::ostream *ostr = NULL)
         {
             *ostr << " points " << it->points - inst->phys->points << " nodes " << it->nodes - inst->phys->nodes << std::endl;
             *ostr << " pos " << it->pos << " vel " << it->vel << std::endl;
-            *ostr << " rot " << it->orient << " spin " << it->spin << std::endl;
+            *ostr << " rot " << it->R_world_from_local << " spin " << it->spin << std::endl;
             *ostr << " mass " << it->inv_mass << " inertia " << it->inv_inertia << std::endl;
             ++it;
         }
@@ -336,10 +336,10 @@ std::vector<REAL> PhyInstance::PollPhys(const char pollstring[])
         }
         else if (what=="rot" || what=="orientation" || what=="orient")
         {
-            ret.push_back(phys->rigids[namesIndex[typeName]].orient.w);
-            ret.push_back(phys->rigids[namesIndex[typeName]].orient.vec.x);
-            ret.push_back(phys->rigids[namesIndex[typeName]].orient.vec.y);
-            ret.push_back(phys->rigids[namesIndex[typeName]].orient.vec.z);
+            ret.push_back(phys->rigids[namesIndex[typeName]].R_world_from_local.w);
+            ret.push_back(phys->rigids[namesIndex[typeName]].R_world_from_local.vec.x);
+            ret.push_back(phys->rigids[namesIndex[typeName]].R_world_from_local.vec.y);
+            ret.push_back(phys->rigids[namesIndex[typeName]].R_world_from_local.vec.z);
         }
         else if (what=="spin")
         {

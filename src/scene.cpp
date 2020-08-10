@@ -138,6 +138,9 @@ int Scene::Loop()
         while ((Sint32)(targetTicks - physicsTicks) > 0)
         {
             UpdatePhysics();
+            // FIXME: Player should be moved to Scene
+            App::player.Fly(App::player.vel.x*0.005, App::player.vel.y*0.005, App::player.vel.z*0.005);
+            UpdateOpenAL();
             UpdateActors();
 
             if (SDL_GetTicks()-realTicks > 100)
@@ -161,7 +164,7 @@ void Scene::UpdatePhysics()
 
     for (auto& it : phyInstances)
     {
-        it->phys->DoFrame1();
+        it->phys->UpdateForces();
 
         if (App::world)
         {
@@ -173,13 +176,13 @@ void Scene::UpdatePhysics()
         }
     }
 
-    // TODO: Fixa smartare test typ dela upp rymden i regioner och testa regionerna för sig
+    // TODO: Fixa smartare test typ dela upp rymden i regioner och testa regionerna fÃ¶r sig
     for (auto it = phyInstances.begin(); it != phyInstances.end(); ++it)
         for (auto it2 = it+1; it2 != phyInstances.end(); ++it2)
             (*it)->phys->TestBounds(*((*it2)->phys), 0.1);
 
     for (auto& it : phyInstances)
-        it->phys->DoFrame2();
+        it->phys->UpdateVelocitiesAndPositions();
 
     static unsigned int last_crashhandling = 0;
     if (physicsTicks % 500 == last_crashhandling)
@@ -196,7 +199,10 @@ void Scene::UpdatePhysics()
             last_crashhandling = physicsTicks % 500;
         }
     }
+}
 
+void Scene::UpdateOpenAL()
+{
     // Sound emitters
     for (auto& it : phyInstances)
     {
@@ -256,9 +262,11 @@ void Scene::UpdatePhysics()
         }
     }
 
-    // FIXME: Player should be moved to Scene
-    App::player.Fly(App::player.vel.x*0.005, App::player.vel.y*0.005, App::player.vel.z*0.005);
-
+    // Listener
+    Mat3x3r mat(App::player.rot);
+    ALfloat orientation[] = { float(mat.vec1.x), float(mat.vec1.y), float(mat.vec1.z),
+                              float(mat.vec3.x), float(mat.vec3.y), float(mat.vec3.z) };
+    alListenerfv(AL_ORIENTATION, orientation);
     alListener3f(AL_POSITION, App::player.pos.x, App::player.pos.y, App::player.pos.z);
     alListener3f(AL_VELOCITY, App::player.vel.x, App::player.vel.y, App::player.vel.z);
 }

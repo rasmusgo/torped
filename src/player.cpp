@@ -1,4 +1,3 @@
-#include "alstruct.hpp"
 #include "logging.hpp"
 #include "physstruct.hpp"
 #include "player.hpp"
@@ -49,9 +48,9 @@ void Player::MoveArm2(float x, float y)
 void Player::MoveMouse(float x, float y)
 {
     const REAL scale = M_PI/1800.0;
-    Quat4r q_x( 0.5*x*scale, Vec3r(0,0,-1) );
+    Quat4r q_x = Quat4r::FromRotationAroundVector(0.5*x*scale, Vec3r(0,0,-1));
     //q_x.Normalize();
-    Quat4r q_y( y*scale, Vec3r(0,1,0) );
+    Quat4r q_y = Quat4r::FromRotationAroundVector(y*scale, Vec3r(0,1,0));
     //q_y.Normalize();
     rot = q_x*rot*q_x*q_y;
     rot.Normalize();
@@ -63,19 +62,12 @@ void Player::MoveMouse(float x, float y)
         REAL limit = Clamp( fabs(euler.y)*6.0-1.0*M_PI,
                             0.0, std::numeric_limits<double>::infinity() );
         euler.x = Clamp(euler.x, -limit, limit);
-        rot = Quat4r( euler.z, Vec3r(0,0,1) ) *
-              Quat4r( euler.y, Vec3r(0,1,0) ) *
-              Quat4r( euler.x, Vec3r(1,0,0) );
+        rot = Quat4r::FromRotationAroundVector(euler.z, Vec3r(0,0,1)) *
+              Quat4r::FromRotationAroundVector(euler.y, Vec3r(0,1,0)) *
+              Quat4r::FromRotationAroundVector(euler.x, Vec3r(1,0,0));
 
         rot.Normalize();
     }
-
-    Mat3x3r mat(rot);
-
-    ALfloat orientation[] = { float(mat.vec1.x), float(mat.vec1.y), float(mat.vec1.z),
-                              float(mat.vec3.x), float(mat.vec3.y), float(mat.vec3.z) };
-
-    alListenerfv(AL_ORIENTATION, orientation);
 }
 
 void Player::Fly(float x, float y, float z)
@@ -85,10 +77,6 @@ void Player::Fly(float x, float y, float z)
 	pos += x * mat.vec1;
 	pos += y * mat.vec2;
 	pos += z * mat.vec3;
-
-    alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
-    alListener3f(AL_VELOCITY, vel.x, vel.y, vel.z);
-	alGetError(); // ignore errors
 }
 
 void Player::Move(float x, float y, float z)
@@ -102,10 +90,6 @@ void Player::Move(float x, float y, float z)
 	pos += y * mat.vec2;
 
 	pos.z += z;
-
-    alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
-    alListener3f(AL_VELOCITY, vel.x, vel.y, vel.z);
-	alGetError(); // ignore errors
 }
 
 void Player::Do(const char cmd[])
@@ -125,6 +109,25 @@ void Player::Do(const char cmd[])
         ss >> App::player.vel.z;
     else if (str == "stop")
         App::player.vel.SetToZero();
+    else if (str == "mouse")
+    {
+        float x = 0;
+        float y = 0;
+        ss >> x >> y;
+        App::player.MoveMouse(x, y);
+    }
+    else if (str == "mousex")
+    {
+        float x = 0;
+        ss >> x;
+        App::player.MoveMouse(x, 0);
+    }
+    else if (str == "mousey")
+    {
+        float y = 0;
+        ss >> y;
+        App::player.MoveMouse(0, y);
+    }
     else if (str == "pose")
     {
         float a,b;
