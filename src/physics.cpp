@@ -339,11 +339,6 @@ inline void Physics::UpdateVelocity(PhyRigid &rigid)
     rigid.vel += rigid.acc * 0.5 + new_acc * 0.5;
     rigid.acc = new_acc;
     rigid.force.SetToZero();
-
-    // 8) Perform the second half-step of rotation.
-    // We cannot clear torque yet because we need it to compute orientation.
-    rigid.angular_momentum += 0.5 * rigid.torque;
-    rigid.spin = Mat3x3r(rigid.R_world_from_local).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
 }
 
 inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
@@ -375,6 +370,9 @@ inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
     // Physical review. E, Statistical, nonlinear, and soft matter physics.
     // 81. 056706. 10.1103/PhysRevE.81.056706.
 
+    // 8) Perform the second half-step of rotation.
+    rigid.angular_momentum += 0.5 * rigid.torque;
+
     // 1) Convert angular momentum and torque to local frame for t = 0
 
     // TODO: Avoid redundant computations.
@@ -399,17 +397,18 @@ inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
     // 4) Zeroth approximation of R_world_from_local at t = Δt/2
 
     Quat4r R_world_from_local_t_halfway = rigid.R_world_from_local + 0.5 * d_dt_R_world_from_local_t_halfway;
+    R_world_from_local_t_halfway.Normalize();
 
     // 5) Propagate angular_momentum_in_world
 
-    const Vec3r angular_momentum_in_world_t_halfway = rigid.angular_momentum + 0.5 * rigid.torque;
+    rigid.angular_momentum += 0.5 * rigid.torque;
 
     // 6) Iterate over k until |R_world_from_local[k+1](t=Δt/2) - R_world_from_local[k](t=Δt/2)| < epsilon, eg. epsilon = 10^-9
 
     for(int i = 0; i < 8; ++i)
     {
         angular_momentum_in_local_t_halfway =
-            Conjugate(R_world_from_local_t_halfway) * angular_momentum_in_world_t_halfway;
+            Conjugate(R_world_from_local_t_halfway) * rigid.angular_momentum;
 
         const Vec3r angular_velocity_in_local_t_halfway =
             rigid.inv_inertia.ElemMult(angular_momentum_in_local_t_halfway);
@@ -426,10 +425,11 @@ inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
     rigid.R_world_from_local += d_dt_R_world_from_local_t_halfway;
     rigid.R_world_from_local.Normalize();
 
-    // Perform first half-step of rotation
-    rigid.angular_momentum = angular_momentum_in_world_t_halfway;
-
     rigid.torque.SetToZero();
+
+    const Vec3r angular_velocity_in_local_t_halfway =
+        rigid.inv_inertia.ElemMult(angular_momentum_in_local_t_halfway);
+    rigid.spin = R_world_from_local_t_halfway * angular_velocity_in_local_t_halfway;
 }
 
 void Physics::Move(const Vec3r &offset)
