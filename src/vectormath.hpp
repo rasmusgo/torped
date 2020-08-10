@@ -226,6 +226,9 @@ public:
 
 template <class T> struct Quat4
 {
+private:
+	Quat4<T>(const T w, const Vec3<T> &p_vec): w(w), vec(p_vec) { };
+
 public:
 //	union
 //	{
@@ -242,14 +245,13 @@ public:
 	Quat4<T>(const Quat4<T> &a): w(a.w), vec(a.vec) { };
 //	Quat4<T>(const T p_w, const T p_x, const T p_y, const T p_z) : w(p_w), x(p_x), y(p_y), z(p_z) { };
 	Quat4<T>(const T p_w, const T p_x, const T p_y, const T p_z) : w(p_w), vec(p_x, p_y, p_z) { };
-	// from angle and vector
-	Quat4<T>(const T angle, const Vec3<T> &p_vec)
+
+	static Quat4<T> FromRotationAroundVector(const T angle, const Vec3<T> &p_vec)
 	{
 		const T a = angle * 0.5f;
 		const T s = (T) sin(a);
 		const T c = (T) cos(a);
-		w = c;
-		vec = p_vec * s;
+		return Quat4<T>(c, p_vec * s);
 	};
 
 	friend Quat4<T> operator * (const Quat4<T> &a, const Quat4<T> &b)

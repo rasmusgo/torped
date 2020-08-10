@@ -104,9 +104,9 @@ World::World(const char filename[])
             if ( !ss.fail() )
             {
                 Quat4r rot =
-                    Quat4r( deg.x*(M_PI/180.0), Vec3r(1,0,0) ) *
-                    Quat4r( deg.y*(M_PI/180.0), Vec3r(0,1,0) ) *
-                    Quat4r( deg.z*(M_PI/180.0), Vec3r(0,0,1) );
+                    Quat4r::FromRotationAroundVector(deg.x*(M_PI/180.0), Vec3r(1,0,0)) *
+                    Quat4r::FromRotationAroundVector(deg.y*(M_PI/180.0), Vec3r(0,1,0)) *
+                    Quat4r::FromRotationAroundVector(deg.z*(M_PI/180.0), Vec3r(0,0,1));
                 rot.Normalize();
                 App::player.rot = rot;
             }
@@ -138,9 +138,9 @@ World::World(const char filename[])
                     if ( !ss.fail() )
                     {
                         Quat4r rot =
-                            Quat4r( deg.x*(M_PI/180.0), Vec3r(1,0,0) ) *
-                            Quat4r( deg.y*(M_PI/180.0), Vec3r(0,1,0) ) *
-                            Quat4r( deg.z*(M_PI/180.0), Vec3r(0,0,1) );
+                            Quat4r::FromRotationAroundVector(deg.x*(M_PI/180.0), Vec3r(1,0,0)) *
+                            Quat4r::FromRotationAroundVector(deg.y*(M_PI/180.0), Vec3r(0,1,0)) *
+                            Quat4r::FromRotationAroundVector(deg.z*(M_PI/180.0), Vec3r(0,0,1));
                         VLOG_S(1) << "Rotation: " << rot;
                         rot.Normalize();
                         VLOG_S(1)  << "Normalized: " << rot;

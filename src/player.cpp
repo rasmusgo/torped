@@ -49,9 +49,9 @@ void Player::MoveArm2(float x, float y)
 void Player::MoveMouse(float x, float y)
 {
     const REAL scale = M_PI/1800.0;
-    Quat4r q_x( 0.5*x*scale, Vec3r(0,0,-1) );
+    Quat4r q_x = Quat4r::FromRotationAroundVector(0.5*x*scale, Vec3r(0,0,-1));
     //q_x.Normalize();
-    Quat4r q_y( y*scale, Vec3r(0,1,0) );
+    Quat4r q_y = Quat4r::FromRotationAroundVector(y*scale, Vec3r(0,1,0));
     //q_y.Normalize();
     rot = q_x*rot*q_x*q_y;
     rot.Normalize();
@@ -63,9 +63,9 @@ void Player::MoveMouse(float x, float y)
         REAL limit = Clamp( fabs(euler.y)*6.0-1.0*M_PI,
                             0.0, std::numeric_limits<double>::infinity() );
         euler.x = Clamp(euler.x, -limit, limit);
-        rot = Quat4r( euler.z, Vec3r(0,0,1) ) *
-              Quat4r( euler.y, Vec3r(0,1,0) ) *
-              Quat4r( euler.x, Vec3r(1,0,0) );
+        rot = Quat4r::FromRotationAroundVector(euler.z, Vec3r(0,0,1)) *
+              Quat4r::FromRotationAroundVector(euler.y, Vec3r(0,1,0)) *
+              Quat4r::FromRotationAroundVector(euler.x, Vec3r(1,0,0));
 
         rot.Normalize();
     }
