@@ -252,6 +252,11 @@ public:
 		return Quat4<T>(c, p_vec * s);
 	};
 
+	friend Quat4<T> operator + (const Quat4<T> &a, const Quat4<T> &b)
+	{
+		return Quat4<T>(a.w + b.w, a.vec + b.vec);
+	};
+
 	friend Quat4<T> operator * (const Quat4<T> &a, const Quat4<T> &b)
 	{
 		return Quat4<T>( a.w*b.w - a.vec.x*b.vec.x - a.vec.y*b.vec.y - a.vec.z*b.vec.z,
