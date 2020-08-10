@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <document gravity="0 0 -9.82">
-<rigid name="Base" pos="0.000272 0.000000 0.473183" mass="60.000000" inertia="35.222290 35.222305 67.605637" rot="0.991445 0.000000 0.130526 0.000000" >
+<rigid name="Base" pos="0.000272 0.000000 0.473183" mass="600.000000" inertia="352.22290 352.22305 676.05637" rot="0.991445 0.000000 0.130526 0.000000" >
   <node name="Base_0" pos="-1.000000 1.000000 -0.043099"/>
   <node name="Base_2" pos="-0.250000 0.250000 0.356901"/>
   <node name="Base_7" pos="0.250000 -0.250000 0.356902"/>
@@ -73,7 +73,7 @@
   <node name="Base_168" pos="-0.916667 -0.916667 -0.043099"/>
   <node name="Base_169" pos="-0.833333 -0.833333 -0.043099"/>
 </rigid>
-<rigid name="Rotor" pos="0.198027 -0.000000 1.211217" mass="5.000000" inertia="1.734061 0.020822 1.719244" rot="0.991445 0.000000 0.130526 0.000000" >
+<rigid name="Rotor" pos="0.198027 -0.000000 1.211217" mass="50.000000" inertia="17.34061 0.20822 17.19244" rot="1.0 0.000000 0.0 0.000000" >
   <node name="Rotor_1" pos="0.000000 1.980000 0.022833"/>
   <node name="Rotor_3" pos="0.050000 0.080000 0.132833"/>
   <node name="Rotor_4" pos="0.050000 -0.080000 0.132833"/>
@@ -127,7 +127,7 @@
   <node name="Rotor_103" pos="-0.020000 -1.248000 0.065525"/>
   <node name="Rotor_104" pos="-0.010000 -1.614000 0.065525"/>
 </rigid>
-<rigid name="crowbar" pos="1.129467 -0.000000 1.821329" mass="2.000000" inertia="0.295914 0.297972 0.014609" rot="0.984979 0.000000 0.172674 0.000000" >
+<rigid name="crowbar" pos="1.129467 -0.000000 1.821329" mass="20.000000" inertia="2.95914 2.97972 0.14609" rot="0.984979 0.000000 0.172674 0.000000" >
   <node name="crowbar_24" pos="0.037184 -0.025000 -0.402588"/>
   <node name="crowbar_25" pos="0.037184 0.025000 -0.402588"/>
   <node name="crowbar_26" pos="-0.029672 0.025000 -0.207575"/>
@@ -179,18 +179,18 @@
   <node name="crowbar_129" pos="-0.037970 0.250000 -0.425824"/>
 </rigid>
 <mesh name="mesh1">
-  <spring name="361" p1="Base_16" p2="crowbar_126" length="1.010796" k="1616.721774" d="20.209022" s="40.854399"/>
-  <spring name="362" p1="Base_7" p2="crowbar_127" length="1.097232" k="1530.823436" d="19.135293" s="41.991699"/>
-  <spring name="363" p1="Base_128" p2="crowbar_129" length="0.917153" k="1720.270186" d="21.503377" s="39.443791"/>
-  <spring name="377" p1="Base_7" p2="crowbar_126" length="0.917153" k="1720.270054" d="21.503376" s="39.443786"/>
-  <spring name="378" p1="crowbar_127" p2="Base_128" length="1.097232" k="1530.823421" d="19.135293" s="41.991700"/>
-  <spring name="379" p1="Base_16" p2="crowbar_129" length="1.010796" k="1616.721887" d="20.209024" s="40.854402"/>
+  <spring name="361" p1="Base_16" p2="crowbar_126" length="1.010796" k="16167.21774" d="20.209022" s="40.854399"/>
+  <spring name="362" p1="Base_7" p2="crowbar_127" length="1.097232" k="15308.23436" d="19.135293" s="41.991699"/>
+  <spring name="363" p1="Base_128" p2="crowbar_129" length="0.917153" k="17202.70186" d="21.503377" s="39.443791"/>
+  <spring name="377" p1="Base_7" p2="crowbar_126" length="0.917153" k="17202.70054" d="21.503376" s="39.443786"/>
+  <spring name="378" p1="Base_128" p2="crowbar_127" length="1.097232" k="15308.23421" d="19.135293" s="41.991700"/>
+  <spring name="379" p1="Base_16" p2="crowbar_129" length="1.010796" k="16167.21887" d="20.209024" s="40.854402"/>
 </mesh>
 <joints name="joints1" >
-  <joint name="0" p1="Base_9" p2="Rotor_9" k="10000.000000" d="200.000000" s="10.000000"/>
-  <joint name="1" p1="Base_16" p2="Rotor_16" k="10000.000000" d="200.000000" s="10.000000"/>
+  <joint name="0" p1="Base_9" p2="Rotor_9" k="10000.000000" d="50.000000" s="10.000000"/>
+  <joint name="1" p1="Base_16" p2="Rotor_16" k="10000.000000" d="50.000000" s="10.000000"/>
 </joints>
-<balloon name="mesh1" pressure="1000.000000" >
+<balloon name="mesh1" pressure="10000.000000" >
   <point p1="crowbar_127"/>
   <point p1="crowbar_129"/>
   <point p1="crowbar_126"/>
