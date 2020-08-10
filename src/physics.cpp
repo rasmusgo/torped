@@ -111,11 +111,11 @@ void Physics::UpdateVelocitiesAndPositions()
     if (insane)
         return;
 
-    // räkna ut acceleration och hastighet (ej gravitation)
+    // Compute new acceleration and velocity
     DO(UpdateVelocity, points, 0, points_count)
     DO(UpdateVelocity, rigids, 0, rigids_count)
 
-    // räkna ut position
+    // Compute new positions
     DO(UpdatePosition, points, 0, points_count)
     DO(UpdatePositionAndOrientation, rigids, 0, rigids_count)
 
@@ -338,13 +338,12 @@ inline void Physics::UpdateVelocity(PhyRigid &rigid)
     const Vec3r new_acc = rigid.force * rigid.inv_mass + gravity;
     rigid.vel += rigid.acc * 0.5 + new_acc * 0.5;
     rigid.acc = new_acc;
-
-    //rigid.angular_momentum += rigid.torque * time;
-    rigid.angular_momentum += rigid.torque;
-    rigid.spin = Mat3x3r(rigid.R_world_from_local).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
-
     rigid.force.SetToZero();
-    rigid.torque.SetToZero();
+
+    // 8) Perform the second half-step of rotation.
+    // We cannot clear torque yet because we need it to compute orientation.
+    rigid.angular_momentum += 0.5 * rigid.torque;
+    rigid.spin = Mat3x3r(rigid.R_world_from_local).sandwich(rigid.inv_inertia) * rigid.angular_momentum;
 }
 
 inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
@@ -370,20 +369,67 @@ inline void Physics::UpdatePositionAndOrientation(PhyRigid &rigid)
 
     rigid.pos += rigid.vel + rigid.acc * 0.5;
 
-    /*
-    Quat4r rotation = (0.5 * Quat4r(0, rigid.spin.x * rigid.inv_inertia.x,
-                                       rigid.spin.y * rigid.inv_inertia.y,
-                                       rigid.spin.z * rigid.inv_inertia.z)) * rigid.orient;
-    /*/
-    Quat4r rotation = (0.5 * Quat4r(0, rigid.spin.x, rigid.spin.y, rigid.spin.z)) * rigid.R_world_from_local;
-    //*/
-    rigid.R_world_from_local += rotation;
-    //App::console << "DoFrame2(rigids)" << std::endl;
-    //App::console << "  spin: " << rigid.spin << std::endl;
-    //App::console << "  delta_rot: " << delta_rot << std::endl;
-    //App::console << "  quat: " << rigid.rot << std::endl;
+    // Computation of rotations are based on:
+    // Rozmanov, Dmitri & Kusalik, Peter. (2010).
+    // Robust rotational-velocity-Verlet integration methods.
+    // Physical review. E, Statistical, nonlinear, and soft matter physics.
+    // 81. 056706. 10.1103/PhysRevE.81.056706.
+
+    // 1) Convert angular momentum and torque to local frame for t = 0
+
+    // TODO: Avoid redundant computations.
+    const Vec3r angular_momentum_in_local_t0 = Conjugate(rigid.R_world_from_local) * rigid.angular_momentum;
+    const Vec3r torque_in_local_t0           = Conjugate(rigid.R_world_from_local) * rigid.torque;
+
+    // 2) Estimate angular_momentum_in_local at t = Δt / 2
+
+    const Vec3r angular_velocity_in_local_t0 = rigid.inv_inertia.ElemMult(angular_momentum_in_local_t0);
+
+    const Vec3r d_dt_angular_momentum_in_local_t0 =
+        torque_in_local_t0 - angular_velocity_in_local_t0.Cross(angular_momentum_in_local_t0);
+
+    Vec3r angular_momentum_in_local_t_halfway =
+        angular_momentum_in_local_t0 + 0.5 * d_dt_angular_momentum_in_local_t0;
+
+    // 3) Zeroth approximation of time derivative of R_world_from_local at t = Δt/2
+
+    Quat4r d_dt_R_world_from_local_t_halfway =
+        Quat4r(0.0, 0.5 * rigid.R_world_from_local * rigid.inv_inertia.ElemMult(angular_momentum_in_local_t_halfway));
+
+    // 4) Zeroth approximation of R_world_from_local at t = Δt/2
+
+    Quat4r R_world_from_local_t_halfway = rigid.R_world_from_local + 0.5 * d_dt_R_world_from_local_t_halfway;
+
+    // 5) Propagate angular_momentum_in_world
+
+    const Vec3r angular_momentum_in_world_t_halfway = rigid.angular_momentum + 0.5 * rigid.torque;
+
+    // 6) Iterate over k until |R_world_from_local[k+1](t=Δt/2) - R_world_from_local[k](t=Δt/2)| < epsilon, eg. epsilon = 10^-9
+
+    for(int i = 0; i < 8; ++i)
+    {
+        angular_momentum_in_local_t_halfway =
+            Conjugate(R_world_from_local_t_halfway) * angular_momentum_in_world_t_halfway;
+
+        const Vec3r angular_velocity_in_local_t_halfway =
+            rigid.inv_inertia.ElemMult(angular_momentum_in_local_t_halfway);
+
+        d_dt_R_world_from_local_t_halfway =
+            0.5 * R_world_from_local_t_halfway * Quat4r(0.0, angular_velocity_in_local_t_halfway);
+
+        R_world_from_local_t_halfway = rigid.R_world_from_local + 0.5 * d_dt_R_world_from_local_t_halfway;
+        R_world_from_local_t_halfway.Normalize();
+    }
+
+    // 7) When d/dt R_world_from_local(t=Δt/2) is found, we can compute R_world_from_local(t=Δt) and torque at t = Δt
+
+    rigid.R_world_from_local += d_dt_R_world_from_local_t_halfway;
     rigid.R_world_from_local.Normalize();
-    //App::console << "  quat: " << rigid.rot << std::endl;
+
+    // Perform first half-step of rotation
+    rigid.angular_momentum = angular_momentum_in_world_t_halfway;
+
+    rigid.torque.SetToZero();
 }
 
 void Physics::Move(const Vec3r &offset)
