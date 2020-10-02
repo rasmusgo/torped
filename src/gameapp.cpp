@@ -31,6 +31,7 @@ extern "C"
 #include "player.hpp"
 #include "scene.hpp"
 #include "shader.hpp"
+#include "vibrations.hpp"
 #include "world.hpp"
 
 #ifdef REAL_DOUBLE
@@ -204,6 +205,10 @@ GameApp::GameApp(int argc, char *argv[])
     menu.reset(new AppMenu());
 
     SwitchMode(appMode);
+
+    // TODO: Remove from here!
+    computeVibrations();
+
     LOG_IF_ERROR("End of InitAll(...)")
 }
 
