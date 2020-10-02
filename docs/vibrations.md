@@ -6,18 +6,120 @@ F = m·a
 
 F = -k·x -d·x'
 
-F = AB · ( (|AB| - relaxed_length)·k / |AB| ) + AB · ( (AB ● velAB) · spring_d / |AB|^2 )
+F = -spring_dir · (k · (spring_length - relaxed_length) + d · (spring_dir ● velAB))
 
-F = (AB / |AB|) · (|AB| - relaxed_length) · k + (AB / |AB|) · ( (AB / |AB|) ● velAB) · spring_d )
+F = -(AB / |AB|) · (|AB| - relaxed_length) · k + (AB / |AB|) · ( (AB / |AB|) ● velAB · spring_d )
+
+## Linearize wrt. spring_dir and spring_length
+
+spring_dir    = spring_dir_0 + Δspring_dir
+spring_length = spring_length_0 + Δspring_length
+
+F = -(spring_dir_0 + Δspring_dir) · (k · (spring_length_0 + Δspring_length - relaxed_length) + d · ((spring_dir_0 + Δspring_dir) ● velAB)))
+
+F =
+    -(spring_dir_0 + Δspring_dir) · k · (spring_length_0 + Δspring_length - relaxed_length)
+    -(spring_dir_0 + Δspring_dir) · d · ((spring_dir_0 + Δspring_dir) ● velAB)))
+
+F =
+    -(spring_dir_0 + Δspring_dir) · k · spring_length_0
+    -(spring_dir_0 + Δspring_dir) · k · Δspring_length
+    -(spring_dir_0 + Δspring_dir) · k · -relaxed_length
+    -(spring_dir_0 + Δspring_dir) · d · spring_dir_0 ● velAB
+    -(spring_dir_0 + Δspring_dir) · d · Δspring_dir ● velAB
+
+F =
+    -spring_dir_0 · k · spring_length_0        // Constant
+    -Δspring_dir  · k · spring_length_0        // Linear in Δspring_dir
+    -spring_dir_0 · k · Δspring_length         // Linear in Δspring_length
+    -Δspring_dir  · k · Δspring_length         // Non-linear
+    -spring_dir_0 · k · -relaxed_length        // Constant
+    -Δspring_dir  · k · -relaxed_length        // Linear in Δspring_dir
+    -spring_dir_0 · d · spring_dir_0 ● velAB   // Linear in velAB
+    -Δspring_dir  · d · spring_dir_0 ● velAB   // Non-linear
+    -spring_dir_0 · d · Δspring_dir ● velAB    // Non-linear
+    -Δspring_dir  · d · Δspring_dir ● velAB    // Non-linear
+
+F =
+    -spring_dir_0 · k · spring_length_0        // Constant
+    -spring_dir_0 · k · -relaxed_length        // Constant
+    -Δspring_dir  · k · spring_length_0        // Linear in Δspring_dir
+    -Δspring_dir  · k · -relaxed_length        // Linear in Δspring_dir
+    -spring_dir_0 · k · Δspring_length         // Linear in Δspring_length
+    -spring_dir_0 · d · spring_dir_0 ● velAB   // Linear in velAB
+    -Δspring_dir  · k · Δspring_length         // Non-linear
+    -Δspring_dir  · d · spring_dir_0 ● velAB   // Non-linear
+    -spring_dir_0 · d · Δspring_dir ● velAB    // Non-linear
+    -Δspring_dir  · d · Δspring_dir ● velAB    // Non-linear
+
+F =
+    -spring_dir_0 · k · (spring_length_0 - relaxed_length)   // Constant
+    -Δspring_dir  · k · (spring_length_0 - relaxed_length)   // Linear in Δspring_dir
+    -spring_dir_0 · k · Δspring_length                       // Linear in Δspring_length
+    -spring_dir_0 · d · spring_dir_0 ● velAB                 // Linear in velAB
+    -Δspring_dir  · k · Δspring_length                       // Non-linear
+    -Δspring_dir  · d · spring_dir_0 ● velAB                 // Non-linear
+    -spring_dir_0 · d · Δspring_dir ● velAB                  // Non-linear
+    -Δspring_dir  · d · Δspring_dir ● velAB                  // Non-linear
+
+## Linear approximation of spring_dir and spring_length
+
+spring_dir = AB / |AB|
+spring_dir = spring_dir_0 + Δspring_dir
+spring_dir_0 + Δspring_dir = AB / |AB|
+Δspring_dir = AB / |AB| - spring_dir_0
+...
+Δspring_dir ~= ΔAB - ΔAB ● spring_dir_0 · spring_dir_0
+spring_dir ~= spring_dir_0 + ΔAB - ΔAB ● spring_dir_0 · spring_dir_0
+
+spring_length = |AB| = AB ● AB / |AB| = AB ● spring_dir
+spring_length = spring_length_0 + Δspring_length
+...
+Δspring_length ~= ΔAB ● spring_dir_0
+spring_length ~= spring_length_0 + ΔAB ● spring_dir_0
+
+## Apply approximations
+
+F =
+    -spring_dir_0 · k · (spring_length_0 - relaxed_length)
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0) · k · (spring_length_0 - relaxed_length)
+    -spring_dir_0 · k · (ΔAB ● spring_dir_0)
+    -spring_dir_0 · d · spring_dir_0 ● velAB
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0)  · k · (ΔAB ● spring_dir_0)
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0)  · d · spring_dir_0 ● velAB
+    -spring_dir_0 · d · (ΔAB - ΔAB ● spring_dir_0 · spring_dir_0) ● velAB
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0)  · d · (ΔAB - ΔAB ● spring_dir_0 · spring_dir_0) ● velAB
+
+F =
+    -spring_dir_0 · k · (spring_length_0 - relaxed_length)
+    -ΔAB · k · (spring_length_0 - relaxed_length)
+    +(ΔAB ● spring_dir_0) · spring_dir_0 · k · (spring_length_0 - relaxed_length)
+    -(ΔAB ● spring_dir_0) · spring_dir_0 · k
+    -spring_dir_0 · d · spring_dir_0 ● velAB
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0)  · k · (ΔAB ● spring_dir_0)
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0)  · d · spring_dir_0 ● velAB
+    -spring_dir_0 · d · (ΔAB - ΔAB ● spring_dir_0 · spring_dir_0) ● velAB
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0)  · d · (ΔAB - ΔAB ● spring_dir_0 · spring_dir_0) ● velAB
+
+F.x =
+    -spring_dir_0.x · k · (spring_length_0 - relaxed_length)
+    -ΔAB.x · k · (spring_length_0 - relaxed_length)
+    +(ΔAB ● spring_dir_0) · spring_dir_0.x · k · (spring_length_0 - relaxed_length)
+    -(ΔAB ● spring_dir_0) · spring_dir_0.x · k
+    -spring_dir_0.x · d · spring_dir_0 ● velAB
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0)  · k · (ΔAB ● spring_dir_0)
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0)  · d · spring_dir_0 ● velAB
+    -spring_dir_0 · d · (ΔAB - ΔAB ● spring_dir_0 · spring_dir_0) ● velAB
+    -(ΔAB - ΔAB ● spring_dir_0 · spring_dir_0)  · d · (ΔAB - ΔAB ● spring_dir_0 · spring_dir_0) ● velAB
 
 
-## Express the spring function in terms of the spring direction
+## Express the spring function in terms of the spring direction and spring length
 
 spring_dir = AB / |AB| ~= AB_0 / |AB_0|
 spring_length = |AB| = AB ● AB / |AB| = AB ● spring_dir
 
-F = spring_dir · (|AB| - relaxed_length) · spring_k + spring_dir · (spring_dir ● velAB) · spring_d)
-F = spring_dir · (spring_dir ● AB - relaxed_length) · spring_k + spring_dir · (spring_dir ● velAB) · spring_d)
+F = spring_dir · (spring_length    - relaxed_length) · spring_k + spring_dir · (spring_dir ● velAB) · spring_d)
+F = spring_dir · (spring_dir ● AB  - relaxed_length) · spring_k + spring_dir · (spring_dir ● velAB) · spring_d)
 F = spring_dir · ((spring_dir ● AB - relaxed_length) · spring_k + (spring_dir ● velAB) · spring_d))
 
 ## Reformulate in matrix form
