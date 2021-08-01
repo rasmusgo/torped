@@ -378,7 +378,7 @@ public:
 
 	Mat3x3<T>() { };
 	Mat3x3<T>(const Mat3x3<T> &a) : vec1(a.vec1), vec2(a.vec2), vec3(a.vec3) { };
-	Mat3x3<T>(const T vec1, const T vec2, const T vec3) : vec1(vec1), vec2(vec2), vec3(vec3) { };
+	Mat3x3<T>(const Vec3<T>& vec1, const Vec3<T>& vec2, const Vec3<T>& vec3) : vec1(vec1), vec2(vec2), vec3(vec3) { };
 	Mat3x3<T>(T a1, T a2, T a3, T b1, T b2, T b3, T c1, T c2, T c3) : vec1(a1, a2, a3), vec2(b1, b2, b3), vec3(c1, c2, c3) { };
 	// from quaternion
 	explicit Mat3x3<T>(const Quat4<T> &quat)
@@ -425,6 +425,21 @@ public:
             mat1.vec3 * Vec3<T>(mat2.vec1.z, mat2.vec2.z, mat2.vec3.z)
             );
 	}
+
+	friend Mat3x3<T> operator + (const Mat3x3<T> &mat1, const Mat3x3<T> &mat2)
+	{
+		return Mat3x3<T>(
+			mat1.vec1 + mat2.vec1,
+			mat1.vec2 + mat2.vec2,
+			mat1.vec3 + mat2.vec3);
+	};
+
+	void operator += (const Mat3x3<T> &mat)
+	{
+		vec1 += mat.vec1;
+		vec2 += mat.vec2;
+		vec3 += mat.vec3;
+	};
 
 	void operator = (const Mat3x3<T> mat)
 	{
