@@ -142,6 +142,28 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
         }
     }
 
+    // Count stiffs and nodes
+    typeName.type = "stiff";
+    pElem = hRoot.FirstChild("stiff").Element();
+    for (; pElem; pElem = pElem->NextSiblingElement("stiff"))
+    {
+        typeName.name = pElem->Attribute("name");
+        if ( typeName.name != "" )
+            inst->namesIndex[typeName] = inst->typeCount[typeName.type];
+        inst->typeCount[typeName.type]++;
+
+        TypeName tn;
+        tn.type = "node";
+        pElem2 = TiXmlHandle(pElem).FirstChild("node").Element();
+        for (; pElem2; pElem2 = pElem2->NextSiblingElement("node"))
+        {
+            tn.name = pElem2->Attribute("name");
+            if ( tn.name != "" )
+                inst->namesIndex[tn] = inst->typeCount[tn.type];
+            inst->typeCount[tn.type]++;
+        }
+    }
+
 	// Count springs
     typeName.type = "spring";
     mesh = hRoot.FirstChild("mesh").Element();
@@ -298,6 +320,7 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     IncrementAlignedSpace<PhySpring  >(size, inst->typeCount["spring"]);
     IncrementAlignedSpace<PhyJoint   >(size, inst->typeCount["joint"]);
     IncrementAlignedSpace<PhyRigid   >(size, inst->typeCount["rigid"]);
+    IncrementAlignedSpace<PhyRigid   >(size, inst->typeCount["stiff"]);
     IncrementAlignedSpace<PhyBalloon >(size, inst->typeCount["balloon"]);
     IncrementAlignedSpace<PhyPoint*  >(size, inst->typeCount["ppoint"]);
     IncrementAlignedSpace<PhyMotor   >(size, inst->typeCount["motor"]);
@@ -329,6 +352,7 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     inst->phys->springs          = CreateAndIncrement<PhySpring  >(place, inst->typeCount["spring"]);
     inst->phys->joints           = CreateAndIncrement<PhyJoint   >(place, inst->typeCount["joint"]);
     inst->phys->rigids           = CreateAndIncrement<PhyRigid   >(place, inst->typeCount["rigid"]);
+    inst->phys->stiffs           = CreateAndIncrement<PhyStiff   >(place, inst->typeCount["stiff"]);
     inst->phys->balloons         = CreateAndIncrement<PhyBalloon >(place, inst->typeCount["balloon"]);
     inst->phys->ppoints          = CreateAndIncrement<PhyPoint*  >(place, inst->typeCount["ppoint"]);
     inst->phys->motors           = CreateAndIncrement<PhyMotor   >(place, inst->typeCount["motor"]);
@@ -343,6 +367,7 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     inst->renderpasses           = CreateAndIncrement<RenderPass >(place, inst->typeCount["render"]);
 
     CHECK_LE_F(place - inst->memPool.data(), static_cast<ptrdiff_t>(size));
+    CHECK_LE_F(place, inst->memPool.data() + size);
 
     // remember count
     inst->phys->points_count     = inst->typeCount["point"];
@@ -350,6 +375,7 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
     inst->phys->springs_count    = inst->typeCount["spring"];
     inst->phys->joints_count     = inst->typeCount["joint"];
     inst->phys->rigids_count     = inst->typeCount["rigid"];
+    inst->phys->stiffs_count     = inst->typeCount["stiff"];
     inst->phys->balloons_count   = inst->typeCount["balloon"];
     inst->phys->ppoints_count    = inst->typeCount["ppoint"];
     inst->phys->motors_count     = inst->typeCount["motor"];
@@ -521,6 +547,66 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
         phys->UpdatePointsFromRigid(*rigid);
 
         ++rigid;
+    }
+
+    // Init stiffs and nodes
+    PhyStiff *stiff = phys->stiffs;
+    pElem = hRoot->FirstChild("stiff").Element();
+    for (; pElem; pElem = pElem->NextSiblingElement("stiff"))
+    {
+        stiff->nodes = node;
+        stiff->points = point;
+        std::stringstream ss;
+
+        if (auto pos = pElem->Attribute("pos"))
+        {
+            ss << pos;
+            ss >> stiff->pos;
+            ss.clear();
+        }
+        if (auto orient = pElem->Attribute("rot"))
+        {
+            stiff->orient = Quat4r(1,0,0,0);
+            ss << orient;
+            ss >> stiff->orient;
+            ss.clear();
+        }
+        if (auto mass = pElem->Attribute("mass"))
+        {
+            ss << mass;
+            ss >> stiff->inv_mass;
+            ss.clear();
+            if (stiff->inv_mass != 0)
+                stiff->inv_mass = REAL{1} / stiff->inv_mass;
+        }
+        if (auto alpha = pElem->Attribute("alpha"))
+        {
+            ss << alpha;
+            ss >> stiff->alpha;
+            ss.clear();
+        }
+        if (auto beta = pElem->Attribute("beta"))
+        {
+            ss << beta;
+            ss >> stiff->beta;
+            ss.clear();
+        }
+
+        pElem2 = TiXmlHandle(pElem).FirstChild("node").Element();
+        for (; pElem2; pElem2 = pElem2->NextSiblingElement("node"))
+        {
+            ss.clear();
+            ss << pElem2->Attribute("pos");
+            ss >> node->pos;
+            ++node;
+            ++point;
+            stiff->nodes_count++;
+        }
+
+        // Transform points positions
+        phys->InitializeStiff(*stiff);
+
+        ++stiff;
     }
 
 	// Init springs

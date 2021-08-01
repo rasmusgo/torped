@@ -65,6 +65,19 @@ struct PhyRigid
     Vec3r torque; // world space
 };
 
+struct PhyStiff
+{
+    // Nodes defining the template shape
+    PhyNode *nodes;
+    // Points associated with the template
+    PhyPoint *points;
+    int nodes_count;
+    REAL inv_mass;
+    Vec3r pos;
+    Quat4r orient;
+    REAL alpha, beta;
+};
+
 struct PhyBalloon
 {
     // vilka punkter som är sammanlänkade
@@ -100,6 +113,7 @@ public:
     PhySpring *springs;
     PhyJoint *joints;
     PhyRigid *rigids;
+    PhyStiff *stiffs;
     PhyBalloon *balloons;
     PhyPoint **ppoints;
     PhyMotor *motors;
@@ -110,6 +124,7 @@ public:
     unsigned int springs_count;
     unsigned int joints_count;
     unsigned int rigids_count;
+    unsigned int stiffs_count;
     unsigned int balloons_count;
     unsigned int ppoints_count;
     unsigned int motors_count;
@@ -141,6 +156,8 @@ public:
     void CollideFloor();
 
     void UpdatePointsFromRigid(PhyRigid &rigid);
+    void InitializeStiff(PhyStiff &stiff);
+    void UpdateStiff(PhyStiff &stiff);
 private:
     inline void UpdateVelocity(PhyPoint &point);
     inline void UpdatePosition(PhyPoint &point);

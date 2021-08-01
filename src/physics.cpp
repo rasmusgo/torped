@@ -122,6 +122,9 @@ void Physics::UpdateVelocitiesAndPositions()
     // uppdatera noderna
     DO(UpdatePointsFromRigid, rigids, 0, rigids_count)
 
+    // Update both velocity and positions of stiffs
+    DO(UpdateStiff, stiffs, 0, stiffs_count)
+
     REAL infinity = std::numeric_limits<REAL>::infinity();
     bounds_max = Vec3r(-infinity, -infinity, -infinity);
     bounds_min = Vec3r(infinity, infinity, infinity);
@@ -311,6 +314,93 @@ void Physics::UpdatePointsFromRigid(PhyRigid &rigid)
         point->pos = R_world_from_local * node->pos; // glöm inte  att addera pos
         point->vel = rigid.vel + (rigid.spin).Cross(point->pos);
         point->pos += rigid.pos; // glöm inte  att addera pos
+        point++;
+        node++;
+    }
+}
+
+void Physics::InitializeStiff(PhyStiff &stiff)
+{
+    const Mat3x3r orientationMatrix(stiff.orient);
+    const REAL inv_point_mass = stiff.inv_mass * stiff.nodes_count;
+    PhyNode *node = stiff.nodes;
+    PhyPoint *point = stiff.points;
+    PhyPoint *end = point + stiff.nodes_count;
+
+    while (point != end)
+    {
+        point->pos = orientationMatrix * node->pos + stiff.pos;
+        point->inv_mass = inv_point_mass;
+        point++;
+        node++;
+    }
+}
+
+void Physics::UpdateStiff(PhyStiff &stiff)
+{
+    PhyNode *node = stiff.nodes;
+    PhyPoint *point = stiff.points;
+    PhyPoint *end = point + stiff.nodes_count;
+
+    Vec3r mean_point_pos(0,0,0);
+    Vec3r mean_node_pos(0,0,0);
+    while (point != end)
+    {
+        mean_point_pos += point->pos;
+        mean_node_pos += node->pos;
+        point++;
+        node++;
+    }
+    mean_point_pos /= stiff.nodes_count;
+    mean_node_pos /= stiff.nodes_count;
+
+    using namespace Eigen;
+    Matrix3d Apq = Matrix3d::Zero();
+    // Matrix3d Aqq = Matrix3d::Zero();
+    //Mat3x3r Apq(0,0,0,0,0,0,0,0,0);
+    //Mat3x3r Aqq(0,0,0,0,0,0,0,0,0);
+    point = stiff.points;
+    node = stiff.nodes;
+    while (point != end)
+    {
+        const Vector3d p = {
+            point->pos.x - mean_point_pos.x,
+            point->pos.y - mean_point_pos.y,
+            point->pos.z - mean_point_pos.z,
+        };
+        const Vector3d q = {
+            node->pos.x - mean_node_pos.x,
+            node->pos.y - mean_node_pos.y,
+            node->pos.z - mean_node_pos.z,
+        };
+        Apq += p * q.transpose();
+        // Aqq += q * q.transpose();
+        point++;
+        node++;
+    }
+    // Aqq = Aqq.inverse();
+    SelfAdjointEigenSolver<Matrix3d> es(Apq.transpose() * Apq);
+    // Matrix3d S = es.operatorSqrt();
+    Mat3x3r R;
+    Map<Matrix3d>(R.vec1.e) = Apq * es.operatorSqrt().inverse();
+    // LLT<Matrix3d> lltOfApq(Apq); // Compute the Cholesky decomposition
+    // MatrixXd L = lltOfA.matrixL();
+    point = stiff.points;
+    node = stiff.nodes;
+    while (point != end)
+    {
+        const Vec3r q = {
+            node->pos.x - mean_node_pos.x,
+            node->pos.y - mean_node_pos.y,
+            node->pos.z - mean_node_pos.z,
+        };
+        const Vec3r g = R * q + mean_point_pos;
+        point->acc =
+            stiff.alpha * (g - point->pos) +
+            point->force * point->inv_mass + gravity;
+        point->vel += point->acc;
+        point->pos += point->vel;
+        point->force.SetToZero();
         point++;
         node++;
     }
