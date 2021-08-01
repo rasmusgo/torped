@@ -364,6 +364,10 @@ std::unique_ptr<PhyInstance> LoadPhysXML(const char *filename)
 
     //PrintPhys(&inst, &ofstream("loadphysxml.txt"));
 
+    // Store data for crash handling
+    CHECK_F(!inst->phys->insane);
+    inst->CrashHandling();
+
     VLOG_S(3) << "End of LoadPhysXML";
     return inst; // success
 }
