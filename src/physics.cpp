@@ -356,7 +356,7 @@ void Physics::UpdateStiff(PhyStiff &stiff)
 
     using namespace Eigen;
     Matrix3d Apq = Matrix3d::Zero();
-    // Matrix3d Aqq = Matrix3d::Zero();
+    Matrix3d Aqq = Matrix3d::Zero();
     //Mat3x3r Apq(0,0,0,0,0,0,0,0,0);
     //Mat3x3r Aqq(0,0,0,0,0,0,0,0,0);
     point = stiff.points;
@@ -374,17 +374,20 @@ void Physics::UpdateStiff(PhyStiff &stiff)
             node->pos.z - mean_node_pos.z,
         };
         Apq += p * q.transpose();
-        // Aqq += q * q.transpose();
+        Aqq += q * q.transpose();
         point++;
         node++;
     }
-    // Aqq = Aqq.inverse();
+    Aqq = Aqq.inverse().eval();
     SelfAdjointEigenSolver<Matrix3d> es(Apq.transpose() * Apq);
     // Matrix3d S = es.operatorSqrt();
-    Mat3x3r R;
-    Map<Matrix3d>(R.vec1.e) = Apq * es.operatorSqrt().inverse();
-    // LLT<Matrix3d> lltOfApq(Apq); // Compute the Cholesky decomposition
-    // MatrixXd L = lltOfA.matrixL();
+    Matrix3d R = Apq * es.operatorSqrt().inverse();
+    Matrix3d A = Apq * Aqq;
+    Mat3x3r G;
+    Map<Matrix3d>(G.vec1.e) =
+        A * (stiff.beta * pow(A.determinant(), -1.0 / 3.0)) +
+        R * (1.0 - stiff.beta);
+
     point = stiff.points;
     node = stiff.nodes;
     while (point != end)
@@ -394,7 +397,7 @@ void Physics::UpdateStiff(PhyStiff &stiff)
             node->pos.y - mean_node_pos.y,
             node->pos.z - mean_node_pos.z,
         };
-        const Vec3r g = R * q + mean_point_pos;
+        const Vec3r g = G * q + mean_point_pos;
         point->acc =
             stiff.alpha * (g - point->pos) +
             point->force * point->inv_mass + gravity;
