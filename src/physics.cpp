@@ -355,8 +355,8 @@ void Physics::UpdateStiff(PhyStiff &stiff)
     mean_node_pos /= stiff.nodes_count;
 
     using namespace Eigen;
-    Matrix3d Apq = Matrix3d::Zero();
-    Matrix3d Aqq = Matrix3d::Zero();
+    Matrix<double, 3, 9> Apq = Matrix<double, 3, 9>::Zero();
+    Matrix<double, 9, 9> Aqq = Matrix<double, 9, 9>::Zero();
     //Mat3x3r Apq(0,0,0,0,0,0,0,0,0);
     //Mat3x3r Aqq(0,0,0,0,0,0,0,0,0);
     point = stiff.points;
@@ -373,31 +373,53 @@ void Physics::UpdateStiff(PhyStiff &stiff)
             node->pos.y - mean_node_pos.y,
             node->pos.z - mean_node_pos.z,
         };
-        Apq += p * q.transpose();
-        Aqq += q * q.transpose();
+        Matrix<double, 9, 1> qe;
+        qe << q,
+            q.x() * q.x(),
+            q.y() * q.y(),
+            q.z() * q.z(),
+            q.x() * q.y(),
+            q.y() * q.z(),
+            q.z() * q.x();
+
+        Apq += p * qe.transpose();
+        Aqq += qe * qe.transpose();
         point++;
         node++;
     }
+    // TODO: Copmute Aqq during initialization
     Aqq = Aqq.inverse().eval();
-    SelfAdjointEigenSolver<Matrix3d> es(Apq.transpose() * Apq);
-    // Matrix3d S = es.operatorSqrt();
-    Matrix3d R = Apq * es.operatorSqrt().inverse();
-    Matrix3d A = Apq * Aqq;
-    Mat3x3r G;
-    Map<Matrix3d>(G.vec1.e) =
-        A * (stiff.beta * pow(A.determinant(), -1.0 / 3.0)) +
-        R * (1.0 - stiff.beta);
+
+    Matrix<double, 3, 9> A = Apq * Aqq;
+    // Tendency to preserve volume.
+    A.leftCols<3>() *= pow(A.leftCols<3>().determinant(), -1.0 / 3.0);
+    // Compute least squares rigid transform
+    SelfAdjointEigenSolver<Matrix3d> es(
+        Apq.leftCols<3>().transpose() * Apq.leftCols<3>());
+    Matrix3d R = Apq.leftCols<3>() * es.operatorSqrt().inverse();
+    // Tend towards non-deformed state by blending in rigid transform.
+    Matrix<double, 3, 9> G = A * stiff.beta;
+    G.leftCols<3>() += R * (1.0 - stiff.beta);
 
     point = stiff.points;
     node = stiff.nodes;
     while (point != end)
     {
-        const Vec3r q = {
+        const Vector3d q = {
             node->pos.x - mean_node_pos.x,
             node->pos.y - mean_node_pos.y,
             node->pos.z - mean_node_pos.z,
         };
-        const Vec3r g = G * q + mean_point_pos;
+        Matrix<double, 9, 1> qe;
+        qe << q,
+            q.x() * q.x(),
+            q.y() * q.y(),
+            q.z() * q.z(),
+            q.x() * q.y(),
+            q.y() * q.z(),
+            q.z() * q.x();
+        const Vector3d Gq = G * qe;
+        const Vec3r g = Vec3r(Gq.x(), Gq.y(), Gq.z()) + mean_point_pos;
         point->acc =
             stiff.alpha * (g - point->pos) +
             point->force * point->inv_mass + gravity;
