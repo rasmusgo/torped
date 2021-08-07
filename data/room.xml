@@ -1692,7 +1692,15 @@
   <node name="Room_2193" pos="0.392834 -6.678230 -1.125000"/>
   <node name="Room_2194" pos="0.392834 -6.678230 -0.375000"/>
 </rigid>
-<rigid name="Monkey" pos="0.000013 0.405818 1.377702" mass="2.168741" inertia="0.619700 0.588204 0.756682" rot="0.989776 0.142630 -0.000038 0.000263" >
+<stiff
+  name="Monkey"
+  pos="0.000013 0.405818 1.377702"
+  mass="20.168741"
+  inertia="0.619700 0.588204 0.756682"
+  rot="0.989776 0.142630 -0.000038 0.000263"
+  alpha="0.1"
+  beta="0.99"
+>
   <node name="Monkey_0" pos="-0.195637 -0.585051 0.425158"/>
   <node name="Monkey_1" pos="-0.336205 -0.478346 0.569787"/>
   <node name="Monkey_2" pos="-0.281527 -0.495587 0.572771"/>
@@ -2198,7 +2206,7 @@
   <node name="Monkey_502" pos="-0.789036 0.074416 -0.497593"/>
   <node name="Monkey_503" pos="0.859585 0.418904 -0.121311"/>
   <node name="Monkey_504" pos="-0.859165 0.419817 -0.121311"/>
-</rigid>
+</stiff>
 <texture name="//ground01.png" image="//ground01.png"/>
 <render texture="//ground01.png">
   <gltriangle name="0" p1="Monkey_2" p2="Monkey_13" p3="Monkey_14" normals="2 13 14 " uvs="0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 "/>
