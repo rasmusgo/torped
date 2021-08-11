@@ -76,7 +76,7 @@ struct PhyStiff
     Vec3r pos;
     Quat4r orient;
     Mat3x3r Aqq;
-    REAL alpha, beta;
+    REAL alpha, beta, damping;
 };
 
 struct PhyBalloon

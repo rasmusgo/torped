@@ -591,6 +591,12 @@ void ParsePhysXML(PhyInstance *inst, TiXmlHandle *hRoot)
             ss >> stiff->beta;
             ss.clear();
         }
+        if (auto damping = pElem->Attribute("damping"))
+        {
+            ss << damping;
+            ss >> stiff->damping;
+            ss.clear();
+        }
 
         pElem2 = TiXmlHandle(pElem).FirstChild("node").Element();
         for (; pElem2; pElem2 = pElem2->NextSiblingElement("node"))
