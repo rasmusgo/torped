@@ -1,9 +1,6 @@
 #pragma once
 
-#include <istream>
-#include <ostream>
-#include <limits>
-#include <cmath>
+#include "pch.hpp"
 
 /*
 #ifndef min

@@ -1,8 +1,6 @@
 #pragma once
 
-#include <chrono>
-#include <vector>
-#include <string>
+#include "pch.hpp"
 
 class Profiler
 {

@@ -1,9 +1,6 @@
 #pragma once
 
-#include <SDL.h>
-#include <vector>
-#include <string>
-#include <map>
+#include "pch.hpp"
 
 #include "profiler.hpp"
 

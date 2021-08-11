@@ -1,8 +1,8 @@
 #pragma once
 
+#include "pch.hpp"
+
 #include <GL/glew.h>
-#include <string>
-#include <map>
 
 class Shader
 {

@@ -2,6 +2,10 @@ file(GLOB sources *.cpp *.hpp *.c *.h)
 
 add_executable(torped ${sources})
 
+target_precompile_headers(torped PRIVATE
+    "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/pch.hpp>"
+)
+
 target_link_libraries(torped LINK_PRIVATE
     ${GLEW_LIBRARIES}
     ${GLUT_glut_LIBRARY}
