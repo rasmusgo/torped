@@ -15,5 +15,6 @@
 #include <utility>
 #include <vector>
 
-#define LOGURU_WITH_STREAMS 1
-#include <loguru.hpp>
+#include <Eigen/Eigen>
+
+#include "logging.hpp"

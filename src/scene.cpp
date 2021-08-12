@@ -201,6 +201,7 @@ void Scene::UpdatePhysics()
 
 void Scene::UpdateOpenAL()
 {
+    std::lock_guard<std::mutex> lock(phyInstances_lock);
     // Sound emitters
     for (auto& it : phyInstances)
     {

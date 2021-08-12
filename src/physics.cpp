@@ -122,6 +122,9 @@ void Physics::UpdateVelocitiesAndPositions()
     // uppdatera noderna
     DO(UpdatePointsFromRigid, rigids, 0, rigids_count)
 
+    // Update both velocity and positions of stiffs
+    DO(UpdateStiff, stiffs, 0, stiffs_count)
+
     REAL infinity = std::numeric_limits<REAL>::infinity();
     bounds_max = Vec3r(-infinity, -infinity, -infinity);
     bounds_min = Vec3r(infinity, infinity, infinity);
@@ -311,6 +314,155 @@ void Physics::UpdatePointsFromRigid(PhyRigid &rigid)
         point->pos = R_world_from_local * node->pos; // glöm inte  att addera pos
         point->vel = rigid.vel + (rigid.spin).Cross(point->pos);
         point->pos += rigid.pos; // glöm inte  att addera pos
+        point++;
+        node++;
+    }
+}
+
+void Physics::InitializeStiff(PhyStiff &stiff)
+{
+    const Mat3x3r orientationMatrix(stiff.orient);
+    const REAL inv_point_mass = stiff.inv_mass * stiff.nodes_count;
+    PhyNode *node = stiff.nodes;
+    PhyPoint *point = stiff.points;
+    PhyPoint *end = point + stiff.nodes_count;
+
+    while (point != end)
+    {
+        point->pos = orientationMatrix * node->pos + stiff.pos;
+        point->inv_mass = inv_point_mass;
+        point++;
+        node++;
+    }
+}
+
+void Physics::UpdateStiff(PhyStiff &stiff)
+{
+    PhyNode *node = stiff.nodes;
+    PhyPoint *point = stiff.points;
+    PhyPoint *end = point + stiff.nodes_count;
+
+    Vec3r mean_point_pos(0,0,0);
+    Vec3r mean_point_vel(0,0,0);
+    Vec3r mean_node_pos(0,0,0);
+    while (point != end)
+    {
+        mean_point_pos += point->pos;
+        mean_point_vel += point->vel;
+        mean_node_pos += node->pos;
+        point++;
+        node++;
+    }
+    mean_point_pos /= stiff.nodes_count;
+    mean_point_vel /= stiff.nodes_count;
+    mean_node_pos /= stiff.nodes_count;
+
+    using namespace Eigen;
+    Matrix<double, 3, 9> Apq = Matrix<double, 3, 9>::Zero();
+    Matrix<double, 9, 9> Aqq = Matrix<double, 9, 9>::Zero();
+    Vector3d angular_momentum = Vector3d::Zero();
+    Matrix<double, 3, 3> angular_inertia = Matrix<double, 3, 3>::Zero();
+    //Mat3x3r Apq(0,0,0,0,0,0,0,0,0);
+    //Mat3x3r Aqq(0,0,0,0,0,0,0,0,0);
+    point = stiff.points;
+    node = stiff.nodes;
+    while (point != end)
+    {
+        const Vector3d p = {
+            point->pos.x - mean_point_pos.x,
+            point->pos.y - mean_point_pos.y,
+            point->pos.z - mean_point_pos.z,
+        };
+        const Vector3d v = {
+            point->vel.x - mean_point_vel.x,
+            point->vel.y - mean_point_vel.y,
+            point->vel.z - mean_point_vel.z,
+        };
+        const Vector3d q = {
+            node->pos.x - mean_node_pos.x,
+            node->pos.y - mean_node_pos.y,
+            node->pos.z - mean_node_pos.z,
+        };
+
+        angular_momentum += p.cross(v);
+        // TODO: Multiply this with its own transpose directly to get a symmetric matrix.
+        Matrix<double, 3, 3> r_hat;
+        r_hat <<
+            0.0, -p.z(), p.y(),
+            p.z(), 0.0, -p.x(),
+            -p.y(), p.x(), 0.0;
+        angular_inertia += r_hat * r_hat.transpose();
+
+        Matrix<double, 9, 1> qe;
+        qe << q,
+            q.x() * q.x(),
+            q.y() * q.y(),
+            q.z() * q.z(),
+            q.x() * q.y(),
+            q.y() * q.z(),
+            q.z() * q.x();
+
+        Apq += p * qe.transpose();
+        Aqq += qe * qe.transpose();
+        point++;
+        node++;
+    }
+    // TODO: Copmute Aqq during initialization
+    Aqq = Aqq.inverse().eval();
+
+    Matrix<double, 3, 9> A = Apq * Aqq;
+    // Tendency to preserve volume.
+    A.leftCols<3>() *= pow(A.leftCols<3>().determinant(), -1.0 / 3.0);
+    // Compute least squares rigid transform
+    SelfAdjointEigenSolver<Matrix3d> es(
+        Apq.leftCols<3>().transpose() * Apq.leftCols<3>());
+    Matrix3d R = Apq.leftCols<3>() * es.operatorSqrt().inverse();
+    // Tend towards non-deformed state by blending in rigid transform.
+    Matrix<double, 3, 9> G = A * stiff.beta;
+    G.leftCols<3>() += R * (1.0 - stiff.beta);
+
+    // Damping based on "Position based dynamics", Matthias Müller et. al, 2007.
+    Vector3d angular_velocity = angular_inertia.inverse() * angular_momentum;
+
+    point = stiff.points;
+    node = stiff.nodes;
+    while (point != end)
+    {
+        const Vector3d p = {
+            point->pos.x - mean_point_pos.x,
+            point->pos.y - mean_point_pos.y,
+            point->pos.z - mean_point_pos.z,
+        };
+        const Vector3d v = {
+            point->vel.x - mean_point_vel.x,
+            point->vel.y - mean_point_vel.y,
+            point->vel.z - mean_point_vel.z,
+        };
+        const Vector3d q = {
+            node->pos.x - mean_node_pos.x,
+            node->pos.y - mean_node_pos.y,
+            node->pos.z - mean_node_pos.z,
+        };
+        Matrix<double, 9, 1> qe;
+        qe << q,
+            q.x() * q.x(),
+            q.y() * q.y(),
+            q.z() * q.z(),
+            q.x() * q.y(),
+            q.y() * q.z(),
+            q.z() * q.x();
+        const Vector3d Gq = G * qe;
+        const Vec3r g = Vec3r(Gq.x(), Gq.y(), Gq.z()) + mean_point_pos;
+
+        Vector3d delta_v = v - angular_velocity.cross(p);
+
+        point->acc =
+            stiff.alpha * (g - point->pos) +
+            -stiff.damping * Vec3r(delta_v.x(), delta_v.y(), delta_v.z()) +
+            point->force * point->inv_mass + gravity;
+        point->vel += point->acc;
+        point->pos += point->vel;
+        point->force.SetToZero();
         point++;
         node++;
     }

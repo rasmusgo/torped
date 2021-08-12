@@ -20,6 +20,7 @@ target_link_libraries(torped LINK_PRIVATE
     ${VORBIS_LIBRARY}
     ${VORBISFILE_LIBRARY}
     manymouse
+    Eigen3::Eigen
 )
 
 if(WIN32)

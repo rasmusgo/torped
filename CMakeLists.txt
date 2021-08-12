@@ -29,6 +29,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/eigen-3.3.9")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/glew-2.1.0")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/freeglut")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/thirdparty/physfs-3.0.2/installdir")
@@ -42,6 +43,8 @@ include_directories(${GLEW_INCLUDE_DIR})
 if(NOT DEFINED GLEW_LIBRARIES)
     set(GLEW_LIBRARIES GLEW::GLEW)
 endif()
+
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIR})
