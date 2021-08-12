@@ -211,15 +211,16 @@ int AppMenu::MenuFrame(GameApp& gameapp)
                 redraw = true;
                 break;
             }
-
-            if ( event.key.keysym.sym > 0 && event.key.keysym.sym < 256 )
-            {
-                commands.back() += static_cast<char>(event.key.keysym.sym);
-                redraw = true;
-                break;
-            }
             break;
         case SDL_KEYUP:
+            break;
+        case SDL_TEXTINPUT:
+            for (char c : event.text.text)
+            {
+                if (c == 0) { break; }
+                commands.back() += c;
+                redraw = true;
+            }
             break;
         case SDL_QUIT:
             return 0;
