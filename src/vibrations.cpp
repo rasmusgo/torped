@@ -36,9 +36,9 @@ void computeVibrations(AlStruct& al)
     // F = k*u + d*u'  spring with damping, u is length displacement of spring, k is spring constant, d is damping.
     // F = m*a
     // Linearize spring equation wrt. x,y,z and their derivatives.
-    // X' = AX + g(t)  where X = [x0, y0, z0, x0', y0', z0', x1, y1, z1, x1', y1', z1', ...]
+    // X' = AX  where X = [x0, y0, z0, x0', y0', z0', x1, y1, z1, x1', y1', z1', ..., 1]
     // A is a sparse square matrix containing the coefficients of the linear equations.
-    // The solution to the homogenous part X' = AX is X(t) = exp(At) * X(0)
+    // The solution to X' = AX is X(t) = exp(At) * X(0)
     // exp(At) can be computed by eigen decomposition: A = V*D*V^-1 => exp(At) = exp(V*D*V^-1*t) = V*exp(D*t)*V^-1
 
 
