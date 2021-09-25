@@ -271,6 +271,36 @@ bool AlStruct::LoadSound(const char filename[])
     return true;
 }
 
+bool AlStruct::LoadSoundFromBuffer(const char filename[], int16_t* data, ALsizei size, ALsizei freq)
+{
+    // Is it already loaded?
+    if ( buffers.find(filename) != buffers.end() )
+    {
+        // TODO: Replace the buffer.
+        return false;
+    }
+    ALuint buffer;
+    alGenBuffers(1, &buffer);
+    if (buffer == 0)
+    {
+        LOG_S(ERROR) << "alGenBuffers() failed: " << alGetString(alGetError());
+        return false;
+    }
+
+    ALenum format = AL_FORMAT_MONO16;
+    alBufferData(buffer, format, data, size, freq);
+    if (ALenum err = alGetError())
+    {
+        alDeleteBuffers(1, &buffer);
+        LOG_S(ERROR) << "alBufferData() failed: " << alGetString(err);
+        return false;
+    }
+
+    // Hurray!
+    buffers[filename] = buffer;
+    return true;
+}
+
 ALuint AlStruct::AddSound(const char filename[], const Vec3r &pos, const Vec3r &vel, float gain)
 {
     // load the file if nessesary

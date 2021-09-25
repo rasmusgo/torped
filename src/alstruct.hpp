@@ -23,6 +23,7 @@ public:
     bool InitAl();
     void QuitAl();
     bool LoadSound(const char filename[]);
+    bool LoadSoundFromBuffer(const char filename[], int16_t* data, ALsizei size, ALsizei freq);
     ALuint AddSound(const char filename[], const Vec3r &pos, const Vec3r &vel=Vec3r(0,0,0), float gain=1);
 
 private:
