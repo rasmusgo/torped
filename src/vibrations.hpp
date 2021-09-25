@@ -1,3 +1,5 @@
 #pragma once
 
-void computeVibrations();
+struct AlStruct;
+
+void computeVibrations(AlStruct& al);

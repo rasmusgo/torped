@@ -169,7 +169,7 @@ GameApp::GameApp(int argc, char *argv[])
         return ;
     }
     //alSourcei(source, AL_LOOPING, AL_TRUE);
-    alSourcePlay(source);
+    // alSourcePlay(source);
 
     // Initialize Lua
     LOG_S(INFO) << "Initializing Lua...";
@@ -207,7 +207,7 @@ GameApp::GameApp(int argc, char *argv[])
     SwitchMode(appMode);
 
     // TODO: Remove from here!
-    computeVibrations();
+    computeVibrations(*al);
 
     LOG_IF_ERROR("End of InitAll(...)")
 }

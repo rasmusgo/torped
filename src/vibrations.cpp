@@ -6,6 +6,7 @@
 #include <unsupported/Eigen/AutoDiff>
 #include <unsupported/Eigen/MatrixFunctions>
 
+#include "alstruct.hpp"
 #include "physics.hpp"
 #include "logging.hpp"
 
@@ -29,7 +30,7 @@ Eigen::Vector<Jet12, 3> SpringForce(
     return -spring_dir * (k * (spring_length - relaxed_length) + d * (spring_dir.dot(velAB)));
 }
 
-void computeVibrations()
+void computeVibrations(AlStruct& al)
 {
     // Input: Two point masses connected by a single spring.
     // F = k*u + d*u'  spring with damping, u is length displacement of spring, k is spring constant, d is damping.
@@ -184,4 +185,42 @@ void computeVibrations()
     LOG_S(INFO) << "exp(A) = \n" << expA;
     LOG_S(INFO) << "X0 = \n" << X0;
     LOG_S(INFO) << "exp(A)*X0 = \n" << expA * X0;
+    const ALsizei sampling_frequency = 44100;
+    const size_t number_of_samples = sampling_frequency * 1;
+    const MatrixXd exp_tiny_A = (A / double(sampling_frequency)).exp();
+    LOG_S(INFO) << "exp(A/num_samples) = \n" << exp_tiny_A;
+
+    VectorXd samples(number_of_samples);
+    VectorXd X = X0;
+    for (int i = 0; i < number_of_samples; ++i)
+    {
+        VectorXd X_next = exp_tiny_A * X;
+        samples(i) = X_next(3) - X(3);
+        X = X_next;
+    }
+    LOG_S(INFO) << "X = \n" << X;
+    // LOG_S(INFO) << "samples = \n" << samples.transpose();
+    const double max_elem_size = samples.cwiseAbs().maxCoeff();
+    const double scale = std::numeric_limits<int16_t>::max() * 0.5 / max_elem_size;
+    LOG_S(INFO) << "max_elem_size = " << max_elem_size;
+    LOG_S(INFO) << "scale = " << scale;
+    std::vector<int16_t> buffer_data(number_of_samples);
+    for (int i = 0; i < number_of_samples; ++i)
+    {
+        buffer_data[i] = static_cast<int16_t>(samples(i) * scale);
+    }
+    for (int i = 0; i + 1 < number_of_samples; ++i)
+    {
+        if (buffer_data[i] == 0 && buffer_data[i + 1] == 0)
+        {
+            LOG_F(INFO, "buffer ends after %d of %d samples", i, number_of_samples);
+            break;
+        }
+    }
+
+    if (al.LoadSoundFromBuffer("generated_sound", buffer_data.data(), buffer_data.size(), sampling_frequency))
+    {
+        ALuint source = al.AddSound("generated_sound", Vec3r(0, 0, 0));
+        alSourcePlay(source);
+    }
 }
