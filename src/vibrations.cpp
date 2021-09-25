@@ -61,15 +61,17 @@ void computeVibrations(AlStruct& al)
     using namespace Eigen;
     using std::complex;
 
-    const size_t num_points = 2;
-    const size_t num_springs = 1;
+    const size_t num_points = 3;
+    const size_t num_springs = 2;
+    const double point_masses[num_points] = {10.0e-3, 2.0e-3, 3.0e-3};
     const size_t N = 6 * num_points + 1;
     // SparseMatrix<double> A(6 * num_points, 6 * num_points);
     MatrixXd A = MatrixXd::Zero(N, N);
     VectorXd X0 = VectorXd::Zero(N);
     X0(0) = 0.5;
     X0(6) = 1.5;
-    X0(6 * num_points) = 1.0;
+    X0(12) = 2.0;
+    X0(N - 1) = 1.0;
 
     // Equations for variable substitutions
     for (int i = 0; i < num_points; ++i)
@@ -117,9 +119,9 @@ void computeVibrations(AlStruct& al)
         }
         const double relaxed_length = 0.5;
         const double k = 10000;
-        const double d = 0.04;
-        const double point_a_mass = 10.0e-3;
-        const double point_b_mass = 2.0e-3;
+        const double d = 0.03;
+        const double point_a_mass = point_masses[i];
+        const double point_b_mass = point_masses[i + 1];
 
         const Vector<Jet12, 3> force = SpringForce(A_pos, A_vel, B_pos, B_vel, relaxed_length, k, d);
 
@@ -186,7 +188,7 @@ void computeVibrations(AlStruct& al)
     LOG_S(INFO) << "X0 = \n" << X0;
     LOG_S(INFO) << "exp(A)*X0 = \n" << expA * X0;
     const ALsizei sampling_frequency = 44100;
-    const size_t number_of_samples = sampling_frequency * 1;
+    const size_t number_of_samples = sampling_frequency * 5;
     const MatrixXd exp_tiny_A = (A / double(sampling_frequency)).exp();
     LOG_S(INFO) << "exp(A/num_samples) = \n" << exp_tiny_A;
 
